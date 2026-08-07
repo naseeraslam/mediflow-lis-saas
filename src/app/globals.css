@@ -29,21 +29,23 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Light mode overrides for clinical aesthetics */
-html.light .bg-slate-950 {
+/* Light Mode Pristine High-Contrast Overrides */
+html.light .bg-slate-950,
+html.light .bg-slate-900 {
   background-color: #ffffff !important;
   color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
 }
 
-html.light .bg-slate-900 {
-  background-color: #f1f5f9 !important;
+html.light .bg-slate-950\/40,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/90 {
+  background-color: #f8fafc !important;
   color: #0f172a !important;
   border-color: #cbd5e1 !important;
-}
-
-html.light .bg-slate-800 {
-  background-color: #e2e8f0 !important;
-  color: #0f172a !important;
 }
 
 html.light .text-slate-100,
@@ -53,7 +55,7 @@ html.light .text-slate-200 {
 
 html.light .text-slate-300,
 html.light .text-slate-400 {
-  color: #475569 !important;
+  color: #334155 !important;
 }
 
 html.light .border-slate-800,
@@ -61,12 +63,52 @@ html.light .border-slate-700 {
   border-color: #cbd5e1 !important;
 }
 
-html.light .text-teal-400 {
+html.light .text-teal-400,
+html.light .text-teal-300 {
   color: #0d9488 !important;
 }
 
-html.light .text-sky-400 {
+html.light .text-sky-400,
+html.light .text-sky-300 {
   color: #0284c7 !important;
+}
+
+html.light .text-emerald-400,
+html.light .text-emerald-300 {
+  color: #059669 !important;
+}
+
+html.light table th {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+html.light table td {
+  color: #0f172a !important;
+  border-color: #f1f5f9 !important;
+}
+
+html.light table tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Floating Laboratory Animation Utilities */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 12px rgba(13, 148, 136, 0.4)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 25px rgba(14, 165, 233, 0.7)); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
 }
 
 /* Print CSS Rules for PDF Generation */
