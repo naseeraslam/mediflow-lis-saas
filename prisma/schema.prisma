@@ -1,0 +1,314 @@
+// Prisma Schema for MediFlow Multi-Tenant Medical Laboratory SaaS Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Organization {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  legalName       String
+  displayName     String
+  type            String   @default("DiagnosticLab") // DiagnosticLab, Hospital, Pathology, Clinic, Radiology
+  approvalStatus  String   @default("PendingApproval") // PendingApproval, Approved, Rejected
+  registrationNo  String?
+  licenseNo       String?
+  taxId           String?
+  email           String
+  phone           String
+  whatsappPhone   String?
+  website         String?
+  googleMapsUrl   String?
+  address         String
+  city            String
+  state           String?
+  country         String   @default("USA")
+  postalCode      String?
+  currency        String   @default("USD")
+  timeZone        String   @default("UTC")
+  primaryColor    String   @default("#0f766e")
+  secondaryColor  String   @default("#0369a1")
+  logoUrl         String?
+  headerText      String?
+  footerText      String?
+  disclaimerText  String?
+  founderName     String   @default("Sher Muhammad")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  branches        Branch[]
+  users           User[]
+  patients        Patient[]
+  doctors         Doctor[]
+  testDefinitions TestDefinition[]
+  templates       ReportTemplate[]
+  reports         Report[]
+  auditLogs       AuditLog[]
+  subscriptions   Subscription[]
+}
+
+model Branch {
+  id           String       @id @default(cuid())
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name         String
+  code         String
+  address      String
+  phone        String
+  email        String?
+  isMain       Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+
+  reports      Report[]
+
+  @@index([orgId])
+}
+
+model User {
+  id               String       @id @default(cuid())
+  orgId            String
+  organization     Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  email            String       @unique
+  passwordHash     String
+  name             String
+  role             String       @default("Technician") // SuperAdmin, OrgOwner, Admin, Pathologist, Technician, Receptionist, Doctor, Patient
+  isSuperAdmin     Boolean      @default(false)
+  twoFactorEnabled Boolean      @default(true)
+  permissions      String       @default("[]") // JSON string of granular permissions
+  active           Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([orgId])
+}
+
+model TwoFactorToken {
+  id        String   @id @default(cuid())
+  userEmail String
+  otpCode   String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userEmail, otpCode])
+}
+
+model PricingPlan {
+  id          String   @id @default(cuid())
+  name        String   @unique // Starter, Professional, Business, Enterprise
+  price       Float
+  currency    String   @default("USD")
+  billing     String   @default("per month")
+  description String
+  maxReports  Int      @default(1000)
+  maxUsers    Int      @default(10)
+  features    String   // JSON string of feature bullet points
+  isPopular   Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}
+
+model Patient {
+  id           String       @id @default(cuid())
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  mrn          String       // Medical Record Number (Tenant scoped)
+  cnic         String?      // CNIC / National Identity Card Number
+  fullName     String
+  dateOfBirth  String
+  gender       String       // Male, Female, Other
+  phone        String
+  email        String?
+  address      String?
+  createdAt    DateTime     @default(now())
+
+  reports      Report[]
+
+  @@index([orgId, mrn])
+  @@index([orgId, cnic])
+  @@index([orgId])
+}
+
+model Doctor {
+  id           String       @id @default(cuid())
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name         String
+  specialty    String?
+  licenseNo    String?
+  email        String?
+  phone        String?
+  createdAt    DateTime     @default(now())
+
+  reports      Report[]
+
+  @@index([orgId])
+}
+
+model TestCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+}
+
+model TestDefinition {
+  id             String       @id @default(cuid())
+  orgId          String
+  organization   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  code           String
+  name           String
+  category       String       // Hematology, Clinical Chemistry, Endocrinology, Immunology, Urinalysis, Microbiology
+  unit           String
+  method         String       @default("Standard Automated Analyzer")
+  refRangeMale   String
+  refRangeFemale String
+  refRangePed    String?
+  minValue       Float?
+  maxValue       Float?
+  version        Int          @default(1)
+  createdAt      DateTime     @default(now())
+
+  testResults    TestResult[]
+
+  @@index([orgId, code])
+  @@index([orgId])
+}
+
+model ReportTemplate {
+  id           String              @id @default(cuid())
+  orgId        String
+  organization Organization        @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name         String              // e.g. Complete Blood Count (CBC) Battery
+  code         String              // e.g. TMPL-CBC
+  category     String              // Hematology, Clinical Chemistry, etc.
+  description  String?
+  createdAt    DateTime            @default(now())
+
+  parameters   TemplateParameter[]
+
+  @@index([orgId, code])
+}
+
+model TemplateParameter {
+  id              String         @id @default(cuid())
+  templateId      String
+  template        ReportTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  parameterName   String         // e.g. Hemoglobin (HGB)
+  code            String         // e.g. CBC-HGB
+  unit            String
+  refRangeMale    String
+  refRangeFemale  String
+  refRangePed     String?
+  method          String?
+  displayOrder    Int            @default(0)
+  decimalPlaces   Int            @default(2)
+}
+
+model Report {
+  id                String            @id @default(cuid())
+  orgId             String
+  organization      Organization      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  branchId          String
+  branch            Branch            @relation(fields: [branchId], references: [id])
+  patientId         String
+  patient           Patient           @relation(fields: [patientId], references: [id])
+  doctorId          String?
+  doctor            Doctor?           @relation(fields: [doctorId], references: [id])
+
+  reportNumber      String            // e.g. LAB-2026-08001
+  status            String            @default("Draft") // Draft, Collected, Processing, Review, Authorized, Published, Amended
+  version           Int               @default(1)
+  sampleCollectedAt DateTime?
+  authorizedAt      DateTime?
+  authorizedBy      String?
+  verificationToken String            @unique
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  results           TestResult[]
+  amendments        ReportAmendment[]
+  shares            ReportShare[]
+
+  @@index([orgId, reportNumber])
+  @@index([orgId])
+  @@index([patientId])
+}
+
+model TestResult {
+  id               String         @id @default(cuid())
+  reportId         String
+  report           Report         @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  testId           String
+  test             TestDefinition @relation(fields: [testId], references: [id])
+
+  testNameSnapshot String
+  unitSnapshot     String
+  refRangeSnapshot String
+  numericValue     Float?
+  stringValue      String?
+  flag             String         @default("Normal") // Normal, High, Low, Critical
+  notes            String?
+
+  @@index([reportId])
+}
+
+model ReportAmendment {
+  id              String   @id @default(cuid())
+  reportId        String
+  report          Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  previousVersion Int
+  newVersion      Int
+  reason          String
+  changedBy       String
+  diffSnapshot    String   // JSON string of changes
+  changedAt       DateTime @default(now())
+
+  @@index([reportId])
+}
+
+model ReportShare {
+  id          String   @id @default(cuid())
+  reportId    String
+  report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  shareToken  String   @unique
+  expiresAt   DateTime
+  pinHash     String?
+  isRevoked   Boolean  @default(false)
+  accessCount Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([shareToken])
+}
+
+model AuditLog {
+  id           String        @id @default(cuid())
+  orgId        String?
+  organization Organization? @relation(fields: [orgId], references: [id], onDelete: SetNull)
+  userId       String?
+  userEmail    String?
+  action       String        // patient.view, report.authorize, report.share
+  entity       String
+  entityId     String?
+  details      String?
+  ipAddress    String?
+  timestamp    DateTime      @default(now())
+
+  @@index([orgId])
+}
+
+model Subscription {
+  id           String       @id @default(cuid())
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  plan         String       @default("Starter") // Free, Starter, Professional, Business, Enterprise
+  status       String       @default("Active")
+  maxUsers     Int          @default(10)
+  maxReports   Int          @default(1000)
+  createdAt    DateTime     @default(now())
+
+  @@index([orgId])
+}

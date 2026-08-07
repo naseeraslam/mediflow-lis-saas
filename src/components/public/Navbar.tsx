@@ -1,0 +1,97 @@
+"use client";
+
+import Link from "next/link";
+import { Shield, Activity, Lock, UserPlus, Search, Sparkles, Microscope, Dna, HeartPulse, Award } from "lucide-react";
+
+export function PublicNavbar() {
+  return (
+    <header className="sticky top-0 z-50 shadow-2xl">
+      {/* Top Clinical Announcement Bar */}
+      <div className="bg-gradient-to-r from-teal-900 via-emerald-900 to-sky-900 text-teal-100 text-[11px] font-medium py-1.5 px-4 border-b border-teal-500/20">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 font-bold text-[10px] border border-teal-500/30">
+              <Microscope className="w-3 h-3 text-teal-400" /> ISO 15189 ACCREDITED
+            </span>
+            <span className="hidden sm:inline text-teal-200">
+              Enterprise Medical Laboratory Information System & Baseline Diagnostics
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3 font-mono text-[10px]">
+            <span className="text-teal-300 flex items-center gap-1">
+              <Award className="w-3 h-3 text-amber-400" /> Platform Architect: <strong className="text-white font-sans">Sher Muhammad</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Attractive Medical Navbar */}
+      <div className="bg-slate-950/95 backdrop-blur-2xl border-b border-teal-500/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          {/* Medical Brand Emblem Logo */}
+          <Link href="/" className="flex items-center gap-3.5 group">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-500 via-emerald-400 to-sky-500 flex items-center justify-center text-slate-950 font-extrabold shadow-lg shadow-teal-500/30 group-hover:scale-105 transition-all relative overflow-hidden">
+              <Dna className="w-6 h-6 text-slate-950 stroke-[2.5] animate-pulse" />
+              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-black tracking-tight text-white flex items-center gap-1">
+                  MediFlow <span className="text-teal-400">LIS</span>
+                </span>
+                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-teal-500/20 to-sky-500/20 text-teal-300 border border-teal-500/30 font-bold uppercase tracking-wider">
+                  SaaS Platform
+                </span>
+              </div>
+              <span className="text-[10px] text-teal-400/90 font-mono block -mt-0.5 tracking-wider font-semibold">
+                CLINICAL DIAGNOSTICS & MULTI-TENANT INFRASTRUCTURE
+              </span>
+            </div>
+          </Link>
+
+          {/* Clean Modern Navigation Links */}
+          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-200">
+            <Link
+              href="/patient-search"
+              className="px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-300 hover:text-teal-200 transition-all flex items-center gap-2 shadow-sm"
+            >
+              <Search className="w-4 h-4 text-teal-400" />
+              <span>Patient Search Portal</span>
+            </Link>
+
+            <Link href="/features/patient-portal" className="hover:text-teal-400 transition-colors flex items-center gap-1.5">
+              <HeartPulse className="w-4 h-4 text-sky-400" /> Features
+            </Link>
+
+            <Link href="/pricing" className="hover:text-teal-400 transition-colors">
+              Pricing
+            </Link>
+
+            <Link href="/security" className="hover:text-teal-400 transition-colors flex items-center gap-1.5">
+              <Shield className="w-4 h-4 text-emerald-400" /> Security
+            </Link>
+          </nav>
+
+          {/* Action CTAs */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="text-xs font-bold text-slate-200 hover:text-white flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 hover:border-teal-500/50 bg-slate-900/90 hover:bg-slate-800 transition-all shadow-md"
+            >
+              <Lock className="w-3.5 h-3.5 text-teal-400" /> Staff Login
+            </Link>
+
+            <Link
+              href="/register"
+              className="text-xs font-extrabold text-slate-950 bg-gradient-to-r from-teal-400 via-emerald-400 to-sky-400 hover:from-teal-300 hover:to-sky-300 px-5 py-2.5 rounded-xl shadow-xl shadow-teal-500/25 hover:shadow-teal-500/40 transition-all flex items-center gap-2 group"
+            >
+              <UserPlus className="w-4 h-4 fill-slate-950 group-hover:scale-110 transition-transform" />
+              <span>Register Laboratory</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
