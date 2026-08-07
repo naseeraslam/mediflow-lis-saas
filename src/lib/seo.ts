@@ -13,6 +13,9 @@ export function getBaseUrl(): string {
   if (process.env.DEPLOY_PRIME_URL) {
     return process.env.DEPLOY_PRIME_URL.replace(/\/$/, "");
   }
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3005";
+  }
   return "https://lispk-saas.netlify.app";
 }
 
@@ -27,15 +30,17 @@ export interface SEOProps {
 
 export function generatePageMetadata({ title, description, path, ogType = "website" }: SEOProps) {
   const url = `${BASE_URL}${path}`;
+  const finalTitle = title.includes("MediFlow") ? title : `${title} | MediFlow LIS`;
+
   return {
-    title: `${title} | MediFlow Medical LIS SaaS`,
+    title: finalTitle,
     description,
     metadataBase: new URL(BASE_URL),
     alternates: {
       canonical: url,
     },
     openGraph: {
-      title: `${title} | MediFlow`,
+      title: finalTitle,
       description,
       url,
       siteName: "MediFlow LIS SaaS",
@@ -51,7 +56,7 @@ export function generatePageMetadata({ title, description, path, ogType = "websi
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | MediFlow`,
+      title: finalTitle,
       description,
       images: [`${BASE_URL}/og-image.png`],
     },

@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 
 export const metadata = generatePageMetadata({
-  title: "MediFlow LIS — Multi-Tenant Laboratory Reporting SaaS",
+  title: "MediFlow LIS — Multi-Tenant Laboratory SaaS",
   description:
     "Enterprise Multi-Tenant Laboratory Information System (LIS) with baseline test comparison engine, white-label PDF reports & QR-signed verification.",
   path: "",
