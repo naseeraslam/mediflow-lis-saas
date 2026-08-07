@@ -15,10 +15,8 @@ const ThemeContext = createContext<{
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const saved = localStorage.getItem("mediflow-theme") as Theme | null;
     const initial = saved || "light";
     setTheme(initial);
@@ -62,18 +60,18 @@ export function ThemeToggle() {
     <button
       onClick={toggleTheme}
       type="button"
-      className="p-2 px-3 rounded-xl border transition-all flex items-center gap-2 text-xs font-black shadow-md bg-teal-500/10 hover:bg-teal-500/20 border-teal-500/30 text-teal-800 dark:text-teal-300 cursor-pointer active:scale-95"
-      title="Switch Theme"
+      className="px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-black shadow-md bg-slate-900 text-white border-slate-700 hover:bg-slate-800 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600 dark:hover:bg-slate-700 cursor-pointer active:scale-95 shrink-0"
+      title="Switch Light / Dark Theme"
     >
       {theme === "light" ? (
         <>
-          <Sun className="w-4 h-4 text-amber-500 fill-amber-400" />
-          <span className="hidden sm:inline">Light</span>
+          <Sun className="w-4 h-4 text-amber-400 fill-amber-400" />
+          <span className="hidden sm:inline font-bold">Light</span>
         </>
       ) : (
         <>
           <Moon className="w-4 h-4 text-teal-400 fill-teal-400" />
-          <span className="hidden sm:inline">Dark</span>
+          <span className="hidden sm:inline font-bold">Dark</span>
         </>
       )}
     </button>
