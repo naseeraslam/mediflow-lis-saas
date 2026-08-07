@@ -3,7 +3,20 @@
  * Enterprise Multi-Tenant Medical Reporting SaaS Platform
  */
 
-export const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://mediflow-saas.com";
+export function getBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
+  }
+  if (process.env.URL) {
+    return process.env.URL.replace(/\/$/, "");
+  }
+  if (process.env.DEPLOY_PRIME_URL) {
+    return process.env.DEPLOY_PRIME_URL.replace(/\/$/, "");
+  }
+  return "https://lispk-saas.netlify.app";
+}
+
+export const BASE_URL = getBaseUrl();
 
 export interface SEOProps {
   title: string;

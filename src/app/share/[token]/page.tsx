@@ -84,25 +84,25 @@ export default async function PublicSharedReportPage({
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans p-4 sm:p-8 selection:bg-teal-500 selection:text-slate-950">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* TOP NAVIGATION BAR FOR PATIENTS & DOCTORS */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 no-print bg-white dark:bg-slate-900/90 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
-          <div className="flex items-center gap-3">
+        {/* TOP SPACIALLY DESIGNED NAVIGATION BAR FOR PATIENTS & DOCTORS */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-2 no-print w-full">
+          <div className="flex items-center gap-2.5">
             <Link
               href="/patient-search"
-              className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold flex items-center gap-2 transition-all shadow-sm"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-800 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm whitespace-nowrap"
             >
-              <ArrowLeft className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Back to Patient Search
+              <ArrowLeft className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Back to Search
             </Link>
 
             <Link
               href="/"
-              className="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-800 text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap"
             >
               <Home className="w-3.5 h-3.5" /> Home
             </Link>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2.5 shrink-0">
             <ThemeToggle />
             <PatientAiSummaryModal
               patientName={patient.fullName}
@@ -112,9 +112,9 @@ export default async function PublicSharedReportPage({
             <PrintPdfButton reportNumber={report.reportNumber} />
             <Link
               href={`/verify/${report.verificationToken}`}
-              className="px-4 py-2.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+              className="px-3.5 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm whitespace-nowrap"
             >
-              <ShieldCheck className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Verify Authenticity
+              <ShieldCheck className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Verify
             </Link>
           </div>
         </div>

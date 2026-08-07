@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
+import { getBaseUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://mediflow-saas.com";
+  const baseUrl = getBaseUrl();
 
   const publicRoutes = [
     "",

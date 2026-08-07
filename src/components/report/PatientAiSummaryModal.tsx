@@ -32,10 +32,10 @@ export function PatientAiSummaryModal({
       <button
         onClick={() => setIsOpen(true)}
         type="button"
-        className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-500/10 to-sky-500/10 hover:from-teal-500/20 hover:to-sky-500/20 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-xs font-black flex items-center gap-2 transition-all shadow-sm cursor-pointer"
+        className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-teal-500/10 to-sky-500/10 hover:from-teal-500/20 hover:to-sky-500/20 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
       >
         <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-        <span>AI Diagnostic Report Summary Assistant</span>
+        <span>AI Report Summary</span>
       </button>
 
       {isOpen && (
