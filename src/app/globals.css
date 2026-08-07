@@ -26,70 +26,70 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Light Mode Pristine High-Contrast Overrides */
-html.light .bg-slate-950,
-html.light .bg-slate-900 {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #e2e8f0 !important;
+/* Light Mode High-Contrast Rules ONLY when NOT dark mode */
+html:not(.dark) .bg-slate-950,
+html:not(.dark) .bg-slate-900 {
+  background-color: #ffffff;
+  color: #0f172a;
+  border-color: #cbd5e1;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
 }
 
-html.light .bg-slate-950\/40,
-html.light .bg-slate-950\/80,
-html.light .bg-slate-900\/60,
-html.light .bg-slate-900\/80,
-html.light .bg-slate-900\/90 {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
+html:not(.dark) .bg-slate-950\/40,
+html:not(.dark) .bg-slate-950\/80,
+html:not(.dark) .bg-slate-900\/60,
+html:not(.dark) .bg-slate-900\/80,
+html:not(.dark) .bg-slate-900\/90 {
+  background-color: #f8fafc;
+  color: #0f172a;
+  border-color: #cbd5e1;
 }
 
-html.light .text-slate-100,
-html.light .text-slate-200 {
-  color: #0f172a !important;
+html:not(.dark) .text-slate-100,
+html:not(.dark) .text-slate-200 {
+  color: #0f172a;
 }
 
-html.light .text-slate-300,
-html.light .text-slate-400 {
-  color: #334155 !important;
+html:not(.dark) .text-slate-300,
+html:not(.dark) .text-slate-400 {
+  color: #334155;
 }
 
-html.light .border-slate-800,
-html.light .border-slate-700 {
-  border-color: #cbd5e1 !important;
+html:not(.dark) .border-slate-800,
+html:not(.dark) .border-slate-700 {
+  border-color: #cbd5e1;
 }
 
-html.light .text-teal-400,
-html.light .text-teal-300 {
-  color: #0d9488 !important;
+html:not(.dark) .text-teal-400,
+html:not(.dark) .text-teal-300 {
+  color: #0d9488;
 }
 
-html.light .text-sky-400,
-html.light .text-sky-300 {
-  color: #0284c7 !important;
+html:not(.dark) .text-sky-400,
+html:not(.dark) .text-sky-300 {
+  color: #0284c7;
 }
 
-html.light .text-emerald-400,
-html.light .text-emerald-300 {
-  color: #059669 !important;
+html:not(.dark) .text-emerald-400,
+html:not(.dark) .text-emerald-300 {
+  color: #059669;
 }
 
-html.light table th {
-  background-color: #f1f5f9 !important;
-  color: #334155 !important;
+html:not(.dark) table th {
+  background-color: #f1f5f9;
+  color: #334155;
 }
 
-html.light table td {
-  color: #0f172a !important;
-  border-color: #f1f5f9 !important;
+html:not(.dark) table td {
+  color: #0f172a;
+  border-color: #f1f5f9;
 }
 
-html.light table tr:hover {
-  background-color: #f8fafc !important;
+html:not(.dark) table tr:hover {
+  background-color: #f8fafc;
 }
 
 /* Floating Laboratory Animation Utilities */

@@ -20,14 +20,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("mediflow-theme") as Theme | null;
-    if (saved) {
-      setTheme(saved);
-      document.documentElement.classList.toggle("dark", saved === "dark");
-      document.documentElement.classList.toggle("light", saved === "light");
+    const initial = saved || "light";
+    setTheme(initial);
+
+    const root = document.documentElement;
+    if (initial === "dark") {
+      root.classList.add("dark");
+      root.classList.remove("light");
     } else {
-      setTheme("light");
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
+      root.classList.add("light");
+      root.classList.remove("dark");
     }
   }, []);
 
@@ -35,12 +37,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
     localStorage.setItem("mediflow-theme", next);
+
+    const root = document.documentElement;
     if (next === "dark") {
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
+      root.classList.add("dark");
+      root.classList.remove("light");
     } else {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
+      root.classList.add("light");
+      root.classList.remove("dark");
     }
   }
 
@@ -58,18 +62,18 @@ export function ThemeToggle() {
     <button
       onClick={toggleTheme}
       type="button"
-      className="p-2 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-bold shadow-sm bg-teal-500/10 border-teal-500/30 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20"
-      title="Toggle Light / Dark Clinical Theme"
+      className="p-2 px-3 rounded-xl border transition-all flex items-center gap-2 text-xs font-black shadow-md bg-teal-500/10 hover:bg-teal-500/20 border-teal-500/30 text-teal-800 dark:text-teal-300 cursor-pointer active:scale-95"
+      title="Switch Theme"
     >
       {theme === "light" ? (
         <>
           <Sun className="w-4 h-4 text-amber-500 fill-amber-400" />
-          <span className="hidden sm:inline">Light Mode</span>
+          <span className="hidden sm:inline">Light</span>
         </>
       ) : (
         <>
           <Moon className="w-4 h-4 text-teal-400 fill-teal-400" />
-          <span className="hidden sm:inline">Dark Mode</span>
+          <span className="hidden sm:inline">Dark</span>
         </>
       )}
     </button>
