@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 
-// In-memory fallback for 2FA OTP codes
+// Secure in-memory store for 2FA OTP codes
 const memoryOtpStore = new Map<string, { code: string; expiresAt: number }>();
 
 export async function POST(req: Request) {
@@ -16,11 +16,11 @@ export async function POST(req: Request) {
     const cleanEmail = email.trim().toLowerCase();
 
     if (action === "send" || !action) {
-      // Generate 6-Digit OTP Code
+      // Generate Secure 6-Digit OTP Code
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = Date.now() + 10 * 60 * 1000; // 10 Minutes
 
-      // Save in-memory fallback
+      // Save in-memory store
       memoryOtpStore.set(cleanEmail, { code, expiresAt });
 
       // Safely attempt Database save without crashing if SQLite is read-only on serverless Netlify
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
           });
         }
       } catch (dbErr) {
-        console.warn("2FA Database Save Warning (Serverless fallback active):", dbErr);
+        console.warn("2FA Database Save Warning (Serverless memory store active):", dbErr);
       }
 
       // World-Class Production HTML Email Template for Resend API
@@ -105,9 +105,6 @@ export async function POST(req: Request) {
               <p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.5;">
                 © ${new Date().getFullYear()} MediFlow Medical LIS SaaS. Architectural Vision by <strong>Sher Muhammad</strong>.
               </p>
-              <p style="margin: 4px 0 0 0; color: #475569; font-size: 10px;">
-                Strict Row-Level Multi-Tenant Data Isolation Active
-              </p>
             </td>
           </tr>
 
@@ -119,7 +116,7 @@ export async function POST(req: Request) {
 </html>
       `;
 
-      // Send Email via Dispatcher
+      // Send Email via Resend API / SMTP Dispatcher
       await sendEmail({
         to: cleanEmail,
         subject: `🔐 MediFlow 2FA Verification Passcode: ${code}`,
@@ -127,10 +124,10 @@ export async function POST(req: Request) {
         html: htmlTemplate,
       }).catch((emailErr) => console.warn("Send Email Warning:", emailErr));
 
+      // SECURE RESPONSE: OTP CODE IS NEVER EXPOSED IN HTTP RESPONSE
       return NextResponse.json({
         success: true,
-        message: `2FA Verification Code sent to ${cleanEmail}.`,
-        otpCode: code,
+        message: `2FA Verification Code sent to ${cleanEmail}. Please check your inbox.`,
       });
     }
 
@@ -141,14 +138,14 @@ export async function POST(req: Request) {
 
       const inputCode = otpCode.trim();
 
-      // Check In-Memory Store
+      // 1. Strict Verification against In-Memory Store
       const memToken = memoryOtpStore.get(cleanEmail);
       if (memToken && memToken.code === inputCode && memToken.expiresAt > Date.now()) {
         memoryOtpStore.delete(cleanEmail);
         return NextResponse.json({ success: true, verified: true });
       }
 
-      // Check Database Store safely
+      // 2. Strict Verification against Database Store
       try {
         if ((db as any).twoFactorToken) {
           const tokenRecord = await (db as any).twoFactorToken.findFirst({
@@ -176,13 +173,8 @@ export async function POST(req: Request) {
         console.warn("2FA Database Verify Warning:", dbVerifyErr);
       }
 
-      // Fallback for valid 6-digit codes
-      if (inputCode.length === 6) {
-        return NextResponse.json({ success: true, verified: true });
-      }
-
       return NextResponse.json(
-        { error: "Invalid or expired 2FA Verification Passcode. Please try again." },
+        { error: "Invalid or expired 2FA Verification Passcode. Please check your email and try again." },
         { status: 401 }
       );
     }
@@ -190,12 +182,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid 2FA action." }, { status: 400 });
   } catch (error: any) {
     console.error("2FA Error:", error);
-    // Return fallback code generation instead of crashing
-    const fallbackCode = Math.floor(100000 + Math.random() * 900000).toString();
-    return NextResponse.json({
-      success: true,
-      message: "2FA Code generated.",
-      otpCode: fallbackCode,
-    });
+    return NextResponse.json(
+      { error: "Failed to process 2FA authentication request." },
+      { status: 500 }
+    );
   }
 }
