@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Clinical safety violation: Reports belong to different patients." }, { status: 400 });
     }
 
-    const currentPrepared = currentReport.results.map((r) => ({
+    const currentPrepared = currentReport.results.map((r: any) => ({
       testCode: r.test.code,
       testName: r.testNameSnapshot,
       category: r.test.category,
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       flag: r.flag,
     }));
 
-    const previousPrepared = previousReport.results.map((r) => ({
+    const previousPrepared = previousReport.results.map((r: any) => ({
       testCode: r.test.code,
       testName: r.testNameSnapshot,
       category: r.test.category,

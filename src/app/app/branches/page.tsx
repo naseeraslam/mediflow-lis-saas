@@ -15,7 +15,7 @@ export default async function BranchesPage() {
     orderBy: { isMain: "desc" },
   });
 
-  const formattedBranches = branches.map((b) => ({
+  const formattedBranches = branches.map((b: any) => ({
     id: b.id,
     name: b.name,
     code: b.code,

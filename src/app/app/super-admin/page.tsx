@@ -62,8 +62,8 @@ export default async function SuperAdminPortalPage() {
         </h2>
 
         <div className="grid grid-cols-1 gap-4">
-          {pendingOrgs.map((org) => {
-            const owner = org.users.find((u) => u.role === "OrgOwner") || org.users[0];
+          {pendingOrgs.map((org: any) => {
+            const owner = org.users.find((u: any) => u.role === "OrgOwner") || org.users[0];
 
             return (
               <div key={org.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">

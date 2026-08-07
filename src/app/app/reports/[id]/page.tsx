@@ -216,7 +216,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 font-mono">
-                {results.map((res) => (
+                {results.map((res: any) => (
                   <tr key={res.id} className="hover:bg-slate-800/30 transition-colors">
                     <td className="py-3.5 px-4 font-sans font-semibold text-slate-200">{res.testNameSnapshot}</td>
                     <td className="py-3.5 px-4 font-bold text-slate-100 text-sm">

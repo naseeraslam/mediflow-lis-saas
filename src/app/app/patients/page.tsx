@@ -13,7 +13,7 @@ export default async function PatientsPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const formattedPatients = patients.map((p) => ({
+  const formattedPatients = patients.map((p: any) => ({
     id: p.id,
     mrn: p.mrn,
     fullName: p.fullName,

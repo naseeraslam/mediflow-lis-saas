@@ -26,19 +26,19 @@ export default async function ComparisonPage({
   });
 
   const selectedPatient = patientId
-    ? patients.find((p) => p.id === patientId)
+    ? patients.find((p: any) => p.id === patientId)
     : patients[0];
 
   const patientReports = selectedPatient?.reports || [];
   const currentReport = currentReportId
-    ? patientReports.find((r) => r.id === currentReportId) || patientReports[0]
+    ? patientReports.find((r: any) => r.id === currentReportId) || patientReports[0]
     : patientReports[0];
 
-  const previousReport = patientReports.find((r) => r.id !== currentReport?.id) || patientReports[1];
+  const previousReport = patientReports.find((r: any) => r.id !== currentReport?.id) || patientReports[1];
 
   let comparisonResults: any[] = [];
-  let currentReportData = null;
-  let previousReportData = null;
+  let currentReportData: any = null;
+  let previousReportData: any = null;
 
   if (currentReport && previousReport) {
     [currentReportData, previousReportData] = await Promise.all([
@@ -53,7 +53,7 @@ export default async function ComparisonPage({
     ]);
 
     if (currentReportData && previousReportData) {
-      const currentPrepared = currentReportData.results.map((r) => ({
+      const currentPrepared = currentReportData.results.map((r: any) => ({
         testCode: r.test.code,
         testName: r.testNameSnapshot,
         category: r.test.category,
@@ -64,7 +64,7 @@ export default async function ComparisonPage({
         flag: r.flag,
       }));
 
-      const previousPrepared = previousReportData.results.map((r) => ({
+      const previousPrepared = previousReportData.results.map((r: any) => ({
         testCode: r.test.code,
         testName: r.testNameSnapshot,
         category: r.test.category,
@@ -158,7 +158,7 @@ export default async function ComparisonPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 font-mono">
-                {comparisonResults.map((row, idx) => (
+                {comparisonResults.map((row: any, idx: number) => (
                   <tr key={idx} className="hover:bg-slate-800/40 transition-colors">
                     <td className="py-4 px-5 font-sans font-semibold text-slate-200">{row.testName}</td>
                     <td className="py-4 px-5 text-slate-400 font-sans">{row.category}</td>

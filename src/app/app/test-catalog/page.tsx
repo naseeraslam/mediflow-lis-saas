@@ -16,12 +16,12 @@ export default async function TestCatalogPage() {
 
   const categoryNames = Array.from(
     new Set([
-      ...categoriesFromDb.map((c) => c.name),
-      ...tests.map((t) => t.category),
+      ...categoriesFromDb.map((c: any) => c.name),
+      ...tests.map((t: any) => t.category),
     ])
   ).sort();
 
-  const formattedTests = tests.map((t) => ({
+  const formattedTests = tests.map((t: any) => ({
     id: t.id,
     code: t.code,
     name: t.name,

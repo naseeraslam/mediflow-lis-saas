@@ -89,7 +89,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       count: reports.length,
-      reports: reports.map((r) => ({
+      reports: reports.map((r: any) => ({
         id: r.id,
         reportNumber: r.reportNumber,
         status: r.status,

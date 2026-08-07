@@ -7,7 +7,7 @@ export default async function NewTemplatePage() {
   });
 
   const categoryNames = categoriesFromDb.length > 0
-    ? categoriesFromDb.map((c) => c.name)
+    ? categoriesFromDb.map((c: any) => c.name)
     : [
         "Urology & Andrology Genetics",
         "Clinical Chemistry",

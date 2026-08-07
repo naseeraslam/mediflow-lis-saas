@@ -48,7 +48,7 @@ export default async function AuditLogPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 font-mono">
-              {auditLogs.map((log) => (
+              {auditLogs.map((log: any) => (
                 <tr key={log.id} className="hover:bg-slate-800/40 transition-colors">
                   <td className="py-3.5 px-5 text-slate-400 font-sans">
                     {new Date(log.timestamp).toLocaleString("en-US")}

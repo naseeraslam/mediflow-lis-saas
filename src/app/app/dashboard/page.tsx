@@ -141,7 +141,7 @@ export default async function DashboardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 font-mono">
-              {recentReports.map((report) => (
+              {recentReports.map((report: any) => (
                 <tr key={report.id} className="hover:bg-slate-800/40 transition-colors">
                   <td className="py-3.5 px-5 font-bold text-teal-300">{report.reportNumber}</td>
                   <td className="py-3.5 px-5 font-sans font-semibold text-slate-200">{report.patient.fullName}</td>
