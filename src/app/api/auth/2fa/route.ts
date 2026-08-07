@@ -39,71 +39,111 @@ export async function POST(req: Request) {
         console.warn("2FA Database Save Warning (Serverless memory store active):", dbErr);
       }
 
-      // World-Class Production HTML Email Template for Resend API
+      // Individual Digit Keypads HTML
+      const digitsHtml = code
+        .split("")
+        .map(
+          (d) => `
+            <td align="center" style="padding: 0 4px;">
+              <div style="background-color: #020617; border: 2px solid #0d9488; border-radius: 12px; width: 44px; height: 56px; line-height: 54px; font-family: 'Courier New', Courier, monospace; font-size: 28px; font-weight: 900; color: #2dd4bf; text-shadow: 0 0 12px rgba(45, 212, 191, 0.6); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);">
+                ${d}
+              </div>
+            </td>`
+        )
+        .join("");
+
+      // AWESOME LEVEL PRODUCTION HTML EMAIL TEMPLATE
       const htmlTemplate = `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediFlow 2FA Verification Code</title>
+  <title>MediFlow 2FA Verification Passcode</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #020617; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f8fafc;">
   <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="min-height: 100vh; background-color: #020617; padding: 40px 15px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 520px; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+        <!-- Main Card Container -->
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 540px; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 60px -15px rgba(13, 148, 136, 0.25);">
           
-          <!-- Header Banner -->
+          <!-- Top Clinical ISO Ribbon Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%); padding: 32px 30px; text-align: center;">
+            <td style="background: linear-gradient(135deg, #0f766e 0%, #0284c7 100%); padding: 36px 30px; text-align: center;">
               <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td align="center">
-                    <div style="display: inline-block; width: 48px; height: 48px; background-color: #ffffff; border-radius: 12px; line-height: 48px; font-weight: bold; font-size: 24px; color: #0f172a;">
+                    <!-- Glowing DNA Emblem Logo -->
+                    <div style="display: inline-block; width: 56px; height: 56px; background-color: #ffffff; border-radius: 16px; line-height: 56px; font-weight: 900; font-size: 28px; color: #0f172a; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);">
                       🧬
                     </div>
-                    <h1 style="margin: 12px 0 0 0; color: #ffffff; font-size: 24px; font-weight: 800;">MediFlow LIS SaaS</h1>
-                    <p style="margin: 4px 0 0 0; color: #ccfbf1; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">ISO 15189 Medical Infrastructure</p>
+                    <h1 style="margin: 14px 0 0 0; color: #ffffff; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">MediFlow LIS SaaS</h1>
+                    <div style="margin-top: 8px;">
+                      <span style="display: inline-block; background-color: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: #ffffff; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 20px;">
+                        🔬 ISO 15189 ACCREDITED MEDICAL INFRASTRUCTURE
+                      </span>
+                    </div>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Body Content -->
+          <!-- Main Body Content -->
           <tr>
-            <td style="padding: 36px 32px; background-color: #0f172a;">
-              <h2 style="margin: 0 0 12px 0; color: #f8fafc; font-size: 18px; font-weight: 700;">🔐 Two-Factor Security Authentication</h2>
-              <p style="margin: 0 0 24px 0; color: #94a3b8; font-size: 14px; line-height: 1.6;">
-                A sign-in attempt was detected for your account <strong style="color: #cbd5e1;">${cleanEmail}</strong>. Use the One-Time Security Passcode (OTP) below to complete authentication:
-              </p>
+            <td style="padding: 38px 34px; background-color: #0f172a;">
+              <div style="text-align: center; margin-bottom: 24px;">
+                <span style="display: inline-block; width: 44px; height: 44px; background-color: rgba(45, 212, 191, 0.1); border: 1px solid rgba(45, 212, 191, 0.3); border-radius: 50%; line-height: 44px; font-size: 20px;">
+                  🔐
+                </span>
+                <h2 style="margin: 12px 0 6px 0; color: #f8fafc; font-size: 20px; font-weight: 800;">Two-Factor Security Authentication</h2>
+                <p style="margin: 0; color: #94a3b8; font-size: 13px; font-weight: 500;">
+                  A sign-in request was initiated for <strong style="color: #2dd4bf;">${cleanEmail}</strong>
+                </p>
+              </div>
 
-              <!-- 6-Digit Passcode Box -->
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 24px 0;">
+              <!-- 6-Digit Individual Keypads Display -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 28px 0 24px 0;">
                 <tr>
-                  <td align="center" style="background-color: #020617; border: 1px solid #0d9488; border-radius: 14px; padding: 24px;">
-                    <span style="font-family: 'Courier New', Courier, monospace; font-size: 38px; font-weight: 900; color: #2dd4bf; letter-spacing: 8px; display: block; text-shadow: 0 0 20px rgba(45, 212, 191, 0.4);">
-                      ${code}
-                    </span>
-                    <span style="display: block; margin-top: 10px; color: #64748b; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                      ⏱️ Valid for 10 Minutes Only
-                    </span>
+                  <td align="center">
+                    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        ${digitsHtml}
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>
 
-              <p style="margin: 24px 0 0 0; color: #94a3b8; font-size: 13px; line-height: 1.5;">
-                If you did not initiate this authentication request, please ignore this email or notify your laboratory administrator immediately.
+              <!-- Expiration & Security Banner -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #020617; border: 1px solid #1e293b; border-radius: 14px; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 16px; text-align: center;">
+                    <div style="color: #fbbf24; font-size: 12px; font-weight: 700;">
+                      ⏱️ Passcode Expires in 10 Minutes
+                    </div>
+                    <div style="color: #64748b; font-size: 11px; margin-top: 4px; font-weight: 500;">
+                      Never share this code with anyone, including lab administrators.
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 0; color: #64748b; font-size: 12px; line-height: 1.6; text-align: center;">
+                If you did not request this 2FA passcode, no action is required. Your account remains protected by row-level tenant isolation encryption.
               </p>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="background-color: #020617; padding: 20px 30px; border-top: 1px solid #1e293b; text-align: center;">
-              <p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.5;">
-                © ${new Date().getFullYear()} MediFlow Medical LIS SaaS. Architectural Vision by <strong>Sher Muhammad</strong>.
+            <td style="background-color: #020617; padding: 22px 30px; border-top: 1px solid #1e293b; text-align: center;">
+              <p style="margin: 0; color: #64748b; font-size: 11px; font-weight: 500;">
+                © ${new Date().getFullYear()} MediFlow Medical Laboratory SaaS Platform.
+              </p>
+              <p style="margin: 4px 0 0 0; color: #2dd4bf; font-size: 10px; font-weight: 700; font-family: monospace;">
+                Architected by Sher Muhammad • CLIA & ISO 15189 Compliant
               </p>
             </td>
           </tr>
