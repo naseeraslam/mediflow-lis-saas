@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Quote, HeartPulse, Sparkles } from "lucide-react";
+import { Quote, HeartPulse } from "lucide-react";
 
 const HEALTH_QUOTES = [
   {
@@ -55,13 +55,13 @@ export function DynamicHealthQuotes() {
   const quote = HEALTH_QUOTES[currentIndex];
 
   return (
-    <div className="bg-gradient-to-r from-teal-950/60 via-slate-900 to-sky-950/60 border border-teal-500/30 rounded-3xl p-8 space-y-4 shadow-2xl relative overflow-hidden">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div className="flex items-center gap-2 text-xs font-bold text-teal-400 uppercase tracking-wider">
-          <HeartPulse className="w-4 h-4 text-teal-400 animate-pulse" />
+    <div className="bg-white dark:bg-slate-900 border-2 border-teal-500/40 rounded-3xl p-6 sm:p-8 space-y-4 shadow-2xl relative overflow-hidden text-slate-900 dark:text-slate-100">
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div className="flex items-center gap-2 text-xs font-black text-teal-700 dark:text-teal-400 uppercase tracking-wider">
+          <HeartPulse className="w-4 h-4 text-teal-600 dark:text-teal-400 animate-pulse" />
           <span>Clinical Health & Diagnostic Wisdom</span>
         </div>
-        <span className="text-[10px] text-slate-400 font-mono">AUTOPLAY (6s CYCLE)</span>
+        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-bold">AUTOPLAY (6s CYCLE)</span>
       </div>
 
       <div
@@ -70,22 +70,23 @@ export function DynamicHealthQuotes() {
         }`}
       >
         <div className="relative">
-          <Quote className="w-8 h-8 text-teal-500/20 absolute -top-3 -left-3" />
-          <p className="text-slate-100 text-lg sm:text-xl font-serif italic leading-relaxed pl-6">
+          <Quote className="w-8 h-8 text-teal-500/20 dark:text-teal-400/20 absolute -top-3 -left-3" />
+          <p className="text-slate-900 dark:text-slate-100 text-base sm:text-xl font-bold font-serif italic leading-relaxed pl-6">
             "{quote.text}"
           </p>
         </div>
 
-        <div className="flex items-center justify-between text-xs pt-2">
+        <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100 dark:border-slate-800">
           <div>
-            <span className="font-extrabold text-teal-300">{quote.author}</span>
-            <span className="text-slate-400 text-[11px] block">{quote.title}</span>
+            <span className="font-extrabold text-teal-800 dark:text-teal-300 text-sm">{quote.author}</span>
+            <span className="text-slate-600 dark:text-slate-400 text-[11px] block font-medium">{quote.title}</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             {HEALTH_QUOTES.map((_, idx) => (
               <button
                 key={idx}
+                type="button"
                 onClick={() => {
                   setFade(false);
                   setTimeout(() => {
@@ -93,9 +94,10 @@ export function DynamicHealthQuotes() {
                     setFade(true);
                   }, 150);
                 }}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${
-                  idx === currentIndex ? "bg-teal-400 w-6" : "bg-slate-700 hover:bg-slate-500"
+                className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                  idx === currentIndex ? "bg-teal-600 dark:bg-teal-400 w-6" : "bg-slate-300 dark:bg-slate-700 hover:bg-slate-400"
                 }`}
+                aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
           </div>
