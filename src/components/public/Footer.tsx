@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ShieldCheck, Lock, Award, Dna, Sparkles, Microscope, FlaskConical, Search, CheckCircle2, ArrowRight } from "lucide-react";
+import { ShieldCheck, Lock, Award, Dna, Sparkles, Microscope, FlaskConical, Search, ArrowRight } from "lucide-react";
 
 export function PublicFooter() {
   return (
-    <footer className="bg-[#020617] border-t border-slate-800 text-slate-300 text-xs relative overflow-hidden">
+    <footer className="bg-slate-100 dark:bg-slate-950 border-t border-slate-300 dark:border-slate-800/80 text-slate-700 dark:text-slate-300 text-xs relative overflow-hidden transition-colors">
       {/* Ambient Glowing Background Lights */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[300px] bg-gradient-to-tr from-teal-500/15 via-emerald-500/10 to-sky-500/15 blur-[130px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[600px] h-[300px] bg-gradient-to-tr from-teal-500/10 via-emerald-500/10 to-sky-500/10 blur-[130px] rounded-full pointer-events-none" />
 
       {/* Main Footer Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10 space-y-12">
@@ -18,66 +18,66 @@ export function PublicFooter() {
                 <Dna className="w-6 h-6 text-slate-950 stroke-[2.5]" />
               </div>
               <div>
-                <span className="text-2xl font-black text-white tracking-tight flex items-center gap-1.5">
-                  MediFlow <span className="text-teal-400 font-black">LIS</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/40 font-extrabold uppercase tracking-wider">
+                <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5">
+                  MediFlow <span className="text-teal-600 dark:text-teal-400 font-black">LIS</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/30 font-extrabold uppercase tracking-wider">
                     SaaS
                   </span>
                 </span>
-                <span className="text-[10px] text-teal-400 font-mono block -mt-0.5 tracking-wider font-bold">
+                <span className="text-[10px] text-teal-700 dark:text-teal-400 font-mono block -mt-0.5 tracking-wider font-bold">
                   CLINICAL DIAGNOSTICS & MULTI-TENANT INFRASTRUCTURE
                 </span>
               </div>
             </Link>
 
-            <p className="text-slate-300 leading-relaxed text-xs max-w-md font-medium">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-xs max-w-md font-medium">
               Enterprise-grade Multi-Tenant Laboratory Information System (LIS), version-controlled clinical reporting, automated analyte baseline trend comparison, and cryptographic QR verification.
             </p>
 
-            {/* Platform Architect Glassmorphism Card (Explicit Dark Slate #0f172a) */}
-            <div className="p-4 rounded-2xl bg-[#0f172a] border border-teal-500/40 space-y-2 backdrop-blur-xl shadow-2xl">
+            {/* Platform Architect Glassmorphism Card */}
+            <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-teal-500/30 space-y-2 backdrop-blur-xl shadow-xl">
               <div className="flex items-center justify-between">
-                <span className="text-teal-300 font-bold text-xs flex items-center gap-1.5">
-                  <Award className="w-4 h-4 text-amber-400" /> Platform Architect & Visionary
+                <span className="text-teal-700 dark:text-teal-300 font-bold text-xs flex items-center gap-1.5">
+                  <Award className="w-4 h-4 text-amber-500" /> Platform Architect & Visionary
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-200 font-mono text-[9px] font-bold border border-teal-400/40">
+                <span className="px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-200 font-mono text-[9px] font-bold border border-teal-500/30">
                   ISO 15189 LEAD
                 </span>
               </div>
-              <p className="text-slate-200 text-xs font-semibold">
-                Designed & Spearheaded by <strong className="text-white font-extrabold underline decoration-teal-400 decoration-2">Sher Muhammad</strong>
+              <p className="text-slate-800 dark:text-slate-200 text-xs font-semibold">
+                Designed & Spearheaded by <strong className="text-slate-950 dark:text-white font-extrabold underline decoration-teal-500 decoration-2">Sher Muhammad</strong>
               </p>
-              <div className="flex items-center gap-3 text-[10px] text-slate-300 pt-1 font-mono">
-                <span className="flex items-center gap-1 text-teal-300"><ShieldCheck className="w-3.5 h-3.5 text-teal-400" /> ISO 15189 Certified</span>
+              <div className="flex items-center gap-3 text-[10px] text-slate-600 dark:text-slate-400 pt-1 font-mono">
+                <span className="flex items-center gap-1 text-teal-700 dark:text-teal-300"><ShieldCheck className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" /> ISO 15189 Certified</span>
                 <span>•</span>
-                <span className="flex items-center gap-1 text-sky-300"><Lock className="w-3.5 h-3.5 text-sky-400" /> Row-Level DB Isolated</span>
+                <span className="flex items-center gap-1 text-sky-700 dark:text-sky-300"><Lock className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" /> Row-Level DB Isolated</span>
               </div>
             </div>
           </div>
 
           {/* Column 1: Solutions */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
-              <Microscope className="w-4 h-4 text-teal-400" /> Solutions
+            <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <Microscope className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Solutions
             </h4>
-            <ul className="space-y-2 font-medium text-slate-300">
+            <ul className="space-y-2 font-medium text-slate-600 dark:text-slate-300">
               <li>
-                <Link href="/solutions/diagnostic-laboratories" className="hover:text-teal-400 transition-colors">
+                <Link href="/solutions/diagnostic-laboratories" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Diagnostic Laboratories
                 </Link>
               </li>
               <li>
-                <Link href="/solutions/hospitals" className="hover:text-teal-400 transition-colors">
+                <Link href="/solutions/hospitals" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Pathology Hospitals
                 </Link>
               </li>
               <li>
-                <Link href="/solutions/clinics" className="hover:text-teal-400 transition-colors">
+                <Link href="/solutions/clinics" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Polyclinics & Centers
                 </Link>
               </li>
               <li>
-                <Link href="/features/pdf-reports" className="hover:text-teal-400 transition-colors">
+                <Link href="/features/pdf-reports" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   White-Label PDF Reports
                 </Link>
               </li>
@@ -86,27 +86,27 @@ export function PublicFooter() {
 
           {/* Column 2: Platform Features */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
-              <FlaskConical className="w-4 h-4 text-sky-400" /> Features
+            <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <FlaskConical className="w-4 h-4 text-sky-600 dark:text-sky-400" /> Features
             </h4>
-            <ul className="space-y-2 font-medium text-slate-300">
+            <ul className="space-y-2 font-medium text-slate-600 dark:text-slate-300">
               <li>
-                <Link href="/patient-search" className="text-teal-400 font-bold hover:text-teal-300 transition-colors flex items-center gap-1">
+                <Link href="/patient-search" className="text-teal-700 dark:text-teal-400 font-bold hover:text-teal-600 dark:hover:text-teal-300 transition-colors flex items-center gap-1">
                   <Search className="w-3.5 h-3.5" /> Patient Search Portal
                 </Link>
               </li>
               <li>
-                <Link href="/features/report-comparison" className="hover:text-teal-400 transition-colors">
+                <Link href="/features/report-comparison" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Baseline Comparison Engine
                 </Link>
               </li>
               <li>
-                <Link href="/features/patient-portal" className="hover:text-teal-400 transition-colors">
+                <Link href="/features/patient-portal" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Patient Self-Service Portal
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="hover:text-teal-400 transition-colors">
+                <Link href="/pricing" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Subscription Pricing
                 </Link>
               </li>
@@ -115,27 +115,27 @@ export function PublicFooter() {
 
           {/* Column 3: Security & Portals */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Compliance
+            <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Compliance
             </h4>
-            <ul className="space-y-2 font-medium text-slate-300">
+            <ul className="space-y-2 font-medium text-slate-600 dark:text-slate-300">
               <li>
-                <Link href="/security" className="hover:text-teal-400 transition-colors">
+                <Link href="/security" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Security & ISO Standards
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="hover:text-teal-400 transition-colors">
+                <Link href="/login" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Staff Login Portal
                 </Link>
               </li>
               <li>
-                <Link href="/register" className="text-teal-400 font-bold hover:text-teal-300 transition-colors flex items-center gap-1">
+                <Link href="/register" className="text-teal-700 dark:text-teal-400 font-bold hover:text-teal-600 dark:hover:text-teal-300 transition-colors flex items-center gap-1">
                   <Sparkles className="w-3.5 h-3.5" /> Register New Lab
                 </Link>
               </li>
               <li>
-                <Link href="/app/super-admin" className="hover:text-teal-400 transition-colors text-slate-200">
+                <Link href="/app/super-admin" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   Super Admin Governance
                 </Link>
               </li>
@@ -144,14 +144,14 @@ export function PublicFooter() {
         </div>
 
         {/* Live System Operational Status & Patient Quick Portal */}
-        <div className="p-4 rounded-2xl bg-[#0f172a] border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3 text-xs font-mono">
             <span className="flex h-3 w-3 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
             </span>
-            <span className="text-slate-100 font-bold">100% OPERATIONAL:</span>
-            <span className="text-teal-400 font-semibold">All 48 LIS Endpoints Active & Healthy</span>
+            <span className="text-slate-900 dark:text-slate-100 font-bold">100% OPERATIONAL:</span>
+            <span className="text-teal-700 dark:text-teal-400 font-semibold">All 48 LIS Endpoints Active & Healthy</span>
           </div>
 
           <Link
@@ -165,12 +165,12 @@ export function PublicFooter() {
         </div>
 
         {/* Bottom Rights & Copyright */}
-        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
-          <p>© {new Date().getFullYear()} MediFlow Medical LIS SaaS Platform. Architectural Vision by <strong className="text-white font-bold">Sher Muhammad</strong>.</p>
+        <div className="pt-8 border-t border-slate-200 dark:border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500 dark:text-slate-400">
+          <p>© {new Date().getFullYear()} MediFlow Medical LIS SaaS Platform. Architectural Vision by <strong className="text-slate-900 dark:text-slate-200 font-bold">Sher Muhammad</strong>.</p>
           <div className="flex items-center gap-4 font-mono">
-            <span className="text-teal-400 font-bold">ISO 15189 ACCREDITED</span>
+            <span className="text-teal-700 dark:text-teal-400 font-bold">ISO 15189 ACCREDITED</span>
             <span>•</span>
-            <span className="text-slate-300">CLIA COMPLIANT</span>
+            <span className="text-slate-700 dark:text-slate-300">CLIA COMPLIANT</span>
           </div>
         </div>
       </div>
