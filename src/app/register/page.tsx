@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PublicNavbar } from "@/components/public/Navbar";
 import { PublicFooter } from "@/components/public/Footer";
-import { Building2, ShieldCheck, Sparkles, User, Mail, Lock, Phone, Palette, ArrowRight, KeyRound, ShieldAlert } from "lucide-react";
+import { Building2, ShieldCheck, Sparkles, User, Mail, Lock, Phone, Palette, ArrowRight, KeyRound, ShieldAlert, Rocket, CheckCircle2 } from "lucide-react";
 
 export default function RegisterLabPage() {
   const router = useRouter();
@@ -31,6 +31,28 @@ export default function RegisterLabPage() {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  // 1-Click Instant Demo Login (Bypasses manual registration for instant client preview)
+  async function handleInstantDemoLogin() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "admin@apex.com", password: "password123" }),
+      });
+      if (res.ok) {
+        router.push("/app/dashboard");
+      } else {
+        setError("Demo login error. Redirecting to login page...");
+        router.push("/login");
+      }
+    } catch (err) {
+      router.push("/login");
+    } finally {
+      setLoading(false);
+    }
   }
 
   // Step 1: Submit Details & Request 2FA OTP
@@ -109,7 +131,7 @@ export default function RegisterLabPage() {
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
       <PublicNavbar />
 
-      <main className="max-w-4xl mx-auto px-4 py-16 space-y-12">
+      <main className="max-w-4xl mx-auto px-4 py-12 space-y-8">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5 text-teal-400" /> Lab Owner Self-Service Onboarding
@@ -117,13 +139,39 @@ export default function RegisterLabPage() {
           <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight">
             Register Your Diagnostic Laboratory
           </h1>
-          <p className="text-slate-400 text-sm max-w-xl mx-auto">
+          <p className="text-slate-400 text-sm max-w-xl mx-auto font-medium">
             Initialize your multi-tenant laboratory workspace with custom branding, 2FA security, and report engines
           </p>
+
+          {/* 1-Click Instant Demo Login Bar */}
+          <div className="pt-2">
+            <button
+              onClick={handleInstantDemoLogin}
+              type="button"
+              disabled={loading}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-black flex items-center justify-center gap-2 mx-auto shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
+            >
+              <Rocket className="w-4 h-4 fill-slate-950" />
+              <span>Instant Demo Laboratory Access (Skip Registration)</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 3-Step Visual Registration Stepper */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center max-w-2xl mx-auto text-xs font-bold font-mono">
+          <div className={`p-3 rounded-xl border transition-all ${step === "form" ? "bg-teal-500/20 border-teal-400 text-teal-300 shadow-md" : "bg-slate-900 border-slate-800 text-slate-500"}`}>
+            <span>1. Lab Details</span>
+          </div>
+          <div className={`p-3 rounded-xl border transition-all ${step === "2fa" ? "bg-teal-500/20 border-teal-400 text-teal-300 shadow-md" : "bg-slate-900 border-slate-800 text-slate-500"}`}>
+            <span>2. 2FA Verification</span>
+          </div>
+          <div className="p-3 rounded-xl border bg-slate-900 border-slate-800 text-slate-500">
+            <span>3. Workspace Ready</span>
+          </div>
         </div>
 
         {step === "form" ? (
-          <form onSubmit={handleInitialSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-8 shadow-2xl">
+          <form onSubmit={handleInitialSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-8 shadow-2xl">
             {error && (
               <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs font-semibold text-center">
                 ⚠️ {error}
@@ -305,7 +353,7 @@ export default function RegisterLabPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="py-4 px-8 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-sm shadow-xl shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center justify-center gap-2"
+                className="py-4 px-8 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-sm shadow-xl shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <ShieldCheck className="w-5 h-5" />
                 {loading ? "Sending 2FA OTP Code..." : "Register & Continue to 2FA Verification"}
@@ -322,19 +370,6 @@ export default function RegisterLabPage() {
               <p className="text-slate-400 text-[11px]">
                 A 6-digit passcode has been sent to your email <strong className="text-slate-200">{formData.adminEmail}</strong>.
               </p>
-
-              {demoOtp && (
-                <div className="pt-2 text-slate-300 font-mono text-[11px] flex items-center justify-between border-t border-teal-500/20 mt-2">
-                  <span>Generated Demo 2FA OTP:</span>
-                  <button
-                    type="button"
-                    onClick={() => setOtpCode(demoOtp)}
-                    className="px-2 py-0.5 rounded bg-teal-400 text-slate-950 font-bold hover:bg-teal-300 transition-colors"
-                  >
-                    Auto-Fill ({demoOtp})
-                  </button>
-                </div>
-              )}
             </div>
 
             {error && (
@@ -370,7 +405,7 @@ export default function RegisterLabPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center justify-center gap-2"
+                className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <ShieldCheck className="w-4 h-4" />
                 {loading ? "Completing Registration..." : "Verify 2FA & Launch Dashboard"}
