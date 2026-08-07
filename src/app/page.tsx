@@ -52,7 +52,7 @@ export default function PublicHomePage() {
       {/* Hero Section with Extraordinary Medical Laboratory Micro-Animations */}
       <section className="relative pt-20 pb-16 overflow-hidden">
         {/* Floating Glowing Ambient Orbs */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-tr from-teal-500/20 via-emerald-500/15 to-sky-500/20 blur-[130px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-full max-w-[900px] h-[450px] bg-gradient-to-tr from-teal-500/20 via-emerald-500/15 to-sky-500/20 blur-[130px] rounded-full pointer-events-none" />
 
         {/* Floating Animated Laboratory Icons */}
         <div className="absolute left-[8%] top-32 pointer-events-none hidden xl:block animate-float">
