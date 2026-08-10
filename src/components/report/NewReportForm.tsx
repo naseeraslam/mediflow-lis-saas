@@ -207,8 +207,24 @@ export function NewReportForm({
 
       const data = await res.json();
       if (data.success && data.report) {
-        // Automatic WhatsApp Receipt Prompt
+        // Automatic Server-Side & Client-Side WhatsApp Receipt Dispatch
         if (selectedPatient?.phone) {
+          fetch("/api/reports/whatsapp-dispatch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "registration",
+              patientName: selectedPatient.fullName,
+              patientPhone: selectedPatient.phone,
+              mrn: selectedPatient.mrn,
+              reportNumber: data.report.reportNumber,
+              labName: "Apex Demo Diagnostics",
+              paymentMode,
+              paymentStatus,
+              amountPaid,
+            }),
+          }).catch((err) => console.error("Background WhatsApp dispatch error:", err));
+
           const { whatsappUrl } = generateRegistrationWhatsAppMessage({
             patientName: selectedPatient.fullName,
             patientPhone: selectedPatient.phone,
