@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShieldCheck, Lock, Award, Dna, Sparkles, Microscope, FlaskConical, Search, ArrowRight } from "lucide-react";
+import { ShieldCheck, Lock, Award, Dna, Sparkles, Microscope, FlaskConical, Search, ArrowRight, BookOpen } from "lucide-react";
 import { useLanguage } from "@/components/i18n/LanguageToggle";
 
 export function PublicFooter() {
@@ -55,6 +55,18 @@ export function PublicFooter() {
                 <p className="text-slate-800 dark:text-slate-200 text-xs font-semibold">
                   Designed & Spearheaded by <strong className="text-slate-950 dark:text-white font-extrabold underline decoration-teal-500 decoration-2">{t("architectName")}</strong>
                 </p>
+                
+                {/* 1-CLICK USER MANUAL & GUIDELINES LINK */}
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                  <Link
+                    href="/user-guide"
+                    className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 flex items-center gap-1.5 underline"
+                  >
+                    <BookOpen className="w-4 h-4 text-teal-500" />
+                    <span>📖 User Manual & Guidelines (رہنما کتابچہ)</span>
+                  </Link>
+                </div>
+
                 <div className="flex items-center gap-3 text-[10px] text-slate-600 dark:text-slate-400 pt-1 font-mono">
                   <span className="flex items-center gap-1 text-teal-700 dark:text-teal-300"><ShieldCheck className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" /> ISO 15189 Certified</span>
                   <span>•</span>
