@@ -35,6 +35,18 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* RTL Urdu Cursor and Text Alignment Rules */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] input,
+[dir="rtl"] select,
+[dir="rtl"] textarea {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
 /* Light Mode High-Contrast Rules ONLY when NOT dark mode */
 html:not(.dark) .bg-slate-950,
 html:not(.dark) .bg-slate-900 {

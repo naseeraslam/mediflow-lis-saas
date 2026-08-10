@@ -99,6 +99,9 @@ export function NewReportForm({
   const [notes, setNotes] = useState("Routine diagnostic wellness screening.");
   const [submitting, setSubmitting] = useState(false);
 
+  // 2-Step Workflow Mode
+  const [workflowStep, setWorkflowStep] = useState<"registration_only" | "full_results">("registration_only");
+
   // Billing & Payment State
   const [paymentMode, setPaymentMode] = useState<"Cash" | "Online" | "Bank Transfer">("Cash");
   const [paymentStatus, setPaymentStatus] = useState<"Paid" | "Pending">("Paid");
@@ -192,6 +195,7 @@ export function NewReportForm({
         body: JSON.stringify({
           patientId: selectedPatientId,
           branchId: selectedBranchId,
+          status: workflowStep === "registration_only" ? "Processing" : "Authorized",
           notes: `${notes} [Payment: ${paymentMode} - ${paymentStatus} (${amountPaid} PKR)]`,
           testResults: parameters.map((p) => ({
             testId: p.testId,
@@ -251,6 +255,56 @@ export function NewReportForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl text-slate-100">
+      {/* 2-STEP WORKFLOW MODE SELECTOR (Patient Registration vs Full Diagnostic Entry) */}
+      <div className="p-5 rounded-2xl bg-gradient-to-r from-teal-950/60 via-slate-900 to-sky-950/60 border border-teal-500/40 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FlaskConical className="w-5 h-5 text-teal-400" />
+            <h3 className="text-sm font-black text-slate-100 uppercase tracking-wider">Select Laboratory Workflow Mode</h3>
+          </div>
+          <span className="text-[10px] font-mono font-bold text-teal-300 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/30">
+            2-STEP CLINICAL WORKFLOW
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <button
+            type="button"
+            onClick={() => setWorkflowStep("registration_only")}
+            className={`p-4 rounded-xl border text-left transition-all space-y-1.5 cursor-pointer ${
+              workflowStep === "registration_only"
+                ? "bg-teal-500/20 border-teal-400 text-teal-200 shadow-lg shadow-teal-500/10 ring-2 ring-teal-400/30"
+                : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+            }`}
+          >
+            <div className="text-xs font-bold text-slate-100 flex items-center justify-between">
+              <span>Step 1: Patient Sample Registration Only</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/20 text-teal-300">Results Pending</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+              Register patient & booked tests when patient arrives. Sends WhatsApp Booking Receipt. Results will be uploaded later.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setWorkflowStep("full_results")}
+            className={`p-4 rounded-xl border text-left transition-all space-y-1.5 cursor-pointer ${
+              workflowStep === "full_results"
+                ? "bg-emerald-500/20 border-emerald-400 text-emerald-200 shadow-lg shadow-emerald-500/10 ring-2 ring-emerald-400/30"
+                : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+            }`}
+          >
+            <div className="text-xs font-bold text-slate-100 flex items-center justify-between">
+              <span>Step 2: Full Entry (Results Ready Immediately)</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Authorized</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+              Enter test values & reference ranges immediately. Authorizes report & dispatches WhatsApp Verified PDF Report.
+            </p>
+          </button>
+        </div>
+      </div>
       {/* WHO / UROLOGY SAMPLE TEMPLATES 1-CLICK LOADER */}
       <div className="p-5 rounded-xl bg-gradient-to-r from-teal-950/40 via-slate-950 to-sky-950/40 border border-teal-500/30 space-y-3">
         <div className="flex items-center justify-between">

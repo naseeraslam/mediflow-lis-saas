@@ -59,7 +59,7 @@ export async function POST(req: Request) {
         patientId,
         doctorId: doctorId || null,
         reportNumber,
-        status: "Draft",
+        status: body.status || "Processing",
         verificationToken,
         notes: notes || null,
         results: {
