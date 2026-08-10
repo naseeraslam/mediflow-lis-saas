@@ -12,7 +12,8 @@ export default async function NewReportPage() {
   const [patients, branches, tests] = await Promise.all([
     db.patient.findMany({
       where: { orgId },
-      select: { id: true, fullName: true, mrn: true, gender: true, dateOfBirth: true },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, fullName: true, mrn: true, gender: true, dateOfBirth: true, phone: true },
     }),
     db.branch.findMany({
       where: { orgId },

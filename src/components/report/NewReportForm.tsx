@@ -94,7 +94,21 @@ export function NewReportForm({
 }) {
   const router = useRouter();
   const { t } = useLanguage();
+
+  // Dynamic Patients State (Allows instant inline patient registration on the fly!)
+  const [localPatients, setLocalPatients] = useState<PatientOpt[]>(patients);
   const [selectedPatientId, setSelectedPatientId] = useState(patients[0]?.id || "");
+  const [showNewPatientModal, setShowNewPatientModal] = useState(false);
+  const [newPatientForm, setNewPatientForm] = useState({
+    fullName: "",
+    phone: "",
+    gender: "Male",
+    dateOfBirth: "1990-01-01",
+    address: "",
+  });
+  const [registeringPatient, setRegisteringPatient] = useState(false);
+  const [patientModalError, setPatientModalError] = useState<string | null>(null);
+
   const [selectedBranchId, setSelectedBranchId] = useState(branches[0]?.id || "");
   const [notes, setNotes] = useState("Routine diagnostic wellness screening.");
   const [submitting, setSubmitting] = useState(false);
@@ -146,7 +160,7 @@ export function NewReportForm({
   );
 
   // Selected Patient Details
-  const selectedPatient = patients.find((p) => p.id === selectedPatientId) || patients[0];
+  const selectedPatient = localPatients.find((p) => p.id === selectedPatientId) || localPatients[0];
 
   // 1-Click Load WHO / Urology Sample Template
   function loadWHOTemplate(tmplCode: string) {
@@ -228,6 +242,50 @@ export function NewReportForm({
       setTestModalError("Network error. Please try again.");
     } finally {
       setCreatingTest(false);
+    }
+  }
+
+  // Quick Register New Patient dynamically
+  async function handleQuickRegisterPatient(e: React.FormEvent) {
+    e.preventDefault();
+    setRegisteringPatient(true);
+    setPatientModalError(null);
+
+    try {
+      const res = await fetch("/api/patients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newPatientForm),
+      });
+      const data = await res.json();
+
+      if (data.success && data.patient) {
+        const createdPatient: PatientOpt = {
+          id: data.patient.id,
+          fullName: data.patient.fullName,
+          mrn: data.patient.mrn,
+          gender: data.patient.gender,
+          dateOfBirth: data.patient.dateOfBirth,
+          phone: data.patient.phone,
+        };
+
+        setLocalPatients((prev) => [createdPatient, ...prev]);
+        setSelectedPatientId(createdPatient.id);
+        setShowNewPatientModal(false);
+        setNewPatientForm({
+          fullName: "",
+          phone: "",
+          gender: "Male",
+          dateOfBirth: "1990-01-01",
+          address: "",
+        });
+      } else {
+        setPatientModalError(data.error || "Failed to register patient.");
+      }
+    } catch (err: any) {
+      setPatientModalError("Network error. Please try again.");
+    } finally {
+      setRegisteringPatient(false);
     }
   }
 
@@ -418,18 +476,27 @@ export function NewReportForm({
       {/* Patient & Branch Metadata */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
         <div>
-          <label className="block text-slate-800 dark:text-slate-300 font-bold mb-1 flex items-center gap-1.5">
-            <User className="w-4 h-4 text-teal-600 dark:text-teal-400" /> {t("selectPatientRecord")}
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-slate-800 dark:text-slate-300 font-bold flex items-center gap-1.5">
+              <User className="w-4 h-4 text-teal-600 dark:text-teal-400" /> {t("selectPatientRecord")}
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowNewPatientModal(true)}
+              className="text-[11px] font-bold text-teal-700 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 flex items-center gap-1 bg-teal-500/10 px-2 py-0.5 rounded-lg border border-teal-500/20"
+            >
+              <Plus className="w-3 h-3 text-teal-600 dark:text-teal-400" /> Register New Patient
+            </button>
+          </div>
           <select
             value={selectedPatientId}
             onChange={(e) => setSelectedPatientId(e.target.value)}
             required
             className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none shadow-sm"
           >
-            {patients.map((p) => (
+            {localPatients.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.fullName} ({p.mrn}) — {p.gender}, DOB: {p.dateOfBirth}
+                {p.fullName} ({p.mrn}) — {p.gender}, DOB: {p.dateOfBirth} {p.phone ? `(${p.phone})` : ""}
               </option>
             ))}
           </select>
@@ -853,6 +920,117 @@ export function NewReportForm({
                 >
                   <Plus className="w-4 h-4 fill-slate-950" />
                   <span>{creatingTest ? "Saving to Catalog..." : "Save to Master Catalog"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* QUICK NEW PATIENT REGISTRATION MODAL */}
+      {showNewPatientModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-teal-500/40 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-6 shadow-2xl animate-in zoom-in-95 duration-200 text-slate-900 dark:text-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div className="flex items-center gap-2">
+                <User className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">Register New Patient Record</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Instantly register patient without leaving booking screen</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowNewPatientModal(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {patientModalError && (
+              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-600 dark:text-rose-300 text-xs font-semibold text-center">
+                ⚠️ {patientModalError}
+              </div>
+            )}
+
+            <div className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Patient Full Name *</label>
+                <input
+                  type="text"
+                  value={newPatientForm.fullName}
+                  onChange={(e) => setNewPatientForm({ ...newPatientForm, fullName: e.target.value })}
+                  required
+                  placeholder="e.g. Muhammad Ali Shah"
+                  className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold focus:border-teal-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">WhatsApp / Phone Number *</label>
+                <input
+                  type="text"
+                  value={newPatientForm.phone}
+                  onChange={(e) => setNewPatientForm({ ...newPatientForm, phone: e.target.value })}
+                  required
+                  placeholder="e.g. +92 300 1234567"
+                  className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono font-bold focus:border-teal-500 outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Gender *</label>
+                  <select
+                    value={newPatientForm.gender}
+                    onChange={(e) => setNewPatientForm({ ...newPatientForm, gender: e.target.value })}
+                    className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Date of Birth</label>
+                  <input
+                    type="date"
+                    value={newPatientForm.dateOfBirth}
+                    onChange={(e) => setNewPatientForm({ ...newPatientForm, dateOfBirth: e.target.value })}
+                    className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono focus:border-teal-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Residential Address</label>
+                <input
+                  type="text"
+                  value={newPatientForm.address}
+                  onChange={(e) => setNewPatientForm({ ...newPatientForm, address: e.target.value })}
+                  placeholder="e.g. House #14, St 5, F-7/2, Islamabad"
+                  className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-medium focus:border-teal-500 outline-none"
+                />
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowNewPatientModal(false)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-400 font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleQuickRegisterPatient}
+                  disabled={registeringPatient}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4 fill-slate-950" />
+                  <span>{registeringPatient ? "Registering Patient..." : "Register & Auto-Select"}</span>
                 </button>
               </div>
             </div>
