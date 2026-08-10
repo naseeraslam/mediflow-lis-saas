@@ -47,7 +47,7 @@ export default async function PrivateAppLayout({ children }: { children: React.R
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans flex flex-col selection:bg-teal-500 selection:text-slate-950">
       {/* Security Tenant Banner */}
-      <div className="bg-teal-900 text-teal-100 font-bold text-xs py-1 px-4 text-center tracking-wider uppercase flex items-center justify-between border-b border-teal-500/30">
+      <div className="bg-teal-900 text-teal-100 font-bold text-xs py-1 px-4 text-center tracking-wider uppercase flex items-center justify-between border-b border-teal-500/30 no-print">
         <div className="flex items-center gap-2 max-w-7xl mx-auto w-full justify-between">
           <span className="flex items-center gap-2">
             <ShieldAlert className="w-4 h-4 text-teal-300" />

@@ -65,7 +65,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Top Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800 no-print">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-slate-400 font-mono">Report: {report.reportNumber}</span>
@@ -190,7 +190,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
 
       {/* WHITE-LABEL REPORT CARD */}
       <div
-        className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-8 shadow-2xl relative"
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 space-y-8 shadow-2xl relative printable-report-card"
         style={{ borderTop: `4px solid ${organization.primaryColor || "#0f766e"}` }}
       >
         {/* Organization Header & Branding */}
