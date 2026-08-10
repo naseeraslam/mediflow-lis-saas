@@ -53,11 +53,15 @@ export function EmailReportModal({
   }
 
   function handleOpenMailApp() {
-    const formattedSubject = encodeURIComponent(`${patientName || "Patient"} - Diagnostic Laboratory Report Ready (${reportNumber})`);
-    const formattedBody = encodeURIComponent(
-      `Hello ${patientName || "Patient"},\n\nYour verified clinical diagnostic report (${reportNumber}) has been issued and authorized.\n\nPlease find your report details attached or verify online at:\n${typeof window !== "undefined" ? window.location.origin : ""}/app/reports/${reportId}\n\nBest regards,\nApex Diagnostic Laboratory Desk`
-    );
-    window.location.href = `mailto:${email}?subject=${formattedSubject}&body=${formattedBody}`;
+    const subjectText = `${patientName || "Patient"} - Diagnostic Laboratory Report Ready (${reportNumber})`;
+    const bodyText = `Hello ${patientName || "Patient"},\n\nYour verified clinical diagnostic report (${reportNumber}) has been issued and authorized.\n\nPlease find your report details attached or verify online at:\n${typeof window !== "undefined" ? window.location.origin : ""}/app/reports/${reportId}\n\nBest regards,\nApex Diagnostic Laboratory Desk`;
+
+    const mailtoUrl = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`;
+    window.open(mailtoUrl, "_self");
+  }
+
+  function handleTriggerPrintDownload() {
+    window.print();
   }
 
   return (
@@ -77,7 +81,7 @@ export function EmailReportModal({
                 <Mail className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                 <div>
                   <h3 className="text-base font-extrabold text-slate-900 dark:text-white">Email PDF Report Attachment</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Directly attach verified PDF or open in Outlook/Mail app</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Directly attach verified PDF or launch in Outlook/Mail app</p>
                 </div>
               </div>
               <button
@@ -103,13 +107,22 @@ export function EmailReportModal({
             )}
 
             <form onSubmit={handleSendEmail} className="space-y-4 text-xs">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1.5">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase">Auto-Generated Email Subject</div>
-                <div className="font-bold text-teal-700 dark:text-teal-400 font-mono text-[11px]">
-                  {patientName || "Patient"} - Diagnostic Report Ready ({reportNumber})
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase">Pre-Filled Email Subject</div>
+                <div className="font-bold text-teal-700 dark:text-teal-400 font-mono text-[11px] p-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+                  {patientName || "Patient"} - Diagnostic Laboratory Report Ready ({reportNumber})
                 </div>
-                <div className="flex items-center gap-1.5 text-[10px] text-emerald-700 dark:text-emerald-400 font-bold pt-1">
-                  <Paperclip className="w-3 h-3" /> PDF Attachment: <code>{patientName ? patientName.replace(/\s+/g, "_") : "Patient"}_Report.pdf</code>
+                <div className="flex items-center justify-between text-[10px] text-emerald-700 dark:text-emerald-400 font-bold pt-1">
+                  <span className="flex items-center gap-1">
+                    <Paperclip className="w-3 h-3" /> Attached: <code>{patientName ? patientName.replace(/\s+/g, "_") : "Patient"}_Report.pdf</code>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleTriggerPrintDownload}
+                    className="text-teal-600 dark:text-teal-400 underline hover:text-teal-700 font-semibold"
+                  >
+                    📥 Print / Save PDF
+                  </button>
                 </div>
               </div>
 
@@ -132,7 +145,7 @@ export function EmailReportModal({
                   className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4 fill-slate-950" />
-                  <span>{sending ? "Attaching & Sending Email..." : "🚀 Direct Send Email with PDF Attachment"}</span>
+                  <span>{sending ? "Attaching & Dispatching Email..." : "🚀 Direct Send Email with PDF Attachment"}</span>
                 </button>
 
                 <button
@@ -141,7 +154,7 @@ export function EmailReportModal({
                   className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
                 >
                   <Mail className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                  <span>✉️ Open in Outlook / System Mail Client (Pre-Filled Subject)</span>
+                  <span>✉️ Launch Outlook / Mail Client (Auto Subject & Body)</span>
                 </button>
               </div>
             </form>
