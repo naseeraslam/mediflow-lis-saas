@@ -86,7 +86,7 @@ const WHO_SAMPLE_TEMPLATES = [
 export interface DoctorOpt {
   id: string;
   name: string;
-  specialization?: string | null;
+  specialty?: string | null;
 }
 
 export function NewReportForm({
@@ -486,8 +486,8 @@ export function NewReportForm({
         </div>
       </div>
 
-      {/* Patient & Branch Metadata */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
+      {/* Patient, Branch & Referring Doctor Metadata */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs">
         <div>
           <div className="flex items-center justify-between mb-1">
             <label className="block text-slate-800 dark:text-slate-300 font-bold flex items-center gap-1.5">
@@ -531,6 +531,44 @@ export function NewReportForm({
               </option>
             ))}
           </select>
+        </div>
+
+        <div>
+          <label className="block text-slate-800 dark:text-slate-300 font-bold mb-1 flex items-center gap-1.5">
+            <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Referred By (Doctor / Physician)
+          </label>
+          <select
+            value={isCustomDoctor ? "custom" : selectedDoctorId}
+            onChange={(e) => {
+              if (e.target.value === "custom") {
+                setIsCustomDoctor(true);
+                setSelectedDoctorId("");
+              } else {
+                setIsCustomDoctor(false);
+                setSelectedDoctorId(e.target.value);
+                setCustomDoctorName("");
+              }
+            }}
+            className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none shadow-sm"
+          >
+            <option value="">Self / Direct Order (No Doctor)</option>
+            {doctors.map((doc) => (
+              <option key={doc.id} value={doc.id}>
+                {doc.name} {doc.specialty ? `(${doc.specialty})` : ""}
+              </option>
+            ))}
+            <option value="custom">➕ Enter Custom Referring Doctor Name...</option>
+          </select>
+
+          {isCustomDoctor && (
+            <input
+              type="text"
+              value={customDoctorName}
+              onChange={(e) => setCustomDoctorName(e.target.value)}
+              placeholder="e.g. Dr. Aamir Khan, MBBS, FCPS"
+              className="mt-2 w-full p-3 bg-white dark:bg-slate-900 rounded-xl border border-teal-500 text-slate-900 dark:text-slate-100 font-bold outline-none shadow-sm animate-in fade-in-50"
+            />
+          )}
         </div>
       </div>
 
