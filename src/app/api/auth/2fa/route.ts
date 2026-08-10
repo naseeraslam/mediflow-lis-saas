@@ -7,7 +7,7 @@ const memoryOtpStore = new Map<string, { code: string; expiresAt: number }>();
 
 export async function POST(req: Request) {
   try {
-    const { email, otpCode, action } = await req.json();
+    const { email, password, otpCode, action } = await req.json();
 
     if (!email) {
       return NextResponse.json({ error: "Email address is required." }, { status: 400 });
@@ -16,6 +16,23 @@ export async function POST(req: Request) {
     const cleanEmail = email.trim().toLowerCase();
 
     if (action === "send" || !action) {
+      // 1. VERIFY CREDENTIALS FIRST BEFORE SENDING 2FA OTP
+      const user = await db.user.findUnique({
+        where: { email: cleanEmail },
+      });
+
+      if (!user || !user.active) {
+        return NextResponse.json({ error: "Invalid email address or password." }, { status: 401 });
+      }
+
+      if (password) {
+        const bcrypt = require("bcryptjs");
+        const passwordValid = await bcrypt.compare(password, user.passwordHash);
+        if (!passwordValid) {
+          return NextResponse.json({ error: "Invalid email address or password." }, { status: 401 });
+        }
+      }
+
       // Generate Secure 6-Digit OTP Code
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = Date.now() + 10 * 60 * 1000; // 10 Minutes

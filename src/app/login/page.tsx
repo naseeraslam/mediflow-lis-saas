@@ -30,11 +30,25 @@ export default function LoginPage() {
     const loginPassword = customPassword || password;
 
     try {
-      // Check 2FA Policy first
+      // 1. VERIFY CREDENTIALS FIRST & SEND 2FA OTP IF VALID
+      const res2fa = await fetch("/api/auth/2fa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword, action: "send" }),
+      });
+      const data2fa = await res2fa.json();
+
+      if (!res2fa.ok || data2fa.error) {
+        setError(data2fa.error || "Invalid email address or password.");
+        setLoading(false);
+        return;
+      }
+
+      // 2. CHECK SUPER ADMIN 2FA POLICY
       const resPolicy = await fetch("/api/super-admin/2fa-policy");
       const policyData = await resPolicy.json();
 
-      // If 2FA Enforcement is OFF, bypass OTP step and login directly!
+      // If 2FA Enforcement is OFF from Super Admin, perform direct login & launch dashboard!
       if (policyData.success && policyData.enforced === false) {
         const resLogin = await fetch("/api/auth/login", {
           method: "POST",
@@ -45,25 +59,18 @@ export default function LoginPage() {
         if (resLogin.ok && dataLogin.success) {
           router.push("/app/dashboard");
           return;
+        } else {
+          setError(dataLogin.error || "Authentication failed.");
+          setLoading(false);
+          return;
         }
       }
 
-      // Send 2FA Code if 2FA ON
-      const res2fa = await fetch("/api/auth/2fa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: loginEmail, action: "send" }),
-      });
-      const data2fa = await res2fa.json();
-
-      if (data2fa.success) {
-        setEmail(loginEmail);
-        setPassword(loginPassword);
-        setDispatchedCode(data2fa.otpCode || null);
-        setStep("2fa");
-      } else {
-        setError(data2fa.error || "Failed to send 2FA authentication code.");
-      }
+      // If 2FA Enforcement is ON, move to Step 2 (2FA OTP Entry Form)
+      setEmail(loginEmail);
+      setPassword(loginPassword);
+      setDispatchedCode(data2fa.otpCode || null);
+      setStep("2fa");
     } catch (err: any) {
       setError("Connection error. Please try again.");
     } finally {
