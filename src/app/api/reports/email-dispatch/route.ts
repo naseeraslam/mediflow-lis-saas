@@ -106,15 +106,26 @@ CHIEF PATHOLOGIST: ${report.authorizedBy || "Dr. Robert Vance, MD"} (Verified & 
 ${org.footerText || "This report is generated electronically under signed pathologist verification."}
 `;
 
+    const mainTestName = results[0]?.testNameSnapshot || "Diagnostic Panel";
+    const testNamesSummary = results.length > 0
+      ? results.map((r) => r.testNameSnapshot).slice(0, 2).join(" & ")
+      : "Clinical Diagnostic Panel";
+
+    // Dynamic Email Subject: Patient Name - Test Name Report Ready
+    const emailSubject = `${patient.fullName} - ${testNamesSummary} Diagnostic Report Ready (${report.reportNumber})`;
+    
+    // Dynamic PDF Attachment Filename
+    const pdfFilename = `${patient.fullName.replace(/[^a-zA-Z0-9]/g, "_")}_${mainTestName.replace(/[^a-zA-Z0-9]/g, "_")}_Report.pdf`;
+
     const base64Attachment = Buffer.from(pdfReportContent).toString("base64");
 
     const emailSent = await sendEmail({
       to: recipientEmail,
-      subject: `📄 Verified Diagnostic Report ${report.reportNumber} - ${patient.fullName} (${org.displayName})`,
+      subject: emailSubject,
       html: htmlContent,
       attachments: [
         {
-          filename: `LAB-Report-${report.reportNumber}.pdf`,
+          filename: pdfFilename,
           content: base64Attachment,
           contentType: "application/pdf",
         },
