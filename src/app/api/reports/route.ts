@@ -42,10 +42,31 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { branchId, patientId, doctorId, notes, testResults } = body;
+    const { branchId, patientId, doctorId, referringDoctorName, notes, testResults } = body;
 
     if (!branchId || !patientId || !testResults || !Array.isArray(testResults)) {
       return NextResponse.json({ error: "Branch, Patient, and Test Results are required." }, { status: 400 });
+    }
+
+    let resolvedDoctorId = doctorId || null;
+
+    // Handle custom referring doctor name creation if passed
+    if (!resolvedDoctorId && referringDoctorName && referringDoctorName.trim() !== "" && referringDoctorName !== "Self / Direct Order") {
+      const existingDoc = await db.doctor.findFirst({
+        where: { orgId: session.orgId, name: referringDoctorName.trim() },
+      });
+
+      if (existingDoc) {
+        resolvedDoctorId = existingDoc.id;
+      } else {
+        const newDoc = await db.doctor.create({
+          data: {
+            orgId: session.orgId,
+            name: referringDoctorName.trim(),
+          },
+        });
+        resolvedDoctorId = newDoc.id;
+      }
     }
 
     const reportCount = await db.report.count({ where: { orgId: session.orgId } });
@@ -57,7 +78,7 @@ export async function POST(req: Request) {
         orgId: session.orgId,
         branchId,
         patientId,
-        doctorId: doctorId || null,
+        doctorId: resolvedDoctorId,
         reportNumber,
         status: body.status || "Processing",
         verificationToken,

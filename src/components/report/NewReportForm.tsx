@@ -83,14 +83,22 @@ const WHO_SAMPLE_TEMPLATES = [
   },
 ];
 
+export interface DoctorOpt {
+  id: string;
+  name: string;
+  specialization?: string | null;
+}
+
 export function NewReportForm({
   patients,
   branches,
   testCatalog,
+  doctors = [],
 }: {
   patients: PatientOpt[];
   branches: BranchOpt[];
   testCatalog: TestOpt[];
+  doctors?: DoctorOpt[];
 }) {
   const router = useRouter();
   const { t } = useLanguage();
@@ -110,6 +118,9 @@ export function NewReportForm({
   const [patientModalError, setPatientModalError] = useState<string | null>(null);
 
   const [selectedBranchId, setSelectedBranchId] = useState(branches[0]?.id || "");
+  const [selectedDoctorId, setSelectedDoctorId] = useState<string>(doctors[0]?.id || "");
+  const [customDoctorName, setCustomDoctorName] = useState<string>("");
+  const [isCustomDoctor, setIsCustomDoctor] = useState<boolean>(false);
   const [notes, setNotes] = useState("Routine diagnostic wellness screening.");
   const [submitting, setSubmitting] = useState(false);
 
@@ -329,6 +340,8 @@ export function NewReportForm({
         body: JSON.stringify({
           patientId: selectedPatientId,
           branchId: selectedBranchId,
+          doctorId: isCustomDoctor ? null : selectedDoctorId,
+          referringDoctorName: isCustomDoctor ? customDoctorName : "",
           status: workflowStep === "registration_only" ? "Processing" : "Authorized",
           notes: `${notes} [Payment: ${paymentMode} - ${paymentStatus} (${amountPaid} PKR)]`,
           testResults: parameters.map((p) => ({

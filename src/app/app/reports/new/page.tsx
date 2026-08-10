@@ -35,6 +35,16 @@ export default async function NewReportPage() {
     }),
   ]);
 
+  let doctors: any[] = [];
+  try {
+    doctors = await db.doctor.findMany({
+      where: { orgId },
+      select: { id: true, name: true, specialty: true },
+    });
+  } catch (err) {
+    console.error("Fetch doctors error:", err);
+  }
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <div className="flex items-center gap-4">
@@ -50,12 +60,12 @@ export default async function NewReportPage() {
             <span>Create New Clinical Diagnostic Report</span>
           </h1>
           <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
-            Order entry with dynamic parameter creation and 1-click WHO standard sample templates
+            Order entry with dynamic parameter creation, WHO templates, and referring doctor assignment
           </p>
         </div>
       </div>
 
-      <NewReportForm patients={patients} branches={branches} testCatalog={tests} />
+      <NewReportForm patients={patients} branches={branches} testCatalog={tests} doctors={doctors} />
     </div>
   );
 }
