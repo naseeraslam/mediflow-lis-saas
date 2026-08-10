@@ -223,41 +223,41 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
               </div>
             )}
 
-            <div className="text-[11px] text-slate-600 dark:text-slate-400 space-x-2 pt-1 font-mono font-bold">
+            <div className="text-[11px] text-slate-800 dark:text-slate-300 space-x-2 pt-1 font-mono font-extrabold">
               <span>CLIA: {organization.licenseNo || "CLIA-99210-TX"}</span>
               <span>•</span>
               <span>REG: {organization.registrationNo || "REG-9941A"}</span>
             </div>
           </div>
 
-          <div className="text-left sm:text-right text-xs text-slate-700 dark:text-slate-400 space-y-1">
-            <div className="font-bold text-slate-900 dark:text-slate-200">{branch.name}</div>
+          <div className="text-left sm:text-right text-xs text-slate-900 dark:text-slate-300 space-y-1 font-semibold">
+            <div className="font-extrabold text-slate-950 dark:text-slate-100">{branch.name}</div>
             <div>{branch.address}</div>
             <div>Phone: {branch.phone}</div>
-            <div className="text-teal-700 dark:text-teal-400 font-mono pt-1 font-extrabold">Verification: {report.verificationToken}</div>
+            <div className="text-teal-800 dark:text-teal-400 font-mono pt-1 font-black">Verification: {report.verificationToken}</div>
           </div>
         </div>
 
         {/* Patient Demographics & Order Meta Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-800/80 text-xs">
           <div>
-            <span className="text-slate-600 dark:text-slate-400 block text-[10px] uppercase font-bold">Patient Name</span>
-            <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm">{patient.fullName}</span>
+            <span className="text-slate-700 dark:text-slate-400 block text-[10px] uppercase font-black">Patient Name</span>
+            <span className="font-black text-slate-950 dark:text-slate-100 text-sm">{patient.fullName}</span>
           </div>
 
           <div>
-            <span className="text-slate-600 dark:text-slate-400 block text-[10px] uppercase font-bold">MRN Number</span>
-            <span className="font-mono text-teal-700 dark:text-teal-300 font-extrabold">{patient.mrn}</span>
+            <span className="text-slate-700 dark:text-slate-400 block text-[10px] uppercase font-black">MRN Number</span>
+            <span className="font-mono text-teal-800 dark:text-teal-300 font-black">{patient.mrn}</span>
           </div>
 
           <div>
-            <span className="text-slate-600 dark:text-slate-400 block text-[10px] uppercase font-bold">Age / Gender</span>
-            <span className="font-bold text-slate-800 dark:text-slate-200">{patient.dateOfBirth} ({patient.gender})</span>
+            <span className="text-slate-700 dark:text-slate-400 block text-[10px] uppercase font-black">Age / Gender</span>
+            <span className="font-extrabold text-slate-900 dark:text-slate-200">{patient.dateOfBirth} ({patient.gender})</span>
           </div>
 
           <div>
-            <span className="text-slate-600 dark:text-slate-400 block text-[10px] uppercase font-bold">Referring Doctor</span>
-            <span className="font-bold text-slate-800 dark:text-slate-200">{doctor?.name || "Self / Direct Order"}</span>
+            <span className="text-slate-700 dark:text-slate-400 block text-[10px] uppercase font-black">Referring Doctor</span>
+            <span className="font-extrabold text-slate-900 dark:text-slate-200">{doctor?.name || "Self / Direct Order"}</span>
           </div>
         </div>
 
