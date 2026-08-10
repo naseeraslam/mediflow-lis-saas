@@ -3,14 +3,22 @@
  * Dispatches 2FA OTP passcodes & Super Admin approval alerts via Resend API, Gmail SMTP, or Console Fallback
  */
 
+export interface EmailAttachment {
+  filename: string;
+  content: string; // base64 string or raw content
+  path?: string;
+  contentType?: string;
+}
+
 export interface EmailOptions {
   to: string;
   subject: string;
   html: string;
   text?: string;
+  attachments?: EmailAttachment[];
 }
 
-export async function sendEmail({ to, subject, html, text }: EmailOptions): Promise<boolean> {
+export async function sendEmail({ to, subject, html, text, attachments }: EmailOptions): Promise<boolean> {
   // Guaranteed Resend API Key fallback to ensure 2FA emails dispatch 100% of the time
   const defaultResendKey = ["re_", "cAujnmzp_", "JSNR3RFFHSuogsrkWCkDLCRv"].join("");
   const resendApiKey = process.env.RESEND_API_KEY || defaultResendKey;
@@ -24,6 +32,9 @@ export async function sendEmail({ to, subject, html, text }: EmailOptions): Prom
   console.log(`📩 [EMAIL DISPATCH TRIGGER]`);
   console.log(`To: ${to}`);
   console.log(`Subject: ${subject}`);
+  if (attachments && attachments.length > 0) {
+    console.log(`Attachments: ${attachments.map((a) => a.filename).join(", ")}`);
+  }
   console.log(`======================================================\n`);
 
   // 1. Resend API Dispatch (Active Resend Key Configured via RESEND_API_KEY env var)
@@ -41,6 +52,7 @@ export async function sendEmail({ to, subject, html, text }: EmailOptions): Prom
           subject,
           html,
           text: text || html.replace(/<[^>]*>?/gm, ""),
+          ...(attachments && attachments.length > 0 ? { attachments } : {}),
         }),
       });
 

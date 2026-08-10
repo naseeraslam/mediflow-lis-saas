@@ -2,6 +2,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { ShareModal } from "@/components/report/ShareModal";
 import { PrintPdfButton } from "@/components/report/PrintPdfButton";
+import { EmailReportModal } from "@/components/report/EmailReportModal";
 import {
   FileText,
   ShieldCheck,
@@ -99,6 +100,12 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
           >
             <MessageCircle className="w-4 h-4 text-emerald-400" /> Dispatch WhatsApp PDF
           </a>
+          <EmailReportModal
+            reportId={report.id}
+            reportNumber={report.reportNumber}
+            defaultEmail={patient.email || ""}
+            patientName={patient.fullName}
+          />
           <PrintPdfButton reportNumber={report.reportNumber} />
           <ShareModal reportId={report.id} reportNumber={report.reportNumber} />
 
