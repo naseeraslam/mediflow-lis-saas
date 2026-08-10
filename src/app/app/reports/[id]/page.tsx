@@ -278,20 +278,20 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 font-mono">
                 {results.map((res: any) => (
-                  <tr key={res.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-3.5 px-4 font-sans font-semibold text-slate-200">{res.testNameSnapshot}</td>
-                    <td className="py-3.5 px-4 font-bold text-slate-100 text-sm">
+                  <tr key={res.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                    <td className="py-3.5 px-4 font-sans font-extrabold text-slate-900 dark:text-slate-200">{res.testNameSnapshot}</td>
+                    <td className="py-3.5 px-4 font-black text-slate-900 dark:text-slate-100 text-sm">
                       {res.numericValue !== null ? res.numericValue : res.stringValue}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-400">{res.unitSnapshot}</td>
-                    <td className="py-3.5 px-4 text-slate-400">{res.refRangeSnapshot}</td>
+                    <td className="py-3.5 px-4 text-slate-700 dark:text-slate-400 font-semibold">{res.unitSnapshot}</td>
+                    <td className="py-3.5 px-4 text-slate-700 dark:text-slate-400 font-semibold">{res.refRangeSnapshot}</td>
                     <td className="py-3.5 px-4 text-right font-sans">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${
                         res.flag === "High"
-                          ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                          ? "bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20"
                           : res.flag === "Low"
-                          ? "bg-sky-500/10 text-sky-400 border border-sky-500/20"
-                          : "bg-teal-500/10 text-teal-400 border border-teal-500/20"
+                          ? "bg-sky-500/10 text-sky-800 dark:text-sky-400 border border-sky-500/20"
+                          : "bg-teal-500/10 text-teal-800 dark:text-teal-400 border border-teal-500/20"
                       }`}>
                         {res.flag}
                       </span>
