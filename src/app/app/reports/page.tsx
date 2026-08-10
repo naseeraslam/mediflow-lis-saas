@@ -23,11 +23,11 @@ export default async function ReportsPage() {
       {/* Header & Quick Action Buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-            <FileText className="w-6 h-6 text-teal-400" />
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <FileText className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             <span>Laboratory Reports Registry</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
             Search patient records by Phone Number, CNIC (ID), MRN Number, or Report Number
           </p>
         </div>
@@ -44,10 +44,10 @@ export default async function ReportsPage() {
       <OrgInternalSearch />
 
       {/* Reports Table */}
-      <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800 bg-slate-950/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="text-xs text-slate-400">
-            Total Organization Reports: <span className="font-bold text-slate-200">{reports.length}</span>
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="text-xs text-slate-600 dark:text-slate-400">
+            Total Organization Reports: <span className="font-bold text-slate-900 dark:text-slate-200">{reports.length}</span>
           </div>
 
           <div className="flex items-center gap-2 text-xs">

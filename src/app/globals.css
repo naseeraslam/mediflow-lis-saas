@@ -53,69 +53,6 @@ body {
   direction: rtl !important;
 }
 
-/* Light Mode High-Contrast Rules ONLY when NOT dark mode */
-html:not(.dark) .bg-slate-950,
-html:not(.dark) .bg-slate-900 {
-  background-color: #ffffff;
-  color: #0f172a;
-  border-color: #cbd5e1;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
-}
-
-html:not(.dark) .bg-slate-950\/40,
-html:not(.dark) .bg-slate-950\/80,
-html:not(.dark) .bg-slate-900\/60,
-html:not(.dark) .bg-slate-900\/80,
-html:not(.dark) .bg-slate-900\/90 {
-  background-color: #f8fafc;
-  color: #0f172a;
-  border-color: #cbd5e1;
-}
-
-html:not(.dark) .text-slate-100,
-html:not(.dark) .text-slate-200 {
-  color: #0f172a;
-}
-
-html:not(.dark) .text-slate-300,
-html:not(.dark) .text-slate-400 {
-  color: #334155;
-}
-
-html:not(.dark) .border-slate-800,
-html:not(.dark) .border-slate-700 {
-  border-color: #cbd5e1;
-}
-
-html:not(.dark) .text-teal-400,
-html:not(.dark) .text-teal-300 {
-  color: #0d9488;
-}
-
-html:not(.dark) .text-sky-400,
-html:not(.dark) .text-sky-300 {
-  color: #0284c7;
-}
-
-html:not(.dark) .text-emerald-400,
-html:not(.dark) .text-emerald-300 {
-  color: #059669;
-}
-
-html:not(.dark) table th {
-  background-color: #f1f5f9;
-  color: #334155;
-}
-
-html:not(.dark) table td {
-  color: #0f172a;
-  border-color: #f1f5f9;
-}
-
-html:not(.dark) table tr:hover {
-  background-color: #f8fafc;
-}
-
 /* Floating Laboratory Animation Utilities */
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
