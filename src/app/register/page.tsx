@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PublicNavbar } from "@/components/public/Navbar";
 import { PublicFooter } from "@/components/public/Footer";
+import { useLanguage } from "@/components/i18n/LanguageToggle";
 import { Building2, ShieldCheck, Sparkles, User, Mail, Lock, Phone, Palette, ArrowRight, KeyRound, ShieldAlert, Rocket, CheckCircle2 } from "lucide-react";
 
 export default function RegisterLabPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [step, setStep] = useState<"form" | "2fa">("form");
   const [otpCode, setOtpCode] = useState("");
   const [demoOtp, setDemoOtp] = useState<string | null>(null);
@@ -137,7 +139,7 @@ export default function RegisterLabPage() {
             <Sparkles className="w-3.5 h-3.5 text-teal-400" /> Lab Owner Self-Service Onboarding
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight">
-            Register Your Diagnostic Laboratory
+            {t("registerLabBtn")}
           </h1>
           <p className="text-slate-400 text-sm max-w-xl mx-auto font-medium">
             Initialize your multi-tenant laboratory workspace with custom branding, 2FA security, and report engines
@@ -152,7 +154,7 @@ export default function RegisterLabPage() {
               className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-black flex items-center justify-center gap-2 mx-auto shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
             >
               <Rocket className="w-4 h-4 fill-slate-950" />
-              <span>Instant Demo Laboratory Access (Skip Registration)</span>
+              <span>{t("instantDemoAccess")}</span>
             </button>
           </div>
         </div>

@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PublicNavbar } from "@/components/public/Navbar";
 import { PublicFooter } from "@/components/public/Footer";
+import { useLanguage } from "@/components/i18n/LanguageToggle";
 import { Lock, Mail, ShieldCheck, KeyRound, Sparkles, Check, ArrowRight, ShieldAlert, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
@@ -102,7 +104,7 @@ export default function LoginPage() {
           <div className="w-12 h-12 bg-teal-500/10 text-teal-400 rounded-2xl flex items-center justify-center mx-auto border border-teal-500/20">
             <Lock className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-100">2FA Protected Staff Portal Sign In</h1>
+          <h1 className="text-2xl font-bold text-slate-100">{t("staffLogin")}</h1>
           <p className="text-xs text-slate-400">
             Enforced 2FA Two-Factor Authentication for all laboratory personnel and org owners
           </p>
@@ -155,7 +157,7 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-teal-400" /> Account Email Address
+                  <Mail className="w-3.5 h-3.5 text-teal-400" /> {t("accountEmail")}
                 </label>
                 <input
                   type="email"
@@ -169,7 +171,7 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-                  <KeyRound className="w-3.5 h-3.5 text-teal-400" /> Password
+                  <KeyRound className="w-3.5 h-3.5 text-teal-400" /> {t("password")}
                 </label>
                 <input
                   type="password"
@@ -184,10 +186,10 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <ShieldCheck className="w-4 h-4" />
-                {loading ? "Sending 2FA OTP Code..." : "Continue to 2FA Verification"}
+                <ShieldCheck className="w-4 h-4 text-slate-950" />
+                {loading ? "Sending 2FA OTP Code..." : t("continue2FA")}
               </button>
             </form>
           </>
@@ -253,7 +255,7 @@ export default function LoginPage() {
                 onClick={() => setStep("credentials")}
                 className="px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-400 font-semibold hover:bg-slate-800 transition-colors"
               >
-                Back
+                {t("cancel")}
               </button>
 
               <button
@@ -261,7 +263,7 @@ export default function LoginPage() {
                 disabled={loading}
                 className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center justify-center gap-2"
               >
-                <ShieldCheck className="w-4 h-4" />
+                <ShieldCheck className="w-4 h-4 text-slate-950" />
                 {loading ? "Authenticating Session..." : "Verify 2FA & Launch Dashboard"}
               </button>
             </div>

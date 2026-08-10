@@ -1,5 +1,5 @@
 /**
- * MediFlow Bilingual Language Engine (English & Urdu - اردو)
+ * MediFlow Complete Bilingual Language Engine (English & Urdu - اردو)
  * Multi-Tenant Medical Laboratory Reporting SaaS Platform
  */
 
@@ -18,6 +18,8 @@ export const translations = {
     staffLogin: "Staff Login",
     registerLab: "Register Lab",
     home: "Home",
+    cancel: "Cancel",
+    save: "Save",
 
     // Hero Homepage
     heroBadge: "Next-Gen ISO 15189 Multi-Tenant Medical Laboratory Information System (LIS)",
@@ -46,6 +48,34 @@ export const translations = {
     verifyingCredentials: "Verifying Credentials...",
     demoCodePrompt: "Demo Code:",
 
+    // New Report Form & Lab Booking
+    createReportTitle: "Create New Clinical Diagnostic Report",
+    createReportSubtitle: "Order entry with dynamic parameter creation and 1-click WHO standard sample templates",
+    loadWhoBattery: "Load Urology & WHO Accredited Sample Battery (1-Click)",
+    loadWhoDesc: "Click any Urology or WHO clinical template below to populate diagnostic parameters and reference ranges:",
+    selectPatientRecord: "Select Patient Record *",
+    selectBranchRecord: "Select Facility Branch *",
+    paymentBillingOptions: "Payment & Billing Options (Cash / Online / Bank)",
+    autoWhatsappReceipt: "AUTO WHATSAPP RECEIPT ACTIVE 📲",
+    paymentMethod: "Payment Method",
+    paymentStatusLabel: "Payment Status",
+    cashOption: "💵 Cash",
+    onlineOption: "💳 Online / Card / JazzCash",
+    bankOption: "🏦 Bank Transfer",
+    paidOption: "✅ Paid",
+    pendingOption: "⏳ Pending Payment",
+    totalFeeBilled: "Total Fee Billed (PKR)",
+    amountPaidLabel: "Amount Paid (PKR)",
+    reportParameters: "Report Parameter Battery",
+    parameterDesc: "Add custom test parameters dynamically or edit measurement units and WHO reference intervals",
+    addCustomParameter: "Add Custom Parameter",
+    parameterName: "Parameter / Analyte Name",
+    resultValueText: "Result Value / Text",
+    unitLabel: "Unit",
+    refInterval: "Ref Interval (WHO)",
+    flagStatus: "Flag Status",
+    saveAndGenerate: "Save Report & Dispatch Auto WhatsApp Receipt 📲",
+
     // Shared & Report Page
     backToSearch: "Back to Search",
     whatsappPdf: "WhatsApp PDF",
@@ -66,16 +96,15 @@ export const translations = {
     aiSummary: "AI Report Summary",
     pathologistSeal: "PATHOLOGIST SEAL",
 
-    // Payment & Registration
-    paymentMode: "Payment Method",
-    paymentStatus: "Payment Status",
-    paidCash: "Cash",
-    paidOnline: "Online / Card / JazzCash",
-    paidBank: "Bank Transfer",
-    paidStatus: "Paid",
-    pendingStatus: "Pending",
-    amountBilled: "Total Amount Billed",
-    amountPaid: "Amount Paid",
+    // Login & Register Pages
+    accountEmail: "Account Email Address",
+    password: "Password",
+    continue2FA: "Continue to 2FA Verification",
+    instantDemoAccess: "🚀 Instant Demo Laboratory Access (Skip Registration)",
+    labNameLabel: "Laboratory / Facility Name",
+    ownerNameLabel: "Lab Owner / Administrator Name",
+    cityLabel: "City / Location",
+    registerLabBtn: "Register Laboratory Workspace",
 
     // WhatsApp Alerts
     sendWhatsappReceipt: "Send WhatsApp Receipt",
@@ -105,6 +134,8 @@ export const translations = {
     staffLogin: "اسٹاف لاگ ان",
     registerLab: "نئی لیب بنائیں",
     home: "ہوم",
+    cancel: "منسوخ کریں",
+    save: "محفوظ کریں",
 
     // Hero Homepage
     heroBadge: "جدید ترین آئی ایس او 15189 ملٹی ٹیننٹ میڈیکل لیبارٹری انفارمیشن سسٹم (LIS)",
@@ -133,6 +164,34 @@ export const translations = {
     verifyingCredentials: "تصدیق کی جا رہی ہے...",
     demoCodePrompt: "ڈیمو کوڈ:",
 
+    // New Report Form & Lab Booking
+    createReportTitle: "نئی طبی ڈائیگنوسٹک رپورٹ بنائیں",
+    createReportSubtitle: "نئے ٹیسٹ درج کریں، فیس وصول کریں اور ایک کلک میں ڈبلیو ایچ او کی رپورٹس تیار کریں",
+    loadWhoBattery: "یورولوجی اور عالمی ادارہ صحت (WHO) کے ٹیسٹ لوڈ کریں (1-کلک)",
+    loadWhoDesc: "ٹیسٹ اور نارمل رینج درج کرنے کے لیے نیچے دیے گئے بٹن پر کلک کریں:",
+    selectPatientRecord: "مریض کا ریکارڈ منتخب کریں *",
+    selectBranchRecord: "لیبارٹری کی برانچ منتخب کریں *",
+    paymentBillingOptions: "ادائیگی اور لیب فیس کی تفصیلات (کیش / آن لائن / بینک)",
+    autoWhatsappReceipt: "خودکار واٹس ایپ رسید فعال ہے 📲",
+    paymentMethod: "ادائیگی کا طریقہ",
+    paymentStatusLabel: "ادائیگی کی صورتحال",
+    cashOption: "💵 نقد (کیش)",
+    onlineOption: "💳 آن لائن / کارڈ / جیز کیش",
+    bankOption: "🏦 بینک ٹرانسفر",
+    paidOption: "✅ ادا شدہ (مکمل)",
+    pendingOption: "⏳ بقایا (غیر ادا شدہ)",
+    totalFeeBilled: "کل لیب فیس (روپے)",
+    amountPaidLabel: "وصول شدہ رقم (روپے)",
+    reportParameters: "رپورٹ ٹیسٹ لسٹ",
+    parameterDesc: "نئے ٹیسٹ شامل کریں یا نتائج اور رینج کی اصلاح کریں",
+    addCustomParameter: "نیا ٹیسٹ شامل کریں",
+    parameterName: "ٹیسٹ / معائنے کا نام",
+    resultValueText: "ٹیسٹ کا نتیجہ (ویلیو)",
+    unitLabel: "یونٹ",
+    refInterval: "نارمل رینج (WHO)",
+    flagStatus: "سٹیٹس / تبدیلی",
+    saveAndGenerate: "رپورٹ محفوظ کریں اور واٹس ایپ پر رسید بھیجیں 📲",
+
     // Shared & Report Page
     backToSearch: "تلاش پر واپس جائیں",
     whatsappPdf: "واٹس ایپ پی ڈی ایف",
@@ -153,16 +212,15 @@ export const translations = {
     aiSummary: "خلاصہ رپورٹ (اے آئی)",
     pathologistSeal: "پیتھالوجسٹ کی دفتری مہر",
 
-    // Payment & Registration
-    paymentMode: "ادائیگی کا طریقہ",
-    paymentStatus: "ادائیگی کی صورتحال",
-    paidCash: "نقد (کیش)",
-    paidOnline: "آن لائن / کاؤنٹر",
-    paidBank: "بینک ٹرانسفر",
-    paidStatus: "ادا شدہ",
-    pendingStatus: "بقايا جات (بقایا)",
-    amountBilled: "کل لیب فیس",
-    amountPaid: "وصول شدہ رقم",
+    // Login & Register Pages
+    accountEmail: "ای میل ایڈریس",
+    password: "پاس ورڈ",
+    continue2FA: "پاس ورڈ تصدیق کریں (2FA)",
+    instantDemoAccess: "🚀 فوراً ڈیمو لیبارٹری کھولیں (بغیر رجسٹریشن کے)",
+    labNameLabel: "لیبارٹری / ادارے کا نام",
+    ownerNameLabel: "لیبارٹری مالکن / ایڈمن کا نام",
+    cityLabel: "شہر / لوکیشن",
+    registerLabBtn: "نئی لیبارٹری رجسٹر کریں",
 
     // WhatsApp Alerts
     sendWhatsappReceipt: "واٹس ایپ پر رسید بھیجیں",

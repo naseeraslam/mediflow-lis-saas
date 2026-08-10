@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, ShieldCheck, Sparkles, Check, FileText, User, Building2, FlaskConical, Award, CreditCard, DollarSign, MessageCircle } from "lucide-react";
+import { Plus, Trash2, ShieldCheck, Sparkles, FileText, User, Building2, FlaskConical, Award, CreditCard, MessageCircle } from "lucide-react";
 import { generateRegistrationWhatsAppMessage } from "@/lib/whatsapp";
+import { useLanguage } from "@/components/i18n/LanguageToggle";
 
 export interface PatientOpt {
   id: string;
@@ -92,6 +93,7 @@ export function NewReportForm({
   testCatalog: TestOpt[];
 }) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [selectedPatientId, setSelectedPatientId] = useState(patients[0]?.id || "");
   const [selectedBranchId, setSelectedBranchId] = useState(branches[0]?.id || "");
   const [notes, setNotes] = useState("Routine diagnostic wellness screening.");
@@ -238,14 +240,14 @@ export function NewReportForm({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5 text-teal-400" />
-            <h3 className="text-sm font-bold text-slate-100">Load Urology & WHO Accredited Sample Battery (1-Click)</h3>
+            <h3 className="text-sm font-bold text-slate-100">{t("loadWhoBattery")}</h3>
           </div>
           <span className="text-[10px] font-mono font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
             WHO Technical Reference Ranges
           </span>
         </div>
         <p className="text-xs text-slate-400">
-          Click any Urology or WHO clinical template below to populate diagnostic parameters and reference ranges:
+          {t("loadWhoDesc")}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
@@ -270,7 +272,7 @@ export function NewReportForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
         <div>
           <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-            <User className="w-4 h-4 text-teal-400" /> Select Patient Record *
+            <User className="w-4 h-4 text-teal-400" /> {t("selectPatientRecord")}
           </label>
           <select
             value={selectedPatientId}
@@ -288,7 +290,7 @@ export function NewReportForm({
 
         <div>
           <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-            <Building2 className="w-4 h-4 text-sky-400" /> Select Facility Branch *
+            <Building2 className="w-4 h-4 text-sky-400" /> {t("selectBranchRecord")}
           </label>
           <select
             value={selectedBranchId}
@@ -309,41 +311,41 @@ export function NewReportForm({
       <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">
           <h3 className="text-xs font-black text-teal-400 uppercase tracking-wider flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-teal-400" /> Payment & Billing Options (Cash / Online / Bank)
+            <CreditCard className="w-4 h-4 text-teal-400" /> {t("paymentBillingOptions")}
           </h3>
           <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-            AUTO WHATSAPP RECEIPT ACTIVE 📲
+            {t("autoWhatsappReceipt")}
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div>
-            <label className="block text-slate-400 font-semibold mb-1">Payment Method</label>
+            <label className="block text-slate-400 font-semibold mb-1">{t("paymentMethod")}</label>
             <select
               value={paymentMode}
               onChange={(e) => setPaymentMode(e.target.value as any)}
               className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-slate-100 font-bold focus:border-teal-500 outline-none"
             >
-              <option value="Cash">💵 Cash</option>
-              <option value="Online">💳 Online / Card / JazzCash</option>
-              <option value="Bank Transfer">🏦 Bank Transfer</option>
+              <option value="Cash">{t("cashOption")}</option>
+              <option value="Online">{t("onlineOption")}</option>
+              <option value="Bank Transfer">{t("bankOption")}</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-slate-400 font-semibold mb-1">Payment Status</label>
+            <label className="block text-slate-400 font-semibold mb-1">{t("paymentStatusLabel")}</label>
             <select
               value={paymentStatus}
               onChange={(e) => setPaymentStatus(e.target.value as any)}
               className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-slate-100 font-bold focus:border-teal-500 outline-none"
             >
-              <option value="Paid">✅ Paid</option>
-              <option value="Pending">⏳ Pending Payment</option>
+              <option value="Paid">{t("paidOption")}</option>
+              <option value="Pending">{t("pendingOption")}</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-slate-400 font-semibold mb-1">Total Fee Billed (PKR)</label>
+            <label className="block text-slate-400 font-semibold mb-1">{t("totalFeeBilled")}</label>
             <input
               type="number"
               value={amountBilled}
@@ -353,7 +355,7 @@ export function NewReportForm({
           </div>
 
           <div>
-            <label className="block text-slate-400 font-semibold mb-1">Amount Paid (PKR)</label>
+            <label className="block text-slate-400 font-semibold mb-1">{t("amountPaidLabel")}</label>
             <input
               type="number"
               value={amountPaid}
@@ -369,10 +371,10 @@ export function NewReportForm({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-bold text-teal-400 uppercase tracking-wider flex items-center gap-2">
-              <FlaskConical className="w-4 h-4" /> Report Parameter Battery ({parameters.length} Parameters)
+              <FlaskConical className="w-4 h-4" /> {t("reportParameters")} ({parameters.length} Parameters)
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              Add custom test parameters dynamically or edit measurement units and WHO reference intervals
+              {t("parameterDesc")}
             </p>
           </div>
 
@@ -381,7 +383,7 @@ export function NewReportForm({
             onClick={handleAddCustomParameter}
             className="px-3.5 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-colors"
           >
-            <Plus className="w-4 h-4 text-teal-400" /> Add Custom Parameter
+            <Plus className="w-4 h-4 text-teal-400" /> {t("addCustomParameter")}
           </button>
         </div>
 
@@ -407,7 +409,7 @@ export function NewReportForm({
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                 {/* Parameter Name */}
                 <div className="sm:col-span-4">
-                  <label className="block text-[10px] text-slate-400 mb-1">Parameter / Analyte Name</label>
+                  <label className="block text-[10px] text-slate-400 mb-1">{t("parameterName")}</label>
                   <input
                     type="text"
                     value={param.testName}
@@ -420,7 +422,7 @@ export function NewReportForm({
 
                 {/* Result Value */}
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-400 mb-1">Result Value / Text</label>
+                  <label className="block text-[10px] text-slate-400 mb-1">{t("resultValueText")}</label>
                   <input
                     type="text"
                     value={param.numericValue || param.stringValue}
@@ -441,7 +443,7 @@ export function NewReportForm({
 
                 {/* Unit */}
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-400 mb-1">Unit</label>
+                  <label className="block text-[10px] text-slate-400 mb-1">{t("unitLabel")}</label>
                   <input
                     type="text"
                     value={param.unit}
@@ -453,7 +455,7 @@ export function NewReportForm({
 
                 {/* Reference Range */}
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-400 mb-1">Ref Interval (WHO)</label>
+                  <label className="block text-[10px] text-slate-400 mb-1">{t("refInterval")}</label>
                   <input
                     type="text"
                     value={param.refRange}
@@ -465,7 +467,7 @@ export function NewReportForm({
 
                 {/* Flag */}
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-400 mb-1">Flag Status</label>
+                  <label className="block text-[10px] text-slate-400 mb-1">{t("flagStatus")}</label>
                   <select
                     value={param.flag}
                     onChange={(e) => handleUpdateParameter(index, "flag", e.target.value)}
@@ -490,7 +492,7 @@ export function NewReportForm({
           onClick={() => router.push("/app/reports")}
           className="px-5 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-400 text-xs font-semibold hover:bg-slate-800 transition-colors"
         >
-          Cancel
+          {t("cancel")}
         </button>
 
         <button
@@ -499,7 +501,7 @@ export function NewReportForm({
           className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-sky-400 text-slate-950 font-black text-xs shadow-xl shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center gap-2 cursor-pointer"
         >
           <MessageCircle className="w-4 h-4 fill-slate-950" />
-          <span>{submitting ? "Processing Booking..." : "Save Report & Dispatch Auto WhatsApp Receipt 📲"}</span>
+          <span>{submitting ? "Processing Booking..." : t("saveAndGenerate")}</span>
         </button>
       </div>
     </form>
