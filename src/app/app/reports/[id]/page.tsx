@@ -129,9 +129,9 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
       )}
 
       {/* DIRECT LAB CONTACT CARD FOR PATIENTS */}
-      <div className="bg-gradient-to-r from-teal-950/30 via-slate-900 to-sky-950/30 border border-teal-500/30 rounded-2xl p-5 space-y-3 shadow-xl">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-2.5 text-xs">
-          <div className="flex items-center gap-2 font-bold text-slate-200">
+      <div className="bg-teal-50/80 dark:bg-slate-950/90 border border-teal-200 dark:border-teal-500/30 rounded-2xl p-5 space-y-3 shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5 text-xs">
+          <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-200">
             <Building2 className="w-4 h-4 text-teal-400" /> Patient Support & Direct Laboratory Desk
           </div>
           <span className="text-[10px] text-teal-400 font-mono font-semibold">FACILITY: {organization.displayName}</span>

@@ -254,15 +254,15 @@ export function NewReportForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl text-slate-100">
+    <form onSubmit={handleSubmit} className="space-y-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl text-slate-900 dark:text-slate-100">
       {/* 2-STEP WORKFLOW MODE SELECTOR (Patient Registration vs Full Diagnostic Entry) */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-teal-950/60 via-slate-900 to-sky-950/60 border border-teal-500/40 space-y-3">
+      <div className="p-5 rounded-2xl bg-teal-50/80 dark:bg-slate-950/90 border border-teal-200 dark:border-teal-500/40 space-y-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FlaskConical className="w-5 h-5 text-teal-400" />
-            <h3 className="text-sm font-black text-slate-100 uppercase tracking-wider">Select Laboratory Workflow Mode</h3>
+            <FlaskConical className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <h3 className="text-sm font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider">Select Laboratory Workflow Mode</h3>
           </div>
-          <span className="text-[10px] font-mono font-bold text-teal-300 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/30">
+          <span className="text-[10px] font-mono font-bold text-teal-800 dark:text-teal-300 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/30">
             2-STEP CLINICAL WORKFLOW
           </span>
         </div>
@@ -273,15 +273,15 @@ export function NewReportForm({
             onClick={() => setWorkflowStep("registration_only")}
             className={`p-4 rounded-xl border text-left transition-all space-y-1.5 cursor-pointer ${
               workflowStep === "registration_only"
-                ? "bg-teal-500/20 border-teal-400 text-teal-200 shadow-lg shadow-teal-500/10 ring-2 ring-teal-400/30"
-                : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+                ? "bg-teal-500/10 dark:bg-teal-500/20 border-teal-500 text-teal-950 dark:text-teal-200 shadow-md ring-2 ring-teal-500/30"
+                : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700"
             }`}
           >
-            <div className="text-xs font-bold text-slate-100 flex items-center justify-between">
+            <div className="text-xs font-extrabold text-slate-900 dark:text-slate-100 flex items-center justify-between">
               <span>Step 1: Patient Sample Registration Only</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/20 text-teal-300">Results Pending</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/20 text-teal-800 dark:text-teal-300">Results Pending</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
               Register patient & booked tests when patient arrives. Sends WhatsApp Booking Receipt. Results will be uploaded later.
             </p>
           </button>
@@ -291,32 +291,33 @@ export function NewReportForm({
             onClick={() => setWorkflowStep("full_results")}
             className={`p-4 rounded-xl border text-left transition-all space-y-1.5 cursor-pointer ${
               workflowStep === "full_results"
-                ? "bg-emerald-500/20 border-emerald-400 text-emerald-200 shadow-lg shadow-emerald-500/10 ring-2 ring-emerald-400/30"
-                : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+                ? "bg-emerald-500/10 dark:bg-emerald-500/20 border-emerald-500 text-emerald-950 dark:text-emerald-200 shadow-md ring-2 ring-emerald-500/30"
+                : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700"
             }`}
           >
-            <div className="text-xs font-bold text-slate-100 flex items-center justify-between">
+            <div className="text-xs font-extrabold text-slate-900 dark:text-slate-100 flex items-center justify-between">
               <span>Step 2: Full Entry (Results Ready Immediately)</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Authorized</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-800 dark:text-emerald-300">Authorized</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
               Enter test values & reference ranges immediately. Authorizes report & dispatches WhatsApp Verified PDF Report.
             </p>
           </button>
         </div>
       </div>
+
       {/* WHO / UROLOGY SAMPLE TEMPLATES 1-CLICK LOADER */}
-      <div className="p-5 rounded-xl bg-gradient-to-r from-teal-950/40 via-slate-950 to-sky-950/40 border border-teal-500/30 space-y-3">
+      <div className="p-5 rounded-xl bg-sky-50/80 dark:bg-slate-950/90 border border-sky-200 dark:border-sky-500/30 space-y-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-teal-400" />
-            <h3 className="text-sm font-bold text-slate-100">{t("loadWhoBattery")}</h3>
+            <Award className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("loadWhoBattery")}</h3>
           </div>
-          <span className="text-[10px] font-mono font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
+          <span className="text-[10px] font-mono font-bold text-sky-800 dark:text-sky-300 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
             WHO Technical Reference Ranges
           </span>
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
           {t("loadWhoDesc")}
         </p>
 
@@ -326,13 +327,13 @@ export function NewReportForm({
               key={tmpl.code}
               type="button"
               onClick={() => loadWHOTemplate(tmpl.code)}
-              className="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-teal-500/50 text-left transition-all space-y-1 group"
+              className="p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 hover:border-teal-500 text-left transition-all space-y-1 group shadow-sm"
             >
-              <div className="text-xs font-bold text-slate-200 group-hover:text-teal-300 flex items-center justify-between">
+              <div className="text-xs font-bold text-slate-900 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-300 flex items-center justify-between">
                 <span className="truncate max-w-[170px]">{tmpl.name}</span>
-                <Sparkles className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                <Sparkles className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
               </div>
-              <div className="text-[10px] text-slate-400 font-mono truncate">{tmpl.source}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">{tmpl.source}</div>
             </button>
           ))}
         </div>
@@ -341,14 +342,14 @@ export function NewReportForm({
       {/* Patient & Branch Metadata */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
         <div>
-          <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-            <User className="w-4 h-4 text-teal-400" /> {t("selectPatientRecord")}
+          <label className="block text-slate-800 dark:text-slate-300 font-bold mb-1 flex items-center gap-1.5">
+            <User className="w-4 h-4 text-teal-600 dark:text-teal-400" /> {t("selectPatientRecord")}
           </label>
           <select
             value={selectedPatientId}
             onChange={(e) => setSelectedPatientId(e.target.value)}
             required
-            className="w-full p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-100 font-semibold focus:border-teal-500 outline-none"
+            className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none shadow-sm"
           >
             {patients.map((p) => (
               <option key={p.id} value={p.id}>
@@ -359,14 +360,14 @@ export function NewReportForm({
         </div>
 
         <div>
-          <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-            <Building2 className="w-4 h-4 text-sky-400" /> {t("selectBranchRecord")}
+          <label className="block text-slate-800 dark:text-slate-300 font-bold mb-1 flex items-center gap-1.5">
+            <Building2 className="w-4 h-4 text-sky-600 dark:text-sky-400" /> {t("selectBranchRecord")}
           </label>
           <select
             value={selectedBranchId}
             onChange={(e) => setSelectedBranchId(e.target.value)}
             required
-            className="w-full p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-100 font-semibold focus:border-teal-500 outline-none"
+            className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none shadow-sm"
           >
             {branches.map((b) => (
               <option key={b.id} value={b.id}>
@@ -378,23 +379,23 @@ export function NewReportForm({
       </div>
 
       {/* PAYMENT & BILLING OPTIONS (Cash, Online, Bank Transfer) */}
-      <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h3 className="text-xs font-black text-teal-400 uppercase tracking-wider flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-teal-400" /> {t("paymentBillingOptions")}
+      <div className="p-5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h3 className="text-xs font-black text-teal-700 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-teal-600 dark:text-teal-400" /> {t("paymentBillingOptions")}
           </h3>
-          <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+          <span className="text-[10px] font-mono text-emerald-800 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
             {t("autoWhatsappReceipt")}
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div>
-            <label className="block text-slate-400 font-semibold mb-1">{t("paymentMethod")}</label>
+            <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">{t("paymentMethod")}</label>
             <select
               value={paymentMode}
               onChange={(e) => setPaymentMode(e.target.value as any)}
-              className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-slate-100 font-bold focus:border-teal-500 outline-none"
+              className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold focus:border-teal-500 outline-none shadow-sm"
             >
               <option value="Cash">{t("cashOption")}</option>
               <option value="Online">{t("onlineOption")}</option>
@@ -403,11 +404,11 @@ export function NewReportForm({
           </div>
 
           <div>
-            <label className="block text-slate-400 font-semibold mb-1">{t("paymentStatusLabel")}</label>
+            <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">{t("paymentStatusLabel")}</label>
             <select
               value={paymentStatus}
               onChange={(e) => setPaymentStatus(e.target.value as any)}
-              className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-slate-100 font-bold focus:border-teal-500 outline-none"
+              className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold focus:border-teal-500 outline-none shadow-sm"
             >
               <option value="Paid">{t("paidOption")}</option>
               <option value="Pending">{t("pendingOption")}</option>
@@ -415,22 +416,22 @@ export function NewReportForm({
           </div>
 
           <div>
-            <label className="block text-slate-400 font-semibold mb-1">{t("totalFeeBilled")}</label>
+            <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">{t("totalFeeBilled")}</label>
             <input
               type="number"
               value={amountBilled}
               onChange={(e) => setAmountBilled(Number(e.target.value))}
-              className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-teal-300 font-mono font-bold focus:border-teal-500 outline-none"
+              className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 text-teal-700 dark:text-teal-300 font-mono font-bold focus:border-teal-500 outline-none shadow-sm"
             />
           </div>
 
           <div>
-            <label className="block text-slate-400 font-semibold mb-1">{t("amountPaidLabel")}</label>
+            <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">{t("amountPaidLabel")}</label>
             <input
               type="number"
               value={amountPaid}
               onChange={(e) => setAmountPaid(Number(e.target.value))}
-              className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-emerald-400 font-mono font-bold focus:border-teal-500 outline-none"
+              className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 text-emerald-700 dark:text-emerald-400 font-mono font-bold focus:border-teal-500 outline-none shadow-sm"
             />
           </div>
         </div>
@@ -460,16 +461,16 @@ export function NewReportForm({
         {/* Dynamic Parameter Rows */}
         <div className="space-y-3">
           {parameters.map((param, index) => (
-            <div key={index} className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3 text-xs">
+            <div key={index} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 text-xs shadow-sm">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold text-teal-400 uppercase">
+                <span className="text-[10px] font-mono font-bold text-teal-700 dark:text-teal-400 uppercase">
                   Parameter #{index + 1}
                 </span>
                 {parameters.length > 1 && (
                   <button
                     type="button"
                     onClick={() => handleRemoveParameter(index)}
-                    className="text-rose-400 hover:text-rose-300 text-xs font-semibold flex items-center gap-1"
+                    className="text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 text-xs font-semibold flex items-center gap-1"
                   >
                     <Trash2 className="w-3.5 h-3.5" /> Remove
                   </button>
@@ -479,20 +480,20 @@ export function NewReportForm({
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                 {/* Parameter Name */}
                 <div className="sm:col-span-4">
-                  <label className="block text-[10px] text-slate-400 mb-1">{t("parameterName")}</label>
+                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("parameterName")}</label>
                   <input
                     type="text"
                     value={param.testName}
                     onChange={(e) => handleUpdateParameter(index, "testName", e.target.value)}
                     required
                     placeholder="Parameter Name"
-                    className="w-full p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-slate-100 font-semibold focus:border-teal-500 outline-none text-xs"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none text-xs shadow-sm"
                   />
                 </div>
 
                 {/* Result Value */}
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-400 mb-1">{t("resultValueText")}</label>
+                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("resultValueText")}</label>
                   <input
                     type="text"
                     value={param.numericValue || param.stringValue}
@@ -507,41 +508,41 @@ export function NewReportForm({
                       }
                     }}
                     placeholder="Value (e.g. 24.5 or Normal)"
-                    className="w-full p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-slate-100 font-bold font-mono focus:border-teal-500 outline-none text-xs"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
                   />
                 </div>
 
                 {/* Unit */}
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-400 mb-1">{t("unitLabel")}</label>
+                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("unitLabel")}</label>
                   <input
                     type="text"
                     value={param.unit}
                     onChange={(e) => handleUpdateParameter(index, "unit", e.target.value)}
                     placeholder="Unit"
-                    className="w-full p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-slate-300 font-mono focus:border-teal-500 outline-none text-xs"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
                   />
                 </div>
 
                 {/* Reference Range */}
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-400 mb-1">{t("refInterval")}</label>
+                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("refInterval")}</label>
                   <input
                     type="text"
                     value={param.refRange}
                     onChange={(e) => handleUpdateParameter(index, "refRange", e.target.value)}
                     placeholder="Ref Range"
-                    className="w-full p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-slate-300 font-mono focus:border-teal-500 outline-none text-xs"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
                   />
                 </div>
 
                 {/* Flag */}
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-400 mb-1">{t("flagStatus")}</label>
+                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("flagStatus")}</label>
                   <select
                     value={param.flag}
                     onChange={(e) => handleUpdateParameter(index, "flag", e.target.value)}
-                    className="w-full p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-slate-200 font-bold focus:border-teal-500 outline-none text-xs"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold focus:border-teal-500 outline-none text-xs shadow-sm"
                   >
                     <option value="Normal">Normal</option>
                     <option value="High">High ↑</option>
@@ -556,11 +557,11 @@ export function NewReportForm({
       </div>
 
       {/* Submit Button */}
-      <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-800">
+      <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
         <button
           type="button"
           onClick={() => router.push("/app/reports")}
-          className="px-5 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-400 text-xs font-semibold hover:bg-slate-800 transition-colors"
+          className="px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-400 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
         >
           {t("cancel")}
         </button>
