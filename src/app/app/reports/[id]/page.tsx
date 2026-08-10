@@ -120,7 +120,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
 
       {/* STEP 1 PENDING RESULTS BANNER */}
       {report.status !== "Authorized" && report.status !== "Amended" && (
-        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-amber-300">
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-amber-300 no-print">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shrink-0 shadow-lg">
               🧪
@@ -136,7 +136,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
       )}
 
       {/* DIRECT LAB CONTACT CARD FOR PATIENTS */}
-      <div className="bg-teal-50/80 dark:bg-slate-950/90 border border-teal-200 dark:border-teal-500/30 rounded-2xl p-5 space-y-3 shadow-xl">
+      <div className="bg-teal-50/80 dark:bg-slate-950/90 border border-teal-200 dark:border-teal-500/30 rounded-2xl p-5 space-y-3 shadow-xl no-print">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5 text-xs">
           <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-200">
             <Building2 className="w-4 h-4 text-teal-400" /> Patient Support & Direct Laboratory Desk
