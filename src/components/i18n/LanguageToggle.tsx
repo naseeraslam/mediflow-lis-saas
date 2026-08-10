@@ -60,11 +60,11 @@ export function LanguageToggle() {
   const { language, setLanguage } = useContext(LanguageContext);
 
   return (
-    <div className="inline-flex items-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-0.5 shadow-sm text-xs font-bold shrink-0">
+    <div className="inline-flex items-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-0.5 shadow-sm text-[10px] sm:text-xs font-bold shrink-0">
       <button
         type="button"
         onClick={() => setLanguage("en")}
-        className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+        className={`px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
           language === "en"
             ? "bg-teal-600 text-white shadow-sm"
             : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
@@ -75,7 +75,7 @@ export function LanguageToggle() {
       <button
         type="button"
         onClick={() => setLanguage("ur")}
-        className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 font-sans ${
+        className={`px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
           language === "ur"
             ? "bg-teal-600 text-white shadow-sm font-extrabold"
             : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-bold"
