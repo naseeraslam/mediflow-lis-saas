@@ -34,6 +34,9 @@ export async function PUT(req: Request) {
       footerText,
       disclaimerText,
       founderName,
+      technicianName,
+      technicianTitle,
+      pathologistTitle,
     } = body;
 
     const updatedOrg = await db.organization.update({
@@ -55,6 +58,9 @@ export async function PUT(req: Request) {
         footerText: footerText !== undefined ? footerText : org.footerText,
         disclaimerText: disclaimerText !== undefined ? disclaimerText : org.disclaimerText,
         founderName: founderName || org.founderName,
+        technicianName: technicianName || org.technicianName,
+        technicianTitle: technicianTitle || org.technicianTitle,
+        pathologistTitle: pathologistTitle || org.pathologistTitle,
       },
     });
 

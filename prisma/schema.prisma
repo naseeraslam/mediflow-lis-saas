@@ -37,6 +37,9 @@ model Organization {
   footerText      String?
   disclaimerText  String?
   founderName     String   @default("Sher Muhammad")
+  technicianName  String   @default("Sher Muhammad")
+  technicianTitle String   @default("Senior Medical Technologist")
+  pathologistTitle String  @default("Chief Pathologist")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

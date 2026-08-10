@@ -139,8 +139,47 @@ export function PatientManager({ initialPatients }: { initialPatients: PatientIt
     }
   }
 
+  const [merging, setMerging] = useState(false);
+  const [mergeStatus, setMergeStatus] = useState<string | null>(null);
+
+  async function handleMergeDuplicates() {
+    if (!confirm("Are you sure you want to merge all duplicate patient profiles sharing the same phone number into single master profiles?")) {
+      return;
+    }
+
+    setMerging(true);
+    setMergeStatus(null);
+
+    try {
+      const res = await fetch("/api/patients/merge", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        setMergeStatus(`✅ ${data.message}`);
+        setTimeout(() => setMergeStatus(null), 5000);
+        router.refresh();
+        window.location.reload();
+      } else {
+        alert(data.error || "Failed to merge duplicate records.");
+      }
+    } catch (err) {
+      alert("Network error during patient merge.");
+    } finally {
+      setMerging(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
+      {mergeStatus && (
+        <div className="p-4 bg-teal-500/10 border border-teal-500/30 rounded-xl text-teal-700 dark:text-teal-300 text-xs font-bold flex items-center justify-between">
+          <span>{mergeStatus}</span>
+          <button onClick={() => setMergeStatus(null)} className="text-teal-500 hover:text-teal-700">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Action Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -153,12 +192,24 @@ export function PatientManager({ initialPatients }: { initialPatients: PatientIt
           </p>
         </div>
 
-        <button
-          onClick={openCreateModal}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-black text-xs hover:from-teal-300 hover:to-sky-300 transition-all shadow-lg shadow-teal-500/20 flex items-center justify-center gap-2 shrink-0 cursor-pointer"
-        >
-          <UserPlus className="w-4 h-4 fill-slate-950" /> Register New Patient
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleMergeDuplicates}
+            disabled={merging}
+            className="px-3.5 py-2.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-800 dark:text-teal-300 text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
+          >
+            <Users className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+            {merging ? "Merging Duplicates..." : "🔀 Merge Duplicates by Phone"}
+          </button>
+
+          <button
+            onClick={openCreateModal}
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-black text-xs hover:from-teal-300 hover:to-sky-300 transition-all shadow-lg shadow-teal-500/20 flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+          >
+            <UserPlus className="w-4 h-4 fill-slate-950" /> Register New Patient
+          </button>
+        </div>
       </div>
 
       {/* Filter & Search Bar */}

@@ -44,6 +44,49 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Patient Full Name, Gender, and Phone Number are required." }, { status: 400 });
     }
 
+    const cleanPhone = phone.replace(/[^0-9+]/g, "").trim();
+
+    // PHONE-BASED PATIENT DEDUPLICATION & MERGE CHECK
+    const existingPatient = await db.patient.findFirst({
+      where: {
+        orgId: org.id,
+        OR: [
+          { phone: phone.trim() },
+          { phone: cleanPhone },
+          { phone: phone.replace(/^\+/, "") },
+        ],
+      },
+    });
+
+    if (existingPatient) {
+      // Auto-update existing patient record with latest full name if expanded
+      const updatedPatient = await db.patient.update({
+        where: { id: existingPatient.id },
+        data: {
+          fullName: fullName.length > existingPatient.fullName.length ? fullName : existingPatient.fullName,
+          dateOfBirth: dateOfBirth && dateOfBirth !== "1990-01-01" ? dateOfBirth : existingPatient.dateOfBirth,
+          gender: gender || existingPatient.gender,
+          address: address || existingPatient.address,
+          email: email || existingPatient.email,
+        },
+      });
+
+      // Audit Log for Patient Re-use
+      await db.auditLog.create({
+        data: {
+          orgId: org.id,
+          userId: session?.userId || null,
+          userEmail: session?.email || "Reception Desk",
+          action: "patient.reuse",
+          entity: "Patient",
+          entityId: updatedPatient.id,
+          details: `Reused existing patient record ${updatedPatient.fullName} (${updatedPatient.mrn}) matched by phone ${phone}`,
+        },
+      });
+
+      return NextResponse.json({ success: true, patient: updatedPatient, isExistingMerged: true });
+    }
+
     // Auto-generate MRN if not provided
     const generatedMrn = mrn || `MRN-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
