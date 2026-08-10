@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Shield, Lock, UserPlus, Search, Microscope, Dna, HeartPulse, Award, Sparkles, FlaskConical, Menu, X } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeProvider";
+import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 
 export function PublicNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -77,7 +78,8 @@ export function PublicNavbar() {
           </nav>
 
           {/* Right Action Bar (Mobile Responsive) */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            <LanguageToggle />
             <ThemeToggle />
 
             {/* Desktop Only Buttons (>= sm) */}

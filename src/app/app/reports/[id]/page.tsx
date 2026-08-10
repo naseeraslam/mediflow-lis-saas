@@ -17,7 +17,9 @@ import {
   Phone,
   Mail,
   MapPin,
+  Award,
 } from "lucide-react";
+import { generateCompletionWhatsAppMessage } from "@/lib/whatsapp";
 
 export default async function ReportDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,6 +31,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
       branch: true,
       doctor: true,
       organization: true,
+      shares: true,
       results: {
         include: {
           test: true,
@@ -79,6 +82,23 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
         </div>
 
         <div className="flex items-center gap-3 no-print">
+          <a
+            href={
+              generateCompletionWhatsAppMessage({
+                patientName: patient.fullName,
+                patientPhone: patient.phone || "+923001234567",
+                reportNumber: report.reportNumber,
+                labName: organization.displayName,
+                shareToken: report.shares?.[0]?.shareToken || report.id,
+                verificationToken: report.verificationToken,
+              }).whatsappUrl
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-extrabold flex items-center gap-1.5 transition-colors shadow-sm whitespace-nowrap"
+          >
+            <MessageCircle className="w-4 h-4 text-emerald-400" /> Dispatch WhatsApp PDF
+          </a>
           <PrintPdfButton reportNumber={report.reportNumber} />
           <ShareModal reportId={report.id} reportNumber={report.reportNumber} />
 

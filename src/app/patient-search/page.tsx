@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { PublicNavbar } from "@/components/public/Navbar";
 import { PublicFooter } from "@/components/public/Footer";
+import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { Search, Phone, ShieldCheck, FileText, Building2, Lock, AlertTriangle, KeyRound } from "lucide-react";
 
 export default function PatientSearchPage() {
@@ -49,8 +50,11 @@ export default function PatientSearchPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-16 space-y-8">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-semibold">
-            <Lock className="w-3.5 h-3.5 text-teal-400" /> Dual-Factor Patient Privacy Protection Active
+          <div className="flex items-center justify-center gap-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-semibold">
+              <Lock className="w-3.5 h-3.5 text-teal-400" /> Dual-Factor Patient Privacy Protection Active
+            </div>
+            <LanguageToggle />
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100">
             Secure Patient Report Verification Portal

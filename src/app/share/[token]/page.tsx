@@ -2,8 +2,10 @@ import Link from "next/link";
 import { validateShareToken } from "@/lib/sharing";
 import { PrintPdfButton } from "@/components/report/PrintPdfButton";
 import { ThemeToggle } from "@/components/theme/ThemeProvider";
+import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { PatientAiSummaryModal } from "@/components/report/PatientAiSummaryModal";
 import { AnalyteTrendGraph } from "@/components/report/AnalyteTrendGraph";
+import { generateCompletionWhatsAppMessage } from "@/lib/whatsapp";
 import {
   ShieldCheck,
   ShieldAlert,
@@ -102,8 +104,26 @@ export default async function PublicSharedReportPage({
             </Link>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <LanguageToggle />
             <ThemeToggle />
+            <a
+              href={
+                generateCompletionWhatsAppMessage({
+                  patientName: patient.fullName,
+                  patientPhone: patient.phone || "+923001234567",
+                  reportNumber: report.reportNumber,
+                  labName: organization.displayName,
+                  shareToken: token,
+                  verificationToken: report.verificationToken,
+                }).whatsappUrl
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm whitespace-nowrap"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> WhatsApp PDF
+            </a>
             <PatientAiSummaryModal
               patientName={patient.fullName}
               reportNumber={report.reportNumber}

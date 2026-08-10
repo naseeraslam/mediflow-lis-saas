@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, ShieldCheck, Sparkles, Check, FileText, User, Building2, FlaskConical, Award } from "lucide-react";
+import { Plus, Trash2, ShieldCheck, Sparkles, Check, FileText, User, Building2, FlaskConical, Award, CreditCard, DollarSign, MessageCircle } from "lucide-react";
+import { generateRegistrationWhatsAppMessage } from "@/lib/whatsapp";
 
 export interface PatientOpt {
   id: string;
@@ -10,6 +11,7 @@ export interface PatientOpt {
   mrn: string;
   gender: string;
   dateOfBirth: string;
+  phone?: string;
 }
 
 export interface BranchOpt {
@@ -95,6 +97,12 @@ export function NewReportForm({
   const [notes, setNotes] = useState("Routine diagnostic wellness screening.");
   const [submitting, setSubmitting] = useState(false);
 
+  // Billing & Payment State
+  const [paymentMode, setPaymentMode] = useState<"Cash" | "Online" | "Bank Transfer">("Cash");
+  const [paymentStatus, setPaymentStatus] = useState<"Paid" | "Pending">("Paid");
+  const [amountBilled, setAmountBilled] = useState<number>(3500);
+  const [amountPaid, setAmountPaid] = useState<number>(3500);
+
   // Dynamic parameters array
   const [parameters, setParameters] = useState<
     Array<{
@@ -117,6 +125,9 @@ export function NewReportForm({
       flag: "Normal",
     }))
   );
+
+  // Selected Patient Details
+  const selectedPatient = patients.find((p) => p.id === selectedPatientId) || patients[0];
 
   // 1-Click Load WHO / Urology Sample Template
   function loadWHOTemplate(tmplCode: string) {
@@ -167,7 +178,7 @@ export function NewReportForm({
     setParameters(copy);
   }
 
-  // Submit Form
+  // Submit Form & Trigger WhatsApp Booking Receipt
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
@@ -179,7 +190,7 @@ export function NewReportForm({
         body: JSON.stringify({
           patientId: selectedPatientId,
           branchId: selectedBranchId,
-          notes,
+          notes: `${notes} [Payment: ${paymentMode} - ${paymentStatus} (${amountPaid} PKR)]`,
           testResults: parameters.map((p) => ({
             testId: p.testId,
             testName: p.testName,
@@ -193,7 +204,24 @@ export function NewReportForm({
       });
 
       const data = await res.json();
-      if (data.success) {
+      if (data.success && data.report) {
+        // Automatic WhatsApp Receipt Prompt
+        if (selectedPatient?.phone) {
+          const { whatsappUrl } = generateRegistrationWhatsAppMessage({
+            patientName: selectedPatient.fullName,
+            patientPhone: selectedPatient.phone,
+            mrn: selectedPatient.mrn,
+            reportNumber: data.report.reportNumber,
+            labName: "Apex Demo Diagnostics",
+            paymentMode,
+            paymentStatus,
+            amountPaid,
+            currency: "PKR",
+          });
+          // Auto Open WhatsApp dispatch tab
+          window.open(whatsappUrl, "_blank");
+        }
+
         router.push(`/app/reports/${data.report.id}`);
       }
     } catch (err) {
@@ -204,7 +232,7 @@ export function NewReportForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+    <form onSubmit={handleSubmit} className="space-y-8 bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl text-slate-100">
       {/* WHO / UROLOGY SAMPLE TEMPLATES 1-CLICK LOADER */}
       <div className="p-5 rounded-xl bg-gradient-to-r from-teal-950/40 via-slate-950 to-sky-950/40 border border-teal-500/30 space-y-3">
         <div className="flex items-center justify-between">
@@ -274,6 +302,65 @@ export function NewReportForm({
               </option>
             ))}
           </select>
+        </div>
+      </div>
+
+      {/* PAYMENT & BILLING OPTIONS (Cash, Online, Bank Transfer) */}
+      <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 className="text-xs font-black text-teal-400 uppercase tracking-wider flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-teal-400" /> Payment & Billing Options (Cash / Online / Bank)
+          </h3>
+          <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+            AUTO WHATSAPP RECEIPT ACTIVE 📲
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <div>
+            <label className="block text-slate-400 font-semibold mb-1">Payment Method</label>
+            <select
+              value={paymentMode}
+              onChange={(e) => setPaymentMode(e.target.value as any)}
+              className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-slate-100 font-bold focus:border-teal-500 outline-none"
+            >
+              <option value="Cash">💵 Cash</option>
+              <option value="Online">💳 Online / Card / JazzCash</option>
+              <option value="Bank Transfer">🏦 Bank Transfer</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-slate-400 font-semibold mb-1">Payment Status</label>
+            <select
+              value={paymentStatus}
+              onChange={(e) => setPaymentStatus(e.target.value as any)}
+              className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-slate-100 font-bold focus:border-teal-500 outline-none"
+            >
+              <option value="Paid">✅ Paid</option>
+              <option value="Pending">⏳ Pending Payment</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-slate-400 font-semibold mb-1">Total Fee Billed (PKR)</label>
+            <input
+              type="number"
+              value={amountBilled}
+              onChange={(e) => setAmountBilled(Number(e.target.value))}
+              className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-teal-300 font-mono font-bold focus:border-teal-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-400 font-semibold mb-1">Amount Paid (PKR)</label>
+            <input
+              type="number"
+              value={amountPaid}
+              onChange={(e) => setAmountPaid(Number(e.target.value))}
+              className="w-full p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-emerald-400 font-mono font-bold focus:border-teal-500 outline-none"
+            />
+          </div>
         </div>
       </div>
 
@@ -409,10 +496,10 @@ export function NewReportForm({
         <button
           type="submit"
           disabled={submitting}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center gap-2"
+          className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-sky-400 text-slate-950 font-black text-xs shadow-xl shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center gap-2 cursor-pointer"
         >
-          <ShieldCheck className="w-4 h-4" />
-          {submitting ? "Generating Authorized Report..." : "Save & Generate Clinical Report"}
+          <MessageCircle className="w-4 h-4 fill-slate-950" />
+          <span>{submitting ? "Processing Booking..." : "Save Report & Dispatch Auto WhatsApp Receipt 📲"}</span>
         </button>
       </div>
     </form>
