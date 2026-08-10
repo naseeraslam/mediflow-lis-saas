@@ -437,124 +437,203 @@ export function NewReportForm({
         </div>
       </div>
 
-      {/* DYNAMIC PARAMETERS ENTRY BATTERY */}
-      <div className="space-y-4 pt-4 border-t border-slate-800">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-bold text-teal-400 uppercase tracking-wider flex items-center gap-2">
-              <FlaskConical className="w-4 h-4" /> {t("reportParameters")} ({parameters.length} Parameters)
-            </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              {t("parameterDesc")}
-            </p>
+      {/* WORKFLOW-BASED TEST / PARAMETER BATTERY */}
+      {workflowStep === "registration_only" ? (
+        /* STEP 1: PATIENT SAMPLE BOOKED TESTS SELECTOR (TEST NAME ONLY) */
+        <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2">
+                <FlaskConical className="w-4 h-4" /> Booked Diagnostic Test Battery ({parameters.length} Tests)
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+                Select test names registered for this patient booking. Result values will be entered later.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddCustomParameter}
+              className="px-3.5 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-800 dark:text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+            >
+              <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Add Booked Test
+            </button>
           </div>
 
-          <button
-            type="button"
-            onClick={handleAddCustomParameter}
-            className="px-3.5 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-colors"
-          >
-            <Plus className="w-4 h-4 text-teal-400" /> {t("addCustomParameter")}
-          </button>
-        </div>
+          {/* Booked Test Name Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {parameters.map((param, index) => (
+              <div key={index} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2 text-xs shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold text-teal-700 dark:text-teal-400 uppercase">
+                    Test #{index + 1}
+                  </span>
+                  {parameters.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveParameter(index)}
+                      className="text-rose-600 dark:text-rose-400 hover:text-rose-700 text-xs font-semibold flex items-center gap-1"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Remove
+                    </button>
+                  )}
+                </div>
 
-        {/* Dynamic Parameter Rows */}
-        <div className="space-y-3">
-          {parameters.map((param, index) => (
-            <div key={index} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 text-xs shadow-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold text-teal-700 dark:text-teal-400 uppercase">
-                  Parameter #{index + 1}
-                </span>
-                {parameters.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveParameter(index)}
-                    className="text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 text-xs font-semibold flex items-center gap-1"
+                <div>
+                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">Booked Test Name *</label>
+                  <select
+                    value={testCatalog.find((t) => t.name === param.testName)?.id || ""}
+                    onChange={(e) => {
+                      const selectedTc = testCatalog.find((tc) => tc.id === e.target.value);
+                      if (selectedTc) {
+                        handleUpdateParameter(index, "testName", selectedTc.name);
+                        handleUpdateParameter(index, "unit", selectedTc.unit);
+                        handleUpdateParameter(index, "refRange", selectedTc.refRangeMale);
+                      }
+                    }}
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold text-xs shadow-sm focus:border-teal-500 outline-none mb-2"
                   >
-                    <Trash2 className="w-3.5 h-3.5" /> Remove
-                  </button>
-                )}
-              </div>
+                    <option value="">-- Select Test from Catalog --</option>
+                    {testCatalog.map((tc) => (
+                      <option key={tc.id} value={tc.id}>
+                        {tc.name} ({tc.category})
+                      </option>
+                    ))}
+                  </select>
 
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                {/* Parameter Name */}
-                <div className="sm:col-span-4">
-                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("parameterName")}</label>
                   <input
                     type="text"
                     value={param.testName}
                     onChange={(e) => handleUpdateParameter(index, "testName", e.target.value)}
                     required
-                    placeholder="Parameter Name"
+                    placeholder="Or enter custom test name"
                     className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none text-xs shadow-sm"
                   />
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        /* STEP 2: FULL DIAGNOSTIC PARAMETER BATTERY (TEST NAME + VALUES + UNITS + REFS + FLAGS) */
+        <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2">
+                <FlaskConical className="w-4 h-4" /> {t("reportParameters")} ({parameters.length} Parameters)
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+                {t("parameterDesc")}
+              </p>
+            </div>
 
-                {/* Result Value */}
-                <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("resultValueText")}</label>
-                  <input
-                    type="text"
-                    value={param.numericValue || param.stringValue}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (!isNaN(Number(val)) && val.trim() !== "") {
-                        handleUpdateParameter(index, "numericValue", val);
-                        handleUpdateParameter(index, "stringValue", "");
-                      } else {
-                        handleUpdateParameter(index, "numericValue", "");
-                        handleUpdateParameter(index, "stringValue", val);
-                      }
-                    }}
-                    placeholder="Value (e.g. 24.5 or Normal)"
-                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
-                  />
+            <button
+              type="button"
+              onClick={handleAddCustomParameter}
+              className="px-3.5 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-800 dark:text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+            >
+              <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" /> {t("addCustomParameter")}
+            </button>
+          </div>
+
+          {/* Dynamic Parameter Rows */}
+          <div className="space-y-3">
+            {parameters.map((param, index) => (
+              <div key={index} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3 text-xs shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold text-teal-700 dark:text-teal-400 uppercase">
+                    Parameter #{index + 1}
+                  </span>
+                  {parameters.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveParameter(index)}
+                      className="text-rose-600 dark:text-rose-400 hover:text-rose-700 text-xs font-semibold flex items-center gap-1"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Remove
+                    </button>
+                  )}
                 </div>
 
-                {/* Unit */}
-                <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("unitLabel")}</label>
-                  <input
-                    type="text"
-                    value={param.unit}
-                    onChange={(e) => handleUpdateParameter(index, "unit", e.target.value)}
-                    placeholder="Unit"
-                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
-                  />
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                  {/* Parameter Name */}
+                  <div className="sm:col-span-4">
+                    <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("parameterName")}</label>
+                    <input
+                      type="text"
+                      value={param.testName}
+                      onChange={(e) => handleUpdateParameter(index, "testName", e.target.value)}
+                      required
+                      placeholder="Parameter Name"
+                      className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none text-xs shadow-sm"
+                    />
+                  </div>
 
-                {/* Reference Range */}
-                <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("refInterval")}</label>
-                  <input
-                    type="text"
-                    value={param.refRange}
-                    onChange={(e) => handleUpdateParameter(index, "refRange", e.target.value)}
-                    placeholder="Ref Range"
-                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
-                  />
-                </div>
+                  {/* Result Value */}
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("resultValueText")}</label>
+                    <input
+                      type="text"
+                      value={param.numericValue || param.stringValue}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (!isNaN(Number(val)) && val.trim() !== "") {
+                          handleUpdateParameter(index, "numericValue", val);
+                          handleUpdateParameter(index, "stringValue", "");
+                        } else {
+                          handleUpdateParameter(index, "numericValue", "");
+                          handleUpdateParameter(index, "stringValue", val);
+                        }
+                      }}
+                      placeholder="Value (e.g. 24.5 or Normal)"
+                      className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
+                    />
+                  </div>
 
-                {/* Flag */}
-                <div className="sm:col-span-2">
-                  <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("flagStatus")}</label>
-                  <select
-                    value={param.flag}
-                    onChange={(e) => handleUpdateParameter(index, "flag", e.target.value)}
-                    className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold focus:border-teal-500 outline-none text-xs shadow-sm"
-                  >
-                    <option value="Normal">Normal</option>
-                    <option value="High">High ↑</option>
-                    <option value="Low">Low ↓</option>
-                    <option value="Critical">Critical ⚠️</option>
-                  </select>
+                  {/* Unit */}
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("unitLabel")}</label>
+                    <input
+                      type="text"
+                      value={param.unit}
+                      onChange={(e) => handleUpdateParameter(index, "unit", e.target.value)}
+                      placeholder="Unit"
+                      className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
+                    />
+                  </div>
+
+                  {/* Reference Range */}
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("refInterval")}</label>
+                    <input
+                      type="text"
+                      value={param.refRange}
+                      onChange={(e) => handleUpdateParameter(index, "refRange", e.target.value)}
+                      placeholder="Ref Range"
+                      className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono focus:border-teal-500 outline-none text-xs shadow-sm"
+                    />
+                  </div>
+
+                  {/* Flag */}
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">{t("flagStatus")}</label>
+                    <select
+                      value={param.flag}
+                      onChange={(e) => handleUpdateParameter(index, "flag", e.target.value)}
+                      className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold focus:border-teal-500 outline-none text-xs shadow-sm"
+                    >
+                      <option value="Normal">Normal</option>
+                      <option value="High">High ↑</option>
+                      <option value="Low">Low ↓</option>
+                      <option value="Critical">Critical ⚠️</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Submit Button */}
       <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
