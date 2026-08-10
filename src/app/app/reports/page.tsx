@@ -51,14 +51,14 @@ export default async function ReportsPage() {
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-slate-400 flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-teal-400" /> Tenant Isolated</span>
+            <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" /> Tenant Isolated</span>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider text-[10px] bg-slate-950/80">
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px] bg-slate-100 dark:bg-slate-950/80">
                 <th className="py-3.5 px-5">Report Number</th>
                 <th className="py-3.5 px-5">Patient Name</th>
                 <th className="py-3.5 px-5">CNIC / Phone</th>
@@ -70,38 +70,38 @@ export default async function ReportsPage() {
                 <th className="py-3.5 px-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 font-mono">
               {reports.map((report: any) => (
-                <tr key={report.id} className="hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3.5 px-5 font-bold text-teal-300">{report.reportNumber}</td>
-                  <td className="py-3.5 px-5 font-sans font-semibold text-slate-200">{report.patient.fullName}</td>
-                  <td className="py-3.5 px-5 text-slate-300">
+                <tr key={report.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                  <td className="py-3.5 px-5 font-bold text-teal-700 dark:text-teal-300">{report.reportNumber}</td>
+                  <td className="py-3.5 px-5 font-sans font-semibold text-slate-900 dark:text-slate-200">{report.patient.fullName}</td>
+                  <td className="py-3.5 px-5 text-slate-700 dark:text-slate-300">
                     <div>{report.patient.phone}</div>
                     {report.patient.cnic && (
-                      <div className="text-[10px] text-teal-400 font-mono">{report.patient.cnic}</div>
+                      <div className="text-[10px] text-teal-700 dark:text-teal-400 font-mono">{report.patient.cnic}</div>
                     )}
                   </td>
-                  <td className="py-3.5 px-5 text-slate-400 font-sans">{report.branch.name}</td>
-                  <td className="py-3.5 px-5 text-slate-300 font-bold">{report.results.length} Tests</td>
+                  <td className="py-3.5 px-5 text-slate-600 dark:text-slate-400 font-sans">{report.branch.name}</td>
+                  <td className="py-3.5 px-5 text-slate-800 dark:text-slate-300 font-bold">{report.results.length} Tests</td>
                   <td className="py-3.5 px-5 font-sans">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
                       report.status === "Authorized"
-                        ? "bg-teal-500/10 text-teal-400 border-teal-500/20"
+                        ? "bg-teal-500/10 text-teal-800 dark:text-teal-400 border-teal-500/20"
                         : report.status === "Amended"
-                        ? "bg-purple-500/10 text-purple-400 border-purple-500/20"
-                        : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                        ? "bg-purple-500/10 text-purple-800 dark:text-purple-400 border-purple-500/20"
+                        : "bg-amber-500/10 text-amber-800 dark:text-amber-400 border-amber-500/20"
                     }`}>
                       {report.status}
                     </span>
                   </td>
-                  <td className="py-3.5 px-5 text-slate-300 font-bold">v{report.version}</td>
-                  <td className="py-3.5 px-5 text-slate-400 font-sans">
+                  <td className="py-3.5 px-5 text-slate-800 dark:text-slate-300 font-bold">v{report.version}</td>
+                  <td className="py-3.5 px-5 text-slate-600 dark:text-slate-400 font-sans">
                     {new Date(report.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </td>
                   <td className="py-3.5 px-5 text-right font-sans space-x-3">
                     <Link
                       href={`/app/reports/${report.id}`}
-                      className="text-xs font-semibold text-teal-400 hover:text-teal-300 underline"
+                      className="text-xs font-bold text-teal-700 dark:text-teal-400 hover:underline"
                     >
                       View Report
                     </Link>
