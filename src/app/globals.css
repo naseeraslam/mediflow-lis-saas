@@ -38,6 +38,12 @@ body {
 /* RTL Urdu Cursor and Text Alignment Rules */
 [dir="rtl"] {
   text-align: right;
+  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+}
+
+.font-urdu {
+  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif !important;
+  line-height: 2 !important;
 }
 
 [dir="rtl"] input,
