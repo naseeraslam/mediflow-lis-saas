@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { PublicNavbar } from "@/components/public/Navbar";
 import { PublicFooter } from "@/components/public/Footer";
-import { LanguageToggle } from "@/components/i18n/LanguageToggle";
+import { LanguageToggle, useLanguage } from "@/components/i18n/LanguageToggle";
 import { Search, Phone, ShieldCheck, FileText, Building2, Lock, AlertTriangle, KeyRound } from "lucide-react";
 
 export default function PatientSearchPage() {
@@ -13,6 +13,7 @@ export default function PatientSearchPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<any[] | null>(null);
+  const { t } = useLanguage();
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -57,10 +58,10 @@ export default function PatientSearchPage() {
             <LanguageToggle />
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100">
-            Secure Patient Report Verification Portal
+            {t("searchTitle")}
           </h1>
           <p className="text-slate-400 text-xs max-w-lg mx-auto">
-            To protect patient medical privacy, searching by phone number alone is disabled. Enter your exact Report Number along with your registered phone number.
+            {t("searchSubtitle")}
           </p>
         </div>
 
@@ -69,7 +70,7 @@ export default function PatientSearchPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
               <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-teal-400" /> Report Number or MRN *
+                <FileText className="w-4 h-4 text-teal-400" /> {t("reportOrMrn")}
               </label>
               <input
                 type="text"
@@ -83,7 +84,7 @@ export default function PatientSearchPage() {
 
             <div>
               <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-                <Phone className="w-4 h-4 text-sky-400" /> Registered Patient Phone Number (Optional)
+                <Phone className="w-4 h-4 text-sky-400" /> {t("phoneOptional")}
               </label>
               <input
                 type="text"
@@ -97,16 +98,16 @@ export default function PatientSearchPage() {
 
           <div className="flex items-center justify-between pt-2">
             <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-teal-400" /> Demo Code: <button type="button" onClick={() => { setReportNumber("LAB-2026-08001"); setPhone("+1 (555) 234-5678"); }} className="text-teal-400 underline font-mono">LAB-2026-08001</button>
+              <ShieldCheck className="w-4 h-4 text-teal-400" /> {t("demoCodePrompt")} <button type="button" onClick={() => { setReportNumber("LAB-2026-08001"); setPhone("+1 (555) 234-5678"); }} className="text-teal-400 underline font-mono">LAB-2026-08001</button>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center gap-2"
+              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 transition-all flex items-center gap-2 cursor-pointer"
             >
-              <Search className="w-4 h-4" />
-              {loading ? "Verifying Credentials..." : "Verify & Unlock Report"}
+              <Search className="w-4 h-4 text-slate-950" />
+              {loading ? t("verifyingCredentials") : t("verifyUnlockBtn")}
             </button>
           </div>
         </form>
@@ -164,14 +165,14 @@ export default function PatientSearchPage() {
                         href={`/share/${r.activeShareToken}`}
                         className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 text-xs font-bold shadow-md shadow-teal-500/20 flex items-center gap-1.5 hover:from-teal-300 hover:to-sky-300 transition-all"
                       >
-                        <FileText className="w-4 h-4" /> Open Full Report
+                        <FileText className="w-4 h-4 text-slate-950" /> Open Full Report
                       </Link>
                     ) : (
                       <Link
                         href={`/app/reports/${r.id}`}
                         className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 text-xs font-bold shadow-md shadow-teal-500/20 flex items-center gap-1.5 hover:from-teal-300 hover:to-sky-300 transition-all"
                       >
-                        <FileText className="w-4 h-4" /> View Portal Report
+                        <FileText className="w-4 h-4 text-slate-950" /> View Portal Report
                       </Link>
                     )}
                   </div>
