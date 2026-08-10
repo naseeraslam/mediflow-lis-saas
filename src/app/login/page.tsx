@@ -30,7 +30,25 @@ export default function LoginPage() {
     const loginPassword = customPassword || password;
 
     try {
-      // Send 2FA Code
+      // Check 2FA Policy first
+      const resPolicy = await fetch("/api/super-admin/2fa-policy");
+      const policyData = await resPolicy.json();
+
+      // If 2FA Enforcement is OFF, bypass OTP step and login directly!
+      if (policyData.success && policyData.enforced === false) {
+        const resLogin = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+        });
+        const dataLogin = await resLogin.json();
+        if (resLogin.ok && dataLogin.success) {
+          router.push("/app/dashboard");
+          return;
+        }
+      }
+
+      // Send 2FA Code if 2FA ON
       const res2fa = await fetch("/api/auth/2fa", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { SuperAdminApprovalButtons } from "@/components/admin/SuperAdminApprovalButtons";
 import { PricingPlanManager } from "@/components/super-admin/PricingPlanManager";
+import { SuperAdmin2FAToggle } from "@/components/super-admin/SuperAdmin2FAToggle";
 import { ShieldCheck, Mail, Building2, UserCheck, AlertTriangle, Clock, Award } from "lucide-react";
 
 export default async function SuperAdminPortalPage() {
@@ -51,6 +52,9 @@ export default async function SuperAdminPortalPage() {
           <div className="font-mono text-teal-400 font-bold">naseeraslamkhan016@gmail.com</div>
         </div>
       </div>
+
+      {/* SUPER ADMIN 2FA POLICY ENFORCEMENT TOGGLE */}
+      <SuperAdmin2FAToggle />
 
       {/* SUPER ADMIN PRICING PLAN MANAGEMENT SECTION */}
       <PricingPlanManager initialPlans={formattedPlans} />
