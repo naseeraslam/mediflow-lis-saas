@@ -187,19 +187,36 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
         style={{ borderTop: `4px solid ${organization.primaryColor || "#0f766e"}` }}
       >
         {/* Organization Header & Branding */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-slate-950 text-xs"
-                style={{ backgroundColor: organization.primaryColor || "#0f766e" }}
-              >
-                <Building2 className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-3">
+              {organization.logoUrl ? (
+                <img
+                  src={organization.logoUrl}
+                  alt={organization.displayName}
+                  className="w-10 h-10 object-contain rounded-lg border border-slate-200 dark:border-slate-800 bg-white p-1 shadow-sm"
+                />
+              ) : (
+                <div
+                  className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white text-xs shadow-md"
+                  style={{ backgroundColor: organization.primaryColor || "#0f766e" }}
+                >
+                  <Building2 className="w-6 h-6 text-white" />
+                </div>
+              )}
+              <div>
+                <h2 className="text-xl font-extrabold text-slate-900 dark:text-slate-100">{organization.displayName}</h2>
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-semibold">{organization.legalName}</p>
               </div>
-              <h2 className="text-xl font-extrabold text-slate-100">{organization.displayName}</h2>
             </div>
-            <p className="text-xs text-slate-400 font-medium">{organization.legalName}</p>
-            <div className="text-[11px] text-slate-400 space-x-2 pt-1 font-mono">
+
+            {organization.headerText && (
+              <div className="text-xs font-mono font-bold text-teal-700 dark:text-teal-400 pt-1">
+                {organization.headerText}
+              </div>
+            )}
+
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 space-x-2 pt-1 font-mono">
               <span>CLIA: {organization.licenseNo || "CLIA-99210-TX"}</span>
               <span>•</span>
               <span>REG: {organization.registrationNo || "REG-9941A"}</span>
@@ -279,29 +296,57 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
           </div>
         </div>
 
-        {/* Pathologist Signature Section */}
-        <div className="pt-6 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
-          <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-center gap-4">
-            <div className="w-16 h-16 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-center text-teal-400 shrink-0">
-              <QrCode className="w-10 h-10" />
-            </div>
-            <div className="space-y-1 text-xs">
-              <div className="font-bold text-slate-200 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-teal-400" /> Public Verification
+        {/* Pathologist, Technologist & Verification Footer Grid */}
+        <div className="pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+            {/* QR Code Verification */}
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 flex items-center gap-3">
+              <div className="w-12 h-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg flex items-center justify-center text-teal-600 dark:text-teal-400 shrink-0">
+                <QrCode className="w-8 h-8 text-teal-600 dark:text-teal-400" />
               </div>
-              <p className="text-[11px] text-slate-400 leading-tight">
-                Scan QR code or visit <span className="text-teal-300 font-mono">/verify/{report.verificationToken}</span> to verify report authenticity online.
-              </p>
+              <div className="space-y-0.5 text-xs">
+                <div className="font-bold text-slate-900 dark:text-slate-200 flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" /> Verification
+                </div>
+                <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight font-mono">
+                  /verify/{report.verificationToken}
+                </p>
+              </div>
+            </div>
+
+            {/* Lab Attendant / Medical Technologist Signature */}
+            <div className="text-center p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/60 space-y-1 text-xs">
+              <div className="text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold">Lab Attendant / Technologist</div>
+              <div className="font-extrabold text-slate-900 dark:text-slate-100 text-xs">
+                {organization.founderName || "Sher Muhammad"}
+              </div>
+              <div className="text-[10px] text-teal-700 dark:text-teal-400 font-mono">Senior Medical Technologist</div>
+            </div>
+
+            {/* Pathologist Verification Signature */}
+            <div className="text-right p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/60 space-y-1 text-xs">
+              <div className="text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold">Chief Pathologist</div>
+              <div className="font-extrabold text-slate-900 dark:text-slate-100 text-xs">
+                {report.authorizedBy || "Dr. Robert Vance, MD"}
+              </div>
+              <div className="text-[10px] text-slate-600 dark:text-slate-400">
+                {report.authorizedAt ? new Date(report.authorizedAt).toLocaleDateString() : "Verified & Signed"}
+              </div>
             </div>
           </div>
 
-          <div className="text-right space-y-1.5 text-xs">
-            <div className="text-slate-400 text-[10px] uppercase font-semibold">Authorized By Pathologist</div>
-            <div className="font-bold text-slate-100 text-sm">{report.authorizedBy || "Dr. Robert Vance, MD"}</div>
-            <div className="text-slate-400 text-[11px]">
-              {report.authorizedAt ? new Date(report.authorizedAt).toLocaleDateString() : "Signed Online"}
+          {/* Footer Text & Legal Disclaimer */}
+          {organization.footerText && (
+            <div className="text-[11px] font-mono text-center text-teal-800 dark:text-teal-300 pt-2 border-t border-slate-200 dark:border-slate-800/80">
+              {organization.footerText}
             </div>
-          </div>
+          )}
+
+          {organization.disclaimerText && (
+            <div className="text-[10px] text-center text-slate-500 dark:text-slate-400 italic">
+              {organization.disclaimerText}
+            </div>
+          )}
         </div>
       </div>
     </div>

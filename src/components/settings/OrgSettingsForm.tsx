@@ -17,8 +17,11 @@ export function OrgSettingsForm({ organization }: { organization: any }) {
     currency: organization?.currency || "USD",
     primaryColor: organization?.primaryColor || "#0f766e",
     secondaryColor: organization?.secondaryColor || "#0284c7",
+    logoUrl: organization?.logoUrl || "",
     headerText: organization?.headerText || "",
+    footerText: organization?.footerText || "",
     disclaimerText: organization?.disclaimerText || "",
+    founderName: organization?.founderName || "Sher Muhammad",
   });
 
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
@@ -264,11 +267,76 @@ export function OrgSettingsForm({ organization }: { organization: any }) {
         </div>
       </div>
 
-      {/* Report Theme Colors */}
+      {/* 2. CUSTOMIZABLE REPORT TEMPLATE, LOGO & PERSONNEL SIGNATURES */}
       <div className="pt-6 border-t border-slate-800 space-y-4">
         <h2 className="text-sm font-bold text-teal-400 uppercase tracking-wider flex items-center gap-2">
-          <Palette className="w-4 h-4" /> 2. White-Label Report Theme Colors
+          <Palette className="w-4 h-4" /> 2. Report Template, Logo & Pathologist Signatures
         </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div>
+            <label className="block text-slate-300 font-semibold mb-1">Custom Laboratory Logo URL</label>
+            <input
+              type="text"
+              name="logoUrl"
+              value={formData.logoUrl}
+              onChange={handleChange}
+              placeholder="e.g. https://yourlab.com/logo.png"
+              className="w-full p-3 bg-slate-950 rounded-xl border border-slate-800 text-teal-300 font-mono focus:border-teal-500 outline-none"
+            />
+            <p className="text-[10px] text-slate-400 mt-1">Leave empty to use official MediFlow vector icon badge</p>
+          </div>
+
+          <div>
+            <label className="block text-slate-300 font-semibold mb-1">Lead Pathologist / Platform Architect Name</label>
+            <input
+              type="text"
+              name="founderName"
+              value={formData.founderName}
+              onChange={handleChange}
+              placeholder="e.g. Sher Muhammad, Lead Pathologist"
+              className="w-full p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-100 font-bold focus:border-teal-500 outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 3. OUTCLASS REPORT COLOR SCHEME & THEME PRESETS */}
+      <div className="pt-6 border-t border-slate-800 space-y-4">
+        <h2 className="text-sm font-bold text-teal-400 uppercase tracking-wider flex items-center gap-2">
+          <Palette className="w-4 h-4" /> 3. Outclass Report Color Scheme & Color Palette Presets
+        </h2>
+
+        <div className="flex flex-wrap gap-2 pb-2">
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, primaryColor: "#0f766e", secondaryColor: "#0284c7" })}
+            className="px-3 py-1.5 rounded-lg bg-teal-900/60 border border-teal-500/40 text-teal-300 text-[11px] font-bold flex items-center gap-1.5"
+          >
+            <span className="w-3 h-3 rounded-full bg-[#0f766e]"></span> Teal & Sky (Default)
+          </button>
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, primaryColor: "#1e3a8a", secondaryColor: "#059669" })}
+            className="px-3 py-1.5 rounded-lg bg-blue-900/60 border border-blue-500/40 text-blue-300 text-[11px] font-bold flex items-center gap-1.5"
+          >
+            <span className="w-3 h-3 rounded-full bg-[#1e3a8a]"></span> Royal Navy & Emerald
+          </button>
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, primaryColor: "#18181b", secondaryColor: "#d97706" })}
+            className="px-3 py-1.5 rounded-lg bg-amber-900/60 border border-amber-500/40 text-amber-300 text-[11px] font-bold flex items-center gap-1.5"
+          >
+            <span className="w-3 h-3 rounded-full bg-[#18181b]"></span> Obsidian & Gold
+          </button>
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, primaryColor: "#9f1239", secondaryColor: "#e11d48" })}
+            className="px-3 py-1.5 rounded-lg bg-rose-900/60 border border-rose-500/40 text-rose-300 text-[11px] font-bold flex items-center gap-1.5"
+          >
+            <span className="w-3 h-3 rounded-full bg-[#9f1239]"></span> Crimson & Rose
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
           <div>
@@ -312,23 +380,37 @@ export function OrgSettingsForm({ organization }: { organization: any }) {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-slate-300 font-semibold mb-1">PDF Report Header Text</label>
+            <label className="block text-slate-300 font-semibold mb-1">PDF Report Header Text Banner</label>
             <textarea
               name="headerText"
               rows={2}
               value={formData.headerText}
               onChange={handleChange}
+              placeholder="APEX CLINICAL DIAGNOSTICS LABORATORY NETWORK — ACCREDITED ISO 15189"
               className="w-full p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-200 font-mono outline-none focus:border-teal-500"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-slate-300 font-semibold mb-1">PDF Disclaimer & Legal Notice</label>
+            <label className="block text-slate-300 font-semibold mb-1">PDF Report Footer Signature Banner</label>
+            <textarea
+              name="footerText"
+              rows={2}
+              value={formData.footerText}
+              onChange={handleChange}
+              placeholder="This report is generated electronically under signed pathologist verification."
+              className="w-full p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-200 font-mono outline-none focus:border-teal-500"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-slate-300 font-semibold mb-1">PDF Quality & Legal Disclaimer Notice</label>
             <textarea
               name="disclaimerText"
               rows={3}
               value={formData.disclaimerText}
               onChange={handleChange}
+              placeholder="Clinical reference ranges are method-dependent. Results should be interpreted by a licensed physician."
               className="w-full p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-300 outline-none focus:border-teal-500"
             />
           </div>

@@ -29,8 +29,11 @@ export async function PUT(req: Request) {
       currency,
       primaryColor,
       secondaryColor,
+      logoUrl,
       headerText,
+      footerText,
       disclaimerText,
+      founderName,
     } = body;
 
     const updatedOrg = await db.organization.update({
@@ -47,8 +50,11 @@ export async function PUT(req: Request) {
         currency: currency || org.currency,
         primaryColor: primaryColor || org.primaryColor,
         secondaryColor: secondaryColor || org.secondaryColor,
-        headerText: headerText || org.headerText,
-        disclaimerText: disclaimerText || org.disclaimerText,
+        logoUrl: logoUrl !== undefined ? logoUrl : org.logoUrl,
+        headerText: headerText !== undefined ? headerText : org.headerText,
+        footerText: footerText !== undefined ? footerText : org.footerText,
+        disclaimerText: disclaimerText !== undefined ? disclaimerText : org.disclaimerText,
+        founderName: founderName || org.founderName,
       },
     });
 

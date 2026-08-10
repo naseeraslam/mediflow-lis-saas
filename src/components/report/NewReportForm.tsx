@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, ShieldCheck, Sparkles, FileText, User, Building2, FlaskConical, Award, CreditCard, MessageCircle } from "lucide-react";
+import { Plus, Trash2, ShieldCheck, Sparkles, FileText, User, Building2, FlaskConical, Award, CreditCard, MessageCircle, X } from "lucide-react";
 import { generateRegistrationWhatsAppMessage } from "@/lib/whatsapp";
 import { useLanguage } from "@/components/i18n/LanguageToggle";
 
@@ -102,6 +102,20 @@ export function NewReportForm({
   // 2-Step Workflow Mode
   const [workflowStep, setWorkflowStep] = useState<"registration_only" | "full_results">("registration_only");
 
+  // Dynamic Catalog State (Allows adding new tests to master catalog on the fly!)
+  const [localCatalog, setLocalCatalog] = useState<TestOpt[]>(testCatalog);
+  const [showNewTestModal, setShowNewTestModal] = useState(false);
+  const [newTestForm, setNewTestForm] = useState({
+    code: "",
+    name: "",
+    category: "Clinical Biochemistry",
+    unit: "mg/dL",
+    refRangeMale: "0.5 - 1.2 mg/dL",
+    refRangeFemale: "0.5 - 1.2 mg/dL",
+  });
+  const [creatingTest, setCreatingTest] = useState(false);
+  const [testModalError, setTestModalError] = useState<string | null>(null);
+
   // Billing & Payment State
   const [paymentMode, setPaymentMode] = useState<"Cash" | "Online" | "Bank Transfer">("Cash");
   const [paymentStatus, setPaymentStatus] = useState<"Paid" | "Pending">("Paid");
@@ -140,19 +154,81 @@ export function NewReportForm({
     if (!tmpl) return;
 
     const loaded = tmpl.items.map((item) => {
-      const match = testCatalog.find((tc) => tc.name.toLowerCase().includes(item.testName.toLowerCase()));
+      const match = localCatalog.find((tc) => tc.name.toLowerCase().includes(item.testName.toLowerCase()));
       return {
-        testId: match ? match.id : testCatalog[0]?.id || "",
+        testId: match?.id || `custom-${item.testName}`,
         testName: item.testName,
         unit: item.unit,
         refRange: item.refRange,
         numericValue: item.numericValue,
-        stringValue: item.stringValue || "",
+        stringValue: item.stringValue,
         flag: item.flag,
       };
     });
 
     setParameters(loaded);
+  }
+
+  // Create New Test in Master Catalog dynamically
+  async function handleCreateNewMasterTest(e: React.FormEvent) {
+    e.preventDefault();
+    setCreatingTest(true);
+    setTestModalError(null);
+
+    try {
+      const res = await fetch("/api/tests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTestForm),
+      });
+      const data = await res.json();
+
+      if (data.success && data.test) {
+        const createdTest: TestOpt = {
+          id: data.test.id,
+          code: data.test.code,
+          name: data.test.name,
+          category: data.test.category,
+          unit: data.test.unit,
+          refRangeMale: data.test.refRangeMale,
+          refRangeFemale: data.test.refRangeFemale,
+          minValue: data.test.minValue,
+          maxValue: data.test.maxValue,
+        };
+
+        setLocalCatalog((prev) => [createdTest, ...prev]);
+
+        // Auto add to parameters array
+        setParameters((prev) => [
+          ...prev,
+          {
+            testId: createdTest.id,
+            testName: createdTest.name,
+            unit: createdTest.unit,
+            refRange: createdTest.refRangeMale,
+            numericValue: "",
+            stringValue: "",
+            flag: "Normal",
+          },
+        ]);
+
+        setShowNewTestModal(false);
+        setNewTestForm({
+          code: "",
+          name: "",
+          category: "Clinical Biochemistry",
+          unit: "mg/dL",
+          refRangeMale: "0.5 - 1.2 mg/dL",
+          refRangeFemale: "0.5 - 1.2 mg/dL",
+        });
+      } else {
+        setTestModalError(data.error || "Failed to create new test.");
+      }
+    } catch (err: any) {
+      setTestModalError("Network error. Please try again.");
+    } finally {
+      setCreatingTest(false);
+    }
   }
 
   // Add Dynamic Custom Parameter
@@ -451,13 +527,23 @@ export function NewReportForm({
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={handleAddCustomParameter}
-              className="px-3.5 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-800 dark:text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
-            >
-              <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Add Booked Test
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleAddCustomParameter}
+                className="px-3.5 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-800 dark:text-teal-300 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+              >
+                <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Add Booked Test
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowNewTestModal(true)}
+                className="px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+              >
+                <Plus className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> ➕ Create New Master Test
+              </button>
+            </div>
           </div>
 
           {/* Booked Test Name Cards */}
@@ -482,9 +568,9 @@ export function NewReportForm({
                 <div>
                   <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">Booked Test Name *</label>
                   <select
-                    value={testCatalog.find((t) => t.name === param.testName)?.id || ""}
+                    value={localCatalog.find((t) => t.name === param.testName)?.id || ""}
                     onChange={(e) => {
-                      const selectedTc = testCatalog.find((tc) => tc.id === e.target.value);
+                      const selectedTc = localCatalog.find((tc) => tc.id === e.target.value);
                       if (selectedTc) {
                         handleUpdateParameter(index, "testName", selectedTc.name);
                         handleUpdateParameter(index, "unit", selectedTc.unit);
@@ -493,8 +579,8 @@ export function NewReportForm({
                     }}
                     className="w-full p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold text-xs shadow-sm focus:border-teal-500 outline-none mb-2"
                   >
-                    <option value="">-- Select Test from Catalog --</option>
-                    {testCatalog.map((tc) => (
+                    <option value="">-- Select Test from Catalog ({localCatalog.length} Available) --</option>
+                    {localCatalog.map((tc) => (
                       <option key={tc.id} value={tc.id}>
                         {tc.name} ({tc.category})
                       </option>
@@ -654,6 +740,125 @@ export function NewReportForm({
           <span>{submitting ? "Processing Booking..." : t("saveAndGenerate")}</span>
         </button>
       </div>
+
+      {/* QUICK MASTER TEST CREATION MODAL */}
+      {showNewTestModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-teal-500/40 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-6 shadow-2xl animate-in zoom-in-95 duration-200 text-slate-900 dark:text-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div className="flex items-center gap-2">
+                <FlaskConical className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">Add New Test to Master Catalog</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Save test definitions dynamically so they appear in all dropdowns</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowNewTestModal(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {testModalError && (
+              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-600 dark:text-rose-300 text-xs font-semibold text-center">
+                ⚠️ {testModalError}
+              </div>
+            )}
+
+            <div className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Test Code * (e.g. LFT-01, THYROID-01)</label>
+                <input
+                  type="text"
+                  value={newTestForm.code}
+                  onChange={(e) => setNewTestForm({ ...newTestForm, code: e.target.value.toUpperCase() })}
+                  required
+                  placeholder="e.g. TSH-01"
+                  className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono font-bold focus:border-teal-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Test / Analyte Full Name *</label>
+                <input
+                  type="text"
+                  value={newTestForm.name}
+                  onChange={(e) => setNewTestForm({ ...newTestForm, name: e.target.value })}
+                  required
+                  placeholder="e.g. Thyroid Stimulating Hormone (TSH)"
+                  className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Category *</label>
+                  <select
+                    value={newTestForm.category}
+                    onChange={(e) => setNewTestForm({ ...newTestForm, category: e.target.value })}
+                    className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none"
+                  >
+                    <option value="Clinical Biochemistry">Clinical Biochemistry</option>
+                    <option value="Endocrinology & Hormones">Endocrinology & Hormones</option>
+                    <option value="Hematology & Coagulation">Hematology & Coagulation</option>
+                    <option value="Urology & Andrology Genetics">Urology & Andrology Genetics</option>
+                    <option value="Lipid & Cardiovascular Panel">Lipid & Cardiovascular Panel</option>
+                    <option value="Renal & Electrolyte Battery">Renal & Electrolyte Battery</option>
+                    <option value="Liver Function Battery">Liver Function Battery</option>
+                    <option value="Immunology & Serology">Immunology & Serology</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Unit * (e.g. uIU/mL)</label>
+                  <input
+                    type="text"
+                    value={newTestForm.unit}
+                    onChange={(e) => setNewTestForm({ ...newTestForm, unit: e.target.value })}
+                    required
+                    placeholder="e.g. uIU/mL"
+                    className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono focus:border-teal-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Male / Female Reference Range *</label>
+                <input
+                  type="text"
+                  value={newTestForm.refRangeMale}
+                  onChange={(e) => setNewTestForm({ ...newTestForm, refRangeMale: e.target.value, refRangeFemale: e.target.value })}
+                  required
+                  placeholder="e.g. 0.4 - 4.2 uIU/mL"
+                  className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono focus:border-teal-500 outline-none"
+                />
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowNewTestModal(false)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-400 font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCreateNewMasterTest}
+                  disabled={creatingTest}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold shadow-lg shadow-teal-500/20 hover:from-teal-300 hover:to-sky-300 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4 fill-slate-950" />
+                  <span>{creatingTest ? "Saving to Catalog..." : "Save to Master Catalog"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
