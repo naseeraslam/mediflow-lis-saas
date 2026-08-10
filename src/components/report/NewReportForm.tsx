@@ -486,90 +486,112 @@ export function NewReportForm({
         </div>
       </div>
 
-      {/* Patient, Branch & Referring Doctor Metadata */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs">
-        <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="block text-slate-800 dark:text-slate-300 font-bold flex items-center gap-1.5">
-              <User className="w-4 h-4 text-teal-600 dark:text-teal-400" /> {t("selectPatientRecord")}
+      {/* PATIENT & CLINICAL ORDER METADATA CARD */}
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-6 shadow-xl relative overflow-hidden">
+        {/* Section Header */}
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <User className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <h3 className="text-sm font-extrabold text-slate-900 dark:text-slate-100">Patient & Clinical Order Assignment</h3>
+          </div>
+          <span className="text-[10px] font-mono text-teal-800 dark:text-teal-300 font-bold bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
+            Tenant Data Isolation Active
+          </span>
+        </div>
+
+        {/* Row 1: Full-Width Patient Selector with Spacious Registration Button */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-4">
+            <label className="text-xs font-black text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <User className="w-4 h-4 text-teal-600 dark:text-teal-400" /> {t("selectPatientRecord")} <span className="text-rose-500">*</span>
             </label>
             <button
               type="button"
               onClick={() => setShowNewPatientModal(true)}
-              className="text-[11px] font-bold text-teal-700 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 flex items-center gap-1 bg-teal-500/10 px-2 py-0.5 rounded-lg border border-teal-500/20"
+              className="text-xs font-extrabold text-teal-800 dark:text-teal-300 hover:text-teal-900 dark:hover:text-teal-200 flex items-center gap-1.5 bg-teal-500/15 hover:bg-teal-500/25 px-3 py-1.5 rounded-xl border border-teal-500/30 transition-colors shadow-sm cursor-pointer whitespace-nowrap"
             >
-              <Plus className="w-3 h-3 text-teal-600 dark:text-teal-400" /> Register New Patient
+              <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" /> Register New Patient
             </button>
           </div>
+
           <select
             value={selectedPatientId}
             onChange={(e) => setSelectedPatientId(e.target.value)}
             required
-            className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none shadow-sm"
+            className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm focus:border-teal-500 outline-none shadow-sm transition-colors"
           >
             {localPatients.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.fullName} ({p.mrn}) — {p.gender}, DOB: {p.dateOfBirth} {p.phone ? `(${p.phone})` : ""}
+                {p.fullName} (MRN: {p.mrn}) — {p.gender}, DOB: {p.dateOfBirth} {p.phone ? `(${p.phone})` : ""}
               </option>
             ))}
           </select>
         </div>
 
-        <div>
-          <label className="block text-slate-800 dark:text-slate-300 font-bold mb-1 flex items-center gap-1.5">
-            <Building2 className="w-4 h-4 text-sky-600 dark:text-sky-400" /> {t("selectBranchRecord")}
-          </label>
-          <select
-            value={selectedBranchId}
-            onChange={(e) => setSelectedBranchId(e.target.value)}
-            required
-            className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none shadow-sm"
-          >
-            {branches.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name} ({b.code})
-              </option>
-            ))}
-          </select>
+        {/* Row 2: 2-Column Grid for Facility Branch & Referred By Doctor */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs pt-1">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-black text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <Building2 className="w-4 h-4 text-sky-600 dark:text-sky-400" /> {t("selectBranchRecord")} <span className="text-rose-500">*</span>
+            </label>
+            <select
+              value={selectedBranchId}
+              onChange={(e) => setSelectedBranchId(e.target.value)}
+              required
+              className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm focus:border-teal-500 outline-none shadow-sm transition-colors"
+            >
+              {branches.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name} ({b.code})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-black text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Referred By (Doctor / Physician)
+            </label>
+            <select
+              value={isCustomDoctor ? "custom" : selectedDoctorId}
+              onChange={(e) => {
+                if (e.target.value === "custom") {
+                  setIsCustomDoctor(true);
+                  setSelectedDoctorId("");
+                } else {
+                  setIsCustomDoctor(false);
+                  setSelectedDoctorId(e.target.value);
+                  setCustomDoctorName("");
+                }
+              }}
+              className="w-full p-3.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm focus:border-teal-500 outline-none shadow-sm transition-colors"
+            >
+              <option value="">Self / Direct Order (No Doctor)</option>
+              {doctors.map((doc) => (
+                <option key={doc.id} value={doc.id}>
+                  {doc.name} {doc.specialty ? `(${doc.specialty})` : ""}
+                </option>
+              ))}
+              <option value="custom">➕ Enter Custom Referring Doctor Name...</option>
+            </select>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-slate-800 dark:text-slate-300 font-bold mb-1 flex items-center gap-1.5">
-            <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Referred By (Doctor / Physician)
-          </label>
-          <select
-            value={isCustomDoctor ? "custom" : selectedDoctorId}
-            onChange={(e) => {
-              if (e.target.value === "custom") {
-                setIsCustomDoctor(true);
-                setSelectedDoctorId("");
-              } else {
-                setIsCustomDoctor(false);
-                setSelectedDoctorId(e.target.value);
-                setCustomDoctorName("");
-              }
-            }}
-            className="w-full p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold focus:border-teal-500 outline-none shadow-sm"
-          >
-            <option value="">Self / Direct Order (No Doctor)</option>
-            {doctors.map((doc) => (
-              <option key={doc.id} value={doc.id}>
-                {doc.name} {doc.specialty ? `(${doc.specialty})` : ""}
-              </option>
-            ))}
-            <option value="custom">➕ Enter Custom Referring Doctor Name...</option>
-          </select>
-
-          {isCustomDoctor && (
+        {/* Custom Doctor Inline Text Field if custom selected */}
+        {isCustomDoctor && (
+          <div className="pt-2 animate-in fade-in-50 duration-200">
+            <label className="block text-xs font-extrabold text-teal-800 dark:text-teal-300 mb-1">
+              Specify Custom Doctor Name & Qualifications:
+            </label>
             <input
               type="text"
               value={customDoctorName}
               onChange={(e) => setCustomDoctorName(e.target.value)}
-              placeholder="e.g. Dr. Aamir Khan, MBBS, FCPS"
-              className="mt-2 w-full p-3 bg-white dark:bg-slate-900 rounded-xl border border-teal-500 text-slate-900 dark:text-slate-100 font-bold outline-none shadow-sm animate-in fade-in-50"
+              placeholder="e.g. Dr. Aamir Khan, MBBS, FCPS (Cardiologist)"
+              className="w-full p-3.5 bg-white dark:bg-slate-900 rounded-xl border-2 border-teal-500 text-slate-900 dark:text-slate-100 font-extrabold text-xs sm:text-sm outline-none shadow-md focus:ring-2 focus:ring-teal-500/20"
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* PAYMENT & BILLING OPTIONS (Cash, Online, Bank Transfer) */}
