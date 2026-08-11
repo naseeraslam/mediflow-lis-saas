@@ -121,16 +121,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors">
       <PublicNavbar />
 
       <main className="max-w-md mx-auto px-4 py-16 space-y-6">
         <div className="text-center space-y-3">
-          <div className="w-12 h-12 bg-teal-500/10 text-teal-400 rounded-2xl flex items-center justify-center mx-auto border border-teal-500/20">
+          <div className="w-12 h-12 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-2xl flex items-center justify-center mx-auto border border-teal-500/20">
             <Lock className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-100">{t("staffLogin")}</h1>
-          <p className="text-xs text-slate-400">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t("staffLogin")}</h1>
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
             Enforced 2FA Two-Factor Authentication for all laboratory personnel and org owners
           </p>
         </div>
@@ -138,7 +138,7 @@ export default function LoginPage() {
         {step === "credentials" ? (
           <>
             {/* 1-Click Quick Demo Sign In Shortcuts */}
-            <div className="p-4 bg-slate-900 border border-teal-500/30 rounded-2xl space-y-3 shadow-xl">
+            <div className="p-4 bg-white dark:bg-slate-900 border border-teal-500/30 rounded-2xl space-y-3 shadow-xl transition-colors">
               <div className="text-xs font-bold text-teal-400 flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-teal-400" /> 1-Click Quick Demo Login Shortcuts
               </div>

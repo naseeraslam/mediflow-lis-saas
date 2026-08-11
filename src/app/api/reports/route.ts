@@ -73,6 +73,22 @@ export async function POST(req: Request) {
     const reportNumber = `LAB-${new Date().getFullYear()}-${String(reportCount + 1).padStart(5, "0")}`;
     const verificationToken = `VERIFY-${crypto.randomBytes(6).toString("hex").toUpperCase()}`;
 
+    const tatHours = Number(body.tatHours) || 4;
+    let estimatedCompletionAt = body.estimatedCompletionAt ? new Date(body.estimatedCompletionAt) : null;
+    if (!estimatedCompletionAt || isNaN(estimatedCompletionAt.getTime())) {
+      estimatedCompletionAt = new Date();
+      estimatedCompletionAt.setHours(estimatedCompletionAt.getHours() + tatHours);
+    }
+
+    // Validate existing TestDefinition IDs in DB to prevent foreign key constraint violations
+    const existingTests = (db as any).testDefinition
+      ? await (db as any).testDefinition.findMany({
+          where: { orgId: session.orgId },
+          select: { id: true },
+        })
+      : [];
+    const validTestIds = new Set(existingTests.map((t: any) => t.id));
+
     const report = await db.report.create({
       data: {
         orgId: session.orgId,
@@ -80,16 +96,19 @@ export async function POST(req: Request) {
         patientId,
         doctorId: resolvedDoctorId,
         reportNumber,
-        status: body.status || "Processing",
+        status: body.status || "Sample Collected",
+        tatHours,
+        sampleCollectedAt: new Date(),
+        estimatedCompletionAt,
         verificationToken,
         notes: notes || null,
         results: {
           create: testResults.map((tr: any) => ({
-            testId: tr.testId,
-            testNameSnapshot: tr.testName,
-            unitSnapshot: tr.unit,
-            refRangeSnapshot: tr.refRange,
-            numericValue: tr.numericValue !== undefined ? Number(tr.numericValue) : null,
+            testId: tr.testId && validTestIds.has(tr.testId) ? tr.testId : null,
+            testNameSnapshot: tr.testName || "Diagnostic Parameter",
+            unitSnapshot: tr.unit || "",
+            refRangeSnapshot: tr.refRange || "",
+            numericValue: tr.numericValue !== undefined && tr.numericValue !== "" && tr.numericValue !== null && !isNaN(Number(tr.numericValue)) ? Number(tr.numericValue) : null,
             stringValue: tr.stringValue || null,
             flag: tr.flag || "Normal",
             notes: tr.notes || null,
@@ -111,13 +130,13 @@ export async function POST(req: Request) {
         action: "report.create",
         entity: "Report",
         entityId: report.id,
-        details: `Created draft report ${report.reportNumber} for patient ${report.patient.fullName}`,
+        details: `Created report ${report.reportNumber} for patient ${report.patient.fullName}`,
       },
     });
 
     return NextResponse.json({ success: true, report });
   } catch (error: any) {
-    console.error("Create Report Error:", error);
-    return NextResponse.json({ error: "Failed to create report." }, { status: 500 });
+    console.error("Create Report Error Details:", error);
+    return NextResponse.json({ error: error.message || "Failed to create report due to a database exception." }, { status: 500 });
   }
 }

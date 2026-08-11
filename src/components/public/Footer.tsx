@@ -26,10 +26,10 @@ export function PublicFooter() {
                   <Dna className="w-6 h-6 text-slate-950 stroke-[2.5]" />
                 </div>
                 <div>
-                  <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5">
-                    MediFlow <span className="text-teal-600 dark:text-teal-400 font-black">{t("platformTitle")}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/30 font-extrabold uppercase tracking-wider">
-                      {t("saasTag")}
+                  <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                    <span>MediFlow</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/30 font-extrabold uppercase tracking-wider">
+                      LIS SaaS
                     </span>
                   </span>
                   <span className="text-[10px] text-teal-700 dark:text-teal-400 font-mono block -mt-0.5 tracking-wider font-bold">

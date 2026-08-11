@@ -137,11 +137,11 @@ export function TestCatalogManager({
       {/* Header with Buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-            <FlaskConical className="w-6 h-6 text-teal-400" />
-            <span>Organization Test Catalog & Departments</span>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <FlaskConical className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            <span>Master Diagnostic Test Directory & Clinical Catalog</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
             Manage clinical departments (Urology, Molecular Genetics, Hematology) and test reference intervals
           </p>
         </div>
@@ -149,22 +149,22 @@ export function TestCatalogManager({
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsDeptModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs transition-all flex items-center gap-2"
+            className="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition-all flex items-center gap-2 shadow-sm"
           >
-            <Tag className="w-4 h-4 text-sky-400" /> + Add New Department
+            <Tag className="w-4 h-4 text-sky-500 dark:text-sky-400" /> + Add New Department
           </button>
 
           <button
             onClick={() => setIsTestModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 font-bold text-xs hover:from-teal-300 hover:to-sky-300 transition-all shadow-lg shadow-teal-500/20 flex items-center gap-2"
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-sky-500 dark:from-teal-400 dark:to-sky-400 text-white dark:text-slate-950 font-bold text-xs hover:from-teal-600 hover:to-sky-600 transition-all shadow-lg shadow-teal-500/20 flex items-center gap-2"
           >
-            <Plus className="w-4 h-4 fill-slate-950" /> Register Custom Test
+            <Plus className="w-4 h-4 fill-current" /> Register Custom Test
           </button>
         </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-900 p-3 rounded-2xl border border-slate-800 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-center gap-4 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -172,14 +172,14 @@ export function TestCatalogManager({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search test catalog by Analyte Name, Test Code, or Department..."
-            className="w-full pl-9 pr-4 py-2 bg-slate-950 rounded-xl border border-slate-800 text-slate-100 text-xs focus:border-teal-500 outline-none"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:border-teal-500 outline-none"
           />
         </div>
 
         <select
           value={selectedCatFilter}
           onChange={(e) => setSelectedCatFilter(e.target.value)}
-          className="w-full sm:w-64 p-2 bg-slate-950 rounded-xl border border-slate-800 text-teal-300 text-xs font-bold focus:border-teal-500 outline-none"
+          className="w-full sm:w-64 p-2 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-300 dark:border-slate-800 text-teal-700 dark:text-teal-300 text-xs font-bold focus:border-teal-500 outline-none"
         >
           <option value="ALL">All Clinical Departments ({categories.length})</option>
           {categories.map((c) => (
@@ -191,16 +191,16 @@ export function TestCatalogManager({
       </div>
 
       {/* Test Catalog Table */}
-      <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800 bg-slate-950/40 text-xs text-slate-400 flex items-center justify-between">
-          <span>Configured Diagnostic Analytes: <strong className="text-slate-200">{filteredTests.length}</strong></span>
-          <span className="font-mono text-[10px] text-teal-400">Strict Method Calibration Active</span>
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm dark:shadow-xl">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 text-xs text-slate-600 dark:text-slate-400 flex items-center justify-between">
+          <span>Configured Diagnostic Analytes: <strong className="text-slate-900 dark:text-slate-200">{filteredTests.length}</strong></span>
+          <span className="font-mono text-[10px] text-teal-600 dark:text-teal-400 font-bold">Strict Method Calibration Active</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider text-[10px] bg-slate-950/80">
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px] bg-slate-100 dark:bg-slate-950/80">
                 <th className="py-3.5 px-5">Test Code</th>
                 <th className="py-3.5 px-5">Analyte Name</th>
                 <th className="py-3.5 px-5">Clinical Department</th>
@@ -210,20 +210,20 @@ export function TestCatalogManager({
                 <th className="py-3.5 px-5">Version</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 font-mono">
               {filteredTests.map((test) => (
-                <tr key={test.id} className="hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3.5 px-5 font-bold text-teal-300">{test.code}</td>
-                  <td className="py-3.5 px-5 font-sans font-bold text-slate-100">{test.name}</td>
+                <tr key={test.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                  <td className="py-3.5 px-5 font-bold text-teal-600 dark:text-teal-300">{test.code}</td>
+                  <td className="py-3.5 px-5 font-sans font-bold text-slate-900 dark:text-slate-100">{test.name}</td>
                   <td className="py-3.5 px-5 font-sans">
-                    <span className="px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20 text-[10px] font-bold">
+                    <span className="px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 text-[10px] font-bold">
                       {test.category}
                     </span>
                   </td>
-                  <td className="py-3.5 px-5 text-slate-300">{test.unit}</td>
-                  <td className="py-3.5 px-5 text-slate-400">{test.refRangeMale}</td>
-                  <td className="py-3.5 px-5 text-slate-400">{test.refRangeFemale}</td>
-                  <td className="py-3.5 px-5 text-slate-300 font-bold">v{test.version}</td>
+                  <td className="py-3.5 px-5 text-slate-700 dark:text-slate-300">{test.unit}</td>
+                  <td className="py-3.5 px-5 text-slate-600 dark:text-slate-400">{test.refRangeMale}</td>
+                  <td className="py-3.5 px-5 text-slate-600 dark:text-slate-400">{test.refRangeFemale}</td>
+                  <td className="py-3.5 px-5 text-slate-700 dark:text-slate-300 font-bold">v{test.version}</td>
                 </tr>
               ))}
             </tbody>

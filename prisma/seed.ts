@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import bcrypt from "bcryptjs";
+import { STANDARD_HUMAN_TEST_BATTERIES } from "../src/lib/defaultCatalog";
 
 const adapter = new PrismaBetterSqlite3({ url: "file:./dev.db" });
 const prisma = new PrismaClient({ adapter });
@@ -177,72 +178,64 @@ async function main() {
     });
   }
 
-  // 5. EXHAUSTIVE TEST CATALOG WITH UROLOGY & MOLECULAR GENETICS
-  const testDefs = [
-    // UROLOGY & ANDROLOGY MOLECULAR GENETICS
-    { code: "URO-YDEL-AZFA", name: "Y-Chromosome Microdeletion (AZFa Locus)", category: "Urology & Andrology Genetics", unit: "PCR Qualitative", refMale: "No Deletion Detected (Normal)", refFemale: "N/A" },
-    { code: "URO-YDEL-AZFB", name: "Y-Chromosome Microdeletion (AZFb Locus)", category: "Urology & Andrology Genetics", unit: "PCR Qualitative", refMale: "No Deletion Detected (Normal)", refFemale: "N/A" },
-    { code: "URO-YDEL-AZFC", name: "Y-Chromosome Microdeletion (AZFc Locus)", category: "Urology & Andrology Genetics", unit: "PCR Qualitative", refMale: "No Deletion Detected (Normal)", refFemale: "N/A" },
-    { code: "URO-SEMEN-VOL", name: "Semen Volume (WHO 6th Ed)", category: "Urology & Andrology Genetics", unit: "mL", refMale: "≥ 1.4 mL (WHO)", refFemale: "N/A" },
-    { code: "URO-SEMEN-CONC", name: "Sperm Concentration", category: "Urology & Andrology Genetics", unit: "M/mL", refMale: "≥ 16.0 M/mL (WHO)", refFemale: "N/A" },
-    { code: "URO-SEMEN-MOT", name: "Total Sperm Motility (PR + NP)", category: "Urology & Andrology Genetics", unit: "%", refMale: "≥ 42.0% (WHO)", refFemale: "N/A" },
-    { code: "URO-SEMEN-PRMOT", name: "Progressive Sperm Motility (PR)", category: "Urology & Andrology Genetics", unit: "%", refMale: "≥ 30.0% (WHO)", refFemale: "N/A" },
-    { code: "URO-SEMEN-MORPH", name: "Normal Sperm Morphology (Kruger Strict)", category: "Urology & Andrology Genetics", unit: "%", refMale: "≥ 4.0% (WHO)", refFemale: "N/A" },
-    { code: "URO-DFI", name: "Sperm DNA Fragmentation Index (DFI)", category: "Urology & Andrology Genetics", unit: "%", refMale: "< 15.0% (Low Risk)", refFemale: "N/A" },
-    { code: "URO-PSA-TOT", name: "Total Prostate Specific Antigen (TPSA)", category: "Urology & Andrology Genetics", unit: "ng/mL", refMale: "< 4.0 (WHO)", refFemale: "N/A" },
-    { code: "URO-PSA-FREE", name: "Free PSA / Total PSA Ratio", category: "Urology & Andrology Genetics", unit: "%", refMale: "> 25.0% (Low Malignancy Risk)", refFemale: "N/A" },
-    { code: "ENDO-TESTO", name: "Serum Total Testosterone", category: "Endocrinology & Hormones", unit: "ng/dL", refMale: "300 - 1000 (WHO)", refFemale: "15 - 70 (WHO)" },
-    { code: "ENDO-FSH", name: "Follicle Stimulating Hormone (FSH)", category: "Endocrinology & Hormones", unit: "mIU/mL", refMale: "1.5 - 12.4 (WHO)", refFemale: "3.5 - 12.5 (WHO)" },
-    { code: "ENDO-LH", name: "Luteinizing Hormone (LH)", category: "Endocrinology & Hormones", unit: "mIU/mL", refMale: "1.7 - 8.6 (WHO)", refFemale: "2.4 - 12.6 (WHO)" },
+  // 5. EXHAUSTIVE STANDARD HUMAN TEST CATALOG & MULTI-PARAMETER BATTERIES
+  for (const battery of STANDARD_HUMAN_TEST_BATTERIES) {
+    // Create/Upsert Category
+    await prisma.testCategory.upsert({
+      where: { name: battery.category },
+      update: {},
+      create: { name: battery.category, description: `${battery.category} Standard Battery` },
+    });
 
-    // Hematology
-    { code: "CBC-WBC", name: "White Blood Cells (WBC Count)", category: "Hematology & Coagulation", unit: "x10^3/uL", refMale: "4.5 - 11.0 (WHO)", refFemale: "4.5 - 11.0 (WHO)" },
-    { code: "CBC-RBC", name: "Red Blood Cells (RBC Count)", category: "Hematology & Coagulation", unit: "x10^6/uL", refMale: "4.3 - 5.9 (WHO)", refFemale: "3.8 - 5.2 (WHO)" },
-    { code: "CBC-HGB", name: "Hemoglobin (HGB Concentration)", category: "Hematology & Coagulation", unit: "g/dL", refMale: "13.8 - 17.2 (WHO)", refFemale: "12.1 - 15.1 (WHO)" },
-    { code: "CBC-PLT", name: "Platelet Count (PLT)", category: "Hematology & Coagulation", unit: "x10^3/uL", refMale: "150 - 450 (WHO)", refFemale: "150 - 450 (WHO)" },
-
-    // Biochemistry
-    { code: "CHEM-GLU", name: "Fasting Blood Glucose (FBG)", category: "Clinical Biochemistry", unit: "mg/dL", refMale: "70 - 99 (WHO)", refFemale: "70 - 99 (WHO)" },
-    { code: "LIPID-CHOL", name: "Total Cholesterol", category: "Lipid & Cardiovascular Panel", unit: "mg/dL", refMale: "< 200 (WHO)", refFemale: "< 200 (WHO)" },
-  ];
-
-  const createdTests: Record<string, any> = {};
-  for (const t of testDefs) {
-    const test = await prisma.testDefinition.create({
+    // Create Report Template
+    const template = await prisma.reportTemplate.create({
       data: {
         orgId: orgA.id,
-        code: t.code,
-        name: t.name,
-        category: t.category,
-        unit: t.unit,
-        refRangeMale: t.refMale,
-        refRangeFemale: t.refFemale,
-        version: 1,
+        name: battery.name,
+        code: battery.code,
+        category: battery.category,
+        description: battery.description,
       },
     });
-    createdTests[t.code] = test;
-  }
 
-  // 6. Custom Report Templates (Urology & Semen Microdeletion Battery)
-  await prisma.reportTemplate.create({
-    data: {
-      orgId: orgA.id,
-      name: "Urology Y-Chromosome Semen Microdeletion & Male Infertility Panel",
-      code: "TMPL-URO-YDEL",
-      category: "Urology & Andrology Genetics",
-      description: "Multiplex PCR screening for AZFa, AZFb, and AZFc microdeletions in male infertility evaluation.",
-      parameters: {
-        create: [
-          { parameterName: "Y-Chromosome Microdeletion (AZFa Locus)", code: "URO-YDEL-AZFA", unit: "PCR", refRangeMale: "No Deletion Detected", refRangeFemale: "N/A", displayOrder: 1 },
-          { parameterName: "Y-Chromosome Microdeletion (AZFb Locus)", code: "URO-YDEL-AZFB", unit: "PCR", refRangeMale: "No Deletion Detected", refRangeFemale: "N/A", displayOrder: 2 },
-          { parameterName: "Y-Chromosome Microdeletion (AZFc Locus)", code: "URO-YDEL-AZFC", unit: "PCR", refRangeMale: "No Deletion Detected", refRangeFemale: "N/A", displayOrder: 3 },
-          { parameterName: "Sperm Concentration", code: "URO-SEMEN-CONC", unit: "M/mL", refRangeMale: "≥ 16.0 M/mL", refRangeFemale: "N/A", displayOrder: 4 },
-          { parameterName: "Sperm DNA Fragmentation Index (DFI)", code: "URO-DFI", unit: "%", refRangeMale: "< 15.0%", refRangeFemale: "N/A", displayOrder: 5 },
-          { parameterName: "Serum Total Testosterone", code: "ENDO-TESTO", unit: "ng/dL", refRangeMale: "300 - 1000", refRangeFemale: "15 - 70", displayOrder: 6 },
-        ],
-      },
-    },
-  });
+    // Create Test Definitions & Template Parameters
+    for (let idx = 0; idx < battery.items.length; idx++) {
+      const item = battery.items[idx];
+
+      // Upsert Test Definition
+      const existingTest = await prisma.testDefinition.findFirst({
+        where: { orgId: orgA.id, code: item.code },
+      });
+
+      if (!existingTest) {
+        await prisma.testDefinition.create({
+          data: {
+            orgId: orgA.id,
+            code: item.code,
+            name: item.testName,
+            category: battery.category,
+            unit: item.unit,
+            refRangeMale: item.refRangeMale,
+            refRangeFemale: item.refRangeFemale,
+            version: 1,
+          },
+        });
+      }
+
+      // Add Template Parameter
+      await prisma.templateParameter.create({
+        data: {
+          templateId: template.id,
+          parameterName: item.testName,
+          code: item.code,
+          unit: item.unit,
+          refRangeMale: item.refRangeMale,
+          refRangeFemale: item.refRangeFemale,
+          displayOrder: idx + 1,
+        },
+      });
+    }
+  }
 
   // 7. Patients
   const patient1 = await prisma.patient.findFirst({ where: { orgId: orgA.id, mrn: "MRN-2026-8801" } }) ||
@@ -267,39 +260,47 @@ async function main() {
       },
     });
 
-  // 8. Follow-up Report with Urology Semen Microdeletion Test
-  const reportAug = await prisma.report.create({
-    data: {
-      orgId: orgA.id,
-      branchId: mainBranch.id,
-      patientId: patient1.id,
-      doctorId: doctor1.id,
-      reportNumber: "LAB-2026-08001",
-      status: "Authorized",
-      version: 1,
-      sampleCollectedAt: new Date("2026-08-05T09:00:00Z"),
-      authorizedAt: new Date("2026-08-05T15:45:00Z"),
-      authorizedBy: pathologistUser.name,
-      verificationToken: "VERIFY-AUG-ALEX-8832",
-      notes: "Urology & Male Infertility Genetic Evaluation.",
-      results: {
-        create: [
-          { testId: createdTests["URO-YDEL-AZFA"].id, testNameSnapshot: createdTests["URO-YDEL-AZFA"].name, unitSnapshot: "PCR", refRangeSnapshot: "No Deletion Detected", stringValue: "No Deletion (Normal)", flag: "Normal" },
-          { testId: createdTests["URO-YDEL-AZFB"].id, testNameSnapshot: createdTests["URO-YDEL-AZFB"].name, unitSnapshot: "PCR", refRangeSnapshot: "No Deletion Detected", stringValue: "No Deletion (Normal)", flag: "Normal" },
-          { testId: createdTests["URO-YDEL-AZFC"].id, testNameSnapshot: createdTests["URO-YDEL-AZFC"].name, unitSnapshot: "PCR", refRangeSnapshot: "No Deletion Detected", stringValue: "No Deletion (Normal)", flag: "Normal" },
-          { testId: createdTests["URO-SEMEN-CONC"].id, testNameSnapshot: createdTests["URO-SEMEN-CONC"].name, unitSnapshot: "M/mL", refRangeSnapshot: "≥ 16.0 M/mL", numericValue: 24.5, flag: "Normal" },
-          { testId: createdTests["URO-DFI"].id, testNameSnapshot: createdTests["URO-DFI"].name, unitSnapshot: "%", refRangeSnapshot: "< 15.0%", numericValue: 11.2, flag: "Normal" },
-        ],
-      },
-      shares: {
-        create: {
-          shareToken: "SHARE-DEMO-8832",
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          isRevoked: false,
+  // 8. Sample Diagnostic Report
+  const testAzfa = await prisma.testDefinition.findFirst({ where: { orgId: orgA.id, code: "URO-YDEL-AZFA" } });
+  const testAzfb = await prisma.testDefinition.findFirst({ where: { orgId: orgA.id, code: "URO-YDEL-AZFB" } });
+  const testAzfc = await prisma.testDefinition.findFirst({ where: { orgId: orgA.id, code: "URO-YDEL-AZFC" } });
+  const testConc = await prisma.testDefinition.findFirst({ where: { orgId: orgA.id, code: "URO-SEMEN-CONC" } });
+  const testDfi = await prisma.testDefinition.findFirst({ where: { orgId: orgA.id, code: "URO-DFI" } });
+
+  if (testAzfa && testAzfb && testAzfc && testConc && testDfi) {
+    await prisma.report.create({
+      data: {
+        orgId: orgA.id,
+        branchId: mainBranch.id,
+        patientId: patient1.id,
+        doctorId: doctor1.id,
+        reportNumber: "LAB-2026-08001",
+        status: "Authorized",
+        version: 1,
+        sampleCollectedAt: new Date("2026-08-05T09:00:00Z"),
+        authorizedAt: new Date("2026-08-05T15:45:00Z"),
+        authorizedBy: pathologistUser.name,
+        verificationToken: "VERIFY-AUG-ALEX-8832",
+        notes: "Urology & Male Infertility Genetic Evaluation.",
+        results: {
+          create: [
+            { testId: testAzfa.id, testNameSnapshot: testAzfa.name, unitSnapshot: "PCR", refRangeSnapshot: "No Deletion Detected", stringValue: "No Deletion (Normal)", flag: "Normal" },
+            { testId: testAzfb.id, testNameSnapshot: testAzfb.name, unitSnapshot: "PCR", refRangeSnapshot: "No Deletion Detected", stringValue: "No Deletion (Normal)", flag: "Normal" },
+            { testId: testAzfc.id, testNameSnapshot: testAzfc.name, unitSnapshot: "PCR", refRangeSnapshot: "No Deletion Detected", stringValue: "No Deletion (Normal)", flag: "Normal" },
+            { testId: testConc.id, testNameSnapshot: testConc.name, unitSnapshot: "M/mL", refRangeSnapshot: "≥ 16.0 M/mL", numericValue: 24.5, flag: "Normal" },
+            { testId: testDfi.id, testNameSnapshot: testDfi.name, unitSnapshot: "%", refRangeSnapshot: "< 15.0%", numericValue: 11.2, flag: "Normal" },
+          ],
+        },
+        shares: {
+          create: {
+            shareToken: "SHARE-DEMO-8832",
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            isRevoked: false,
+          },
         },
       },
-    },
-  });
+    });
+  }
 
   console.log("✅ Seed completed cleanly with Urology Y-Chromosome Semen Microdeletion catalog!");
 }

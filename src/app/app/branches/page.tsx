@@ -1,11 +1,9 @@
 import { db } from "@/lib/db";
+import { getCurrentOrgId } from "@/lib/auth";
 import { BranchManager } from "@/components/branch/BranchManager";
 
 export default async function BranchesPage() {
-  const org = await db.organization.findFirst({
-    where: { slug: "demo-diagnostics" },
-  });
-  const orgId = org?.id || "";
+  const orgId = await getCurrentOrgId();
 
   const branches = await db.branch.findMany({
     where: { orgId },

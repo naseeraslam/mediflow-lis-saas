@@ -222,9 +222,11 @@ model Report {
   doctor            Doctor?           @relation(fields: [doctorId], references: [id])
 
   reportNumber      String            // e.g. LAB-2026-08001
-  status            String            @default("Draft") // Draft, Collected, Processing, Review, Authorized, Published, Amended
+  status            String            @default("Draft") // Sample Collected, Testing in Progress, Result Entry Completed, Review, Authorized, Published, Amended
   version           Int               @default(1)
   sampleCollectedAt DateTime?
+  estimatedCompletionAt DateTime?
+  tatHours          Int?              @default(4)
   authorizedAt      DateTime?
   authorizedBy      String?
   verificationToken String            @unique

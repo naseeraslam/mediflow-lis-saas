@@ -54,6 +54,37 @@ export async function validateShareToken(shareToken: string, providedPin?: strin
   });
 
   if (!shareRecord) {
+    // Fallback: Check if token is verificationToken or reportId directly
+    const directReport = await db.report.findFirst({
+      where: {
+        OR: [
+          { verificationToken: shareToken },
+          { id: shareToken },
+        ],
+      },
+      include: {
+        patient: true,
+        branch: true,
+        doctor: true,
+        organization: true,
+        results: {
+          include: { test: true },
+        },
+      },
+    });
+
+    if (directReport) {
+      return {
+        valid: true,
+        report: directReport,
+        shareRecord: {
+          id: directReport.id,
+          expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          accessCount: 1,
+        },
+      };
+    }
+
     return { valid: false, reason: "Invalid Share Token" };
   }
 

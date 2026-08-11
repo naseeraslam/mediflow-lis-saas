@@ -54,11 +54,11 @@ export function HomeHeroClient() {
             <Sparkles className="w-4 h-4 text-teal-500" /> {t("heroBadge")}
           </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] text-slate-900 dark:text-white">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-slate-900 dark:text-white max-w-2xl mx-auto">
             {t("homeTitle1")}<span className="bg-gradient-to-r from-teal-600 via-emerald-500 to-sky-500 bg-clip-text text-transparent">{t("homeTitle2")}</span>
           </h1>
 
-          <p className="text-slate-700 dark:text-slate-300 text-base sm:text-xl max-w-3xl mx-auto font-medium leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto font-medium leading-relaxed">
             {t("homeSubtitle")}
           </p>
 
@@ -79,6 +79,72 @@ export function HomeHeroClient() {
               <TrendingUp className="w-4 h-4 text-teal-600 dark:text-teal-400" />
               <span>{t("seeComparison")}</span>
             </Link>
+          </div>
+        </div>
+
+        {/* HIGH-SHARPNESS CLINICAL & PATIENT PHOTOGRAPHY SHOWCASE */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12">
+          {/* Card 1: State-of-the-Art Laboratory Equipment */}
+          <div className="group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl hover:shadow-2xl hover:border-teal-500/50 transition-all duration-300">
+            <div className="relative h-48 overflow-hidden">
+              <img
+                src="/images/modern_clinical_lab.png"
+                alt="Modern Medical Laboratory Equipment"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+              <span className="absolute bottom-3 left-3 text-[10px] font-mono font-bold text-teal-300 bg-slate-950/80 px-2.5 py-1 rounded-full border border-teal-500/30">
+                Automated Analyzers
+              </span>
+            </div>
+            <div className="p-5 space-y-1.5">
+              <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">Precision Clinical Diagnostics</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                High-sharpness automated analyzer integration for hematology, biochemistry, and molecular PCR.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: Compassionate Care for All Patient Ages */}
+          <div className="group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl hover:shadow-2xl hover:border-teal-500/50 transition-all duration-300">
+            <div className="relative h-48 overflow-hidden">
+              <img
+                src="/images/patient_care_all_ages.png"
+                alt="Patient Diagnostic Care for Children, Adults & Seniors"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+              <span className="absolute bottom-3 left-3 text-[10px] font-mono font-bold text-emerald-300 bg-slate-950/80 px-2.5 py-1 rounded-full border border-emerald-500/30">
+                All Patient Demographics
+              </span>
+            </div>
+            <div className="p-5 space-y-1.5">
+              <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">Care for Children, Adults & Seniors</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                Tailored reference intervals and pediatric, adult, and geriatric range verification for every patient.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 3: Instant Digital QR Verification */}
+          <div className="group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl hover:shadow-2xl hover:border-teal-500/50 transition-all duration-300">
+            <div className="relative h-48 overflow-hidden">
+              <img
+                src="/images/digital_lab_report.png"
+                alt="Digital QR Report Verification"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+              <span className="absolute bottom-3 left-3 text-[10px] font-mono font-bold text-sky-300 bg-slate-950/80 px-2.5 py-1 rounded-full border border-sky-500/30">
+                Cryptographic Signatures
+              </span>
+            </div>
+            <div className="p-5 space-y-1.5">
+              <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">Instant QR Verification Portal</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                Patients and doctors scan QR code to securely verify authentic pathologist-signed diagnostic reports.
+              </p>
+            </div>
           </div>
         </div>
 

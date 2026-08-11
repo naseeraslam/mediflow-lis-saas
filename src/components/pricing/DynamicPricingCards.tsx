@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { SUPPORTED_CURRENCIES, formatCurrency } from "@/lib/currency";
 import { Check, Sparkles, ArrowRight, Globe } from "lucide-react";
+import { useLanguage } from "@/components/i18n/LanguageToggle";
 
 export interface PlanItem {
   id?: string;
@@ -18,22 +19,23 @@ export interface PlanItem {
 
 export function DynamicPricingCards({ plans, defaultCurrency = "USD" }: { plans: PlanItem[]; defaultCurrency?: string }) {
   const [selectedCurrency, setSelectedCurrency] = useState(defaultCurrency);
+  const { t, language } = useLanguage();
 
   const currencyConfig = SUPPORTED_CURRENCIES[selectedCurrency] || SUPPORTED_CURRENCIES.USD;
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       {/* Global Currency Selector Dropdown */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
           <Globe className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-          <span>Platform Base Currency (Configured by Super Admin):</span>
+          <span>{t("baseCurrencyLabel")}</span>
         </div>
 
         <select
           value={selectedCurrency}
           onChange={(e) => setSelectedCurrency(e.target.value)}
-          className="p-3 px-4 bg-white dark:bg-slate-900 border border-teal-500/40 rounded-xl text-teal-700 dark:text-teal-300 font-extrabold text-xs outline-none focus:border-teal-400 shadow-xl cursor-pointer"
+          className="p-2.5 px-4 bg-white dark:bg-slate-900 border border-teal-500/40 rounded-xl text-teal-700 dark:text-teal-300 font-extrabold text-xs outline-none focus:border-teal-400 shadow-lg cursor-pointer"
         >
           {Object.values(SUPPORTED_CURRENCIES).map((c) => (
             <option key={c.code} value={c.code}>
@@ -54,10 +56,18 @@ export function DynamicPricingCards({ plans, defaultCurrency = "USD" }: { plans:
         {plans.map((plan, index) => {
           const formattedPrice = formatCurrency(plan.priceInUSD, selectedCurrency);
 
+          const localizedName = language === "ur"
+            ? (plan.name.includes("Starter") ? t("starterPlan") : plan.name.includes("Professional") ? t("proPlan") : t("enterprisePlan"))
+            : plan.name;
+
+          const localizedDesc = language === "ur"
+            ? (plan.name.includes("Starter") ? t("starterDesc") : plan.name.includes("Professional") ? t("proDesc") : t("enterpriseDesc"))
+            : plan.description;
+
           return (
             <div
               key={index}
-              className={`rounded-2xl p-8 space-y-6 flex flex-col justify-between transition-all border ${
+              className={`rounded-2xl p-6 sm:p-8 space-y-6 flex flex-col justify-between transition-all border ${
                 plan.popular
                   ? "bg-white dark:bg-slate-900 border-teal-500/80 shadow-2xl shadow-teal-500/10 relative"
                   : "bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-lg"
@@ -65,19 +75,19 @@ export function DynamicPricingCards({ plans, defaultCurrency = "USD" }: { plans:
             >
               {plan.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-teal-400 to-sky-400 text-slate-950 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-lg">
-                  <Sparkles className="w-3 h-3 fill-slate-950" /> Most Popular
+                  <Sparkles className="w-3 h-3 fill-slate-950" /> {t("mostPopular")}
                 </div>
               )}
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-xl font-black text-slate-900 dark:text-slate-100">{plan.name}</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">{plan.description}</p>
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">{localizedName}</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium leading-relaxed">{localizedDesc}</p>
                 </div>
 
                 <div className="flex items-baseline gap-1 pt-2">
-                  <span className="text-4xl font-black text-teal-700 dark:text-teal-400">{formattedPrice}</span>
-                  <span className="text-slate-500 dark:text-slate-400 text-xs font-mono font-bold">/ {plan.billing}</span>
+                  <span className="text-3xl font-black text-teal-700 dark:text-teal-400">{formattedPrice}</span>
+                  <span className="text-slate-500 dark:text-slate-400 text-xs font-mono font-bold">/ {t("perMonth")}</span>
                 </div>
 
                 <ul className="space-y-3 pt-4 text-xs font-semibold text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800">
@@ -99,7 +109,7 @@ export function DynamicPricingCards({ plans, defaultCurrency = "USD" }: { plans:
                       : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700"
                   }`}
                 >
-                  <span>Get Started ({plan.name})</span>
+                  <span>{t("getStarted")} ({localizedName})</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
