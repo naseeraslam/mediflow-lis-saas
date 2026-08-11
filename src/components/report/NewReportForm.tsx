@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, ShieldCheck, Sparkles, FileText, User, Building2, FlaskConical, Award, CreditCard, MessageCircle, X } from "lucide-react";
+import { Plus, Trash2, ShieldCheck, Sparkles, FileText, User, Building2, FlaskConical, Award, CreditCard, MessageCircle, X, Layers, Clock, CheckSquare } from "lucide-react";
 import { generateRegistrationWhatsAppMessage } from "@/lib/whatsapp";
 import { useLanguage } from "@/components/i18n/LanguageToggle";
+import { STANDARD_HUMAN_TEST_BATTERIES } from "@/lib/defaultCatalog";
 
 export interface PatientOpt {
   id: string;
@@ -33,56 +34,6 @@ export interface TestOpt {
   maxValue: number | null;
 }
 
-// WHO & Urology Pre-loaded Standard Sample Templates
-const WHO_SAMPLE_TEMPLATES = [
-  {
-    name: "Urology Y-Chromosome Semen Microdeletion Panel",
-    code: "URO-YDEL",
-    source: "WHO & Urology Molecular Genetics Standard",
-    items: [
-      { testName: "Y-Chromosome Microdeletion (AZFa Locus)", unit: "PCR", refRange: "No Deletion Detected", numericValue: "", stringValue: "No Deletion (Normal)", flag: "Normal" },
-      { testName: "Y-Chromosome Microdeletion (AZFb Locus)", unit: "PCR", refRange: "No Deletion Detected", numericValue: "", stringValue: "No Deletion (Normal)", flag: "Normal" },
-      { testName: "Y-Chromosome Microdeletion (AZFc Locus)", unit: "PCR", refRange: "No Deletion Detected", numericValue: "", stringValue: "No Deletion (Normal)", flag: "Normal" },
-      { testName: "Sperm Concentration", unit: "M/mL", refRange: "≥ 16.0 M/mL (WHO)", numericValue: "24.5", stringValue: "", flag: "Normal" },
-      { testName: "Sperm DNA Fragmentation Index (DFI)", unit: "%", refRange: "< 15.0%", numericValue: "11.2", stringValue: "", flag: "Normal" },
-      { testName: "Serum Total Testosterone", unit: "ng/dL", refRange: "300 - 1000 (WHO)", numericValue: "580", stringValue: "", flag: "Normal" },
-    ],
-  },
-  {
-    name: "WHO Standard Hematology (CBC) Battery",
-    code: "WHO-CBC",
-    source: "WHO Technical Report Series No. 1042",
-    items: [
-      { testName: "White Blood Cells (WBC)", unit: "x10^3/uL", refRange: "4.5 - 11.0 (WHO)", numericValue: "6.8", stringValue: "", flag: "Normal" },
-      { testName: "Red Blood Cells (RBC)", unit: "x10^6/uL", refRange: "4.3 - 5.9 (WHO)", numericValue: "4.8", stringValue: "", flag: "Normal" },
-      { testName: "Hemoglobin (HGB)", unit: "g/dL", refRange: "13.8 - 17.2 (WHO)", numericValue: "15.1", stringValue: "", flag: "Normal" },
-      { testName: "Platelets (PLT)", unit: "x10^3/uL", refRange: "150 - 450 (WHO)", numericValue: "240", stringValue: "", flag: "Normal" },
-    ],
-  },
-  {
-    name: "WHO Metabolic & Glycemic Panel (Diabetes)",
-    code: "WHO-GLU",
-    source: "WHO Global Diabetes Diagnostic Standard",
-    items: [
-      { testName: "Fasting Blood Glucose", unit: "mg/dL", refRange: "70 - 99 (WHO)", numericValue: "112", stringValue: "", flag: "High" },
-      { testName: "HbA1c (Glycated Hemoglobin)", unit: "%", refRange: "< 5.7 (WHO Normal)", numericValue: "6.2", stringValue: "", flag: "High" },
-      { testName: "Serum Creatinine", unit: "mg/dL", refRange: "0.74 - 1.35 (WHO)", numericValue: "0.95", stringValue: "", flag: "Normal" },
-      { testName: "Blood Urea Nitrogen (BUN)", unit: "mg/dL", refRange: "7 - 20 (WHO)", numericValue: "14", stringValue: "", flag: "Normal" },
-    ],
-  },
-  {
-    name: "WHO Lipid Profile & Cardiovascular Battery",
-    code: "WHO-LIPID",
-    source: "WHO Cardiovascular Risk Guidelines",
-    items: [
-      { testName: "Total Cholesterol", unit: "mg/dL", refRange: "< 200 (WHO)", numericValue: "215", stringValue: "", flag: "High" },
-      { testName: "HDL Cholesterol (Good)", unit: "mg/dL", refRange: "> 40 (WHO)", numericValue: "45", stringValue: "", flag: "Normal" },
-      { testName: "LDL Cholesterol (Bad)", unit: "mg/dL", refRange: "< 100 (WHO)", numericValue: "138", stringValue: "", flag: "High" },
-      { testName: "Triglycerides", unit: "mg/dL", refRange: "< 150 (WHO)", numericValue: "160", stringValue: "", flag: "High" },
-    ],
-  },
-];
-
 export interface DoctorOpt {
   id: string;
   name: string;
@@ -94,11 +45,13 @@ export function NewReportForm({
   branches,
   testCatalog,
   doctors = [],
+  templates = [],
 }: {
   patients: PatientOpt[];
   branches: BranchOpt[];
   testCatalog: TestOpt[];
   doctors?: DoctorOpt[];
+  templates?: any[];
 }) {
   const router = useRouter();
   const { t } = useLanguage();
@@ -123,6 +76,7 @@ export function NewReportForm({
   const [isCustomDoctor, setIsCustomDoctor] = useState<boolean>(false);
   const [notes, setNotes] = useState("Routine diagnostic wellness screening.");
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   // 2-Step Workflow Mode
   const [workflowStep, setWorkflowStep] = useState<"registration_only" | "full_results">("registration_only");
@@ -146,6 +100,11 @@ export function NewReportForm({
   const [paymentStatus, setPaymentStatus] = useState<"Paid" | "Pending">("Paid");
   const [amountBilled, setAmountBilled] = useState<number>(3500);
   const [amountPaid, setAmountPaid] = useState<number>(3500);
+
+  // Turnaround Time (TAT) & Granular Lifecycle State
+  const [tatHours, setTatHours] = useState<number>(4);
+  const [customCompletionDate, setCustomCompletionDate] = useState<string>("");
+  const [reportStatus, setReportStatus] = useState<string>("Sample Collected");
 
   // Dynamic parameters array
   const [parameters, setParameters] = useState<
@@ -173,21 +132,37 @@ export function NewReportForm({
   // Selected Patient Details
   const selectedPatient = localPatients.find((p) => p.id === selectedPatientId) || localPatients[0];
 
-  // 1-Click Load WHO / Urology Sample Template
-  function loadWHOTemplate(tmplCode: string) {
-    const tmpl = WHO_SAMPLE_TEMPLATES.find((t) => t.code === tmplCode);
-    if (!tmpl) return;
+  // Unified Master Battery Templates List (Combines DB templates with standard human lab test catalog)
+  const allBatteries = [
+    ...(templates || []),
+    ...STANDARD_HUMAN_TEST_BATTERIES.filter(
+      (b) => !templates?.some((t: any) => t.code === b.code)
+    ),
+  ];
 
-    const loaded = tmpl.items.map((item) => {
-      const match = localCatalog.find((tc) => tc.name.toLowerCase().includes(item.testName.toLowerCase()));
+  // 1-Click Load Master Test Battery / Template Parameters
+  function loadBatteryTemplate(tmplCode: string) {
+    const battery = allBatteries.find((b: any) => b.code === tmplCode);
+    if (!battery) return;
+
+    const isFemale = selectedPatient?.gender === "Female";
+
+    const loaded = battery.items.map((item: any) => {
+      const match = localCatalog.find(
+        (tc) => tc.name.toLowerCase() === item.testName.toLowerCase() || tc.code === item.code
+      );
+      const refRange = isFemale
+        ? item.refRangeFemale || item.refRangeMale || item.refRange
+        : item.refRangeMale || item.refRangeFemale || item.refRange;
+
       return {
-        testId: match?.id || `custom-${item.testName}`,
+        testId: match?.id || `custom-${item.code || item.testName}`,
         testName: item.testName,
-        unit: item.unit,
-        refRange: item.refRange,
-        numericValue: item.numericValue,
-        stringValue: item.stringValue,
-        flag: item.flag,
+        unit: item.unit || match?.unit || "unit",
+        refRange: refRange || "Standard Normal Range",
+        numericValue: item.defaultNumericValue !== undefined ? item.defaultNumericValue : item.numericValue || "",
+        stringValue: item.defaultStringValue !== undefined ? item.defaultStringValue : item.stringValue || "",
+        flag: item.flag || "Normal",
       };
     });
 
@@ -342,9 +317,14 @@ export function NewReportForm({
           branchId: selectedBranchId,
           doctorId: isCustomDoctor ? null : selectedDoctorId,
           referringDoctorName: isCustomDoctor ? customDoctorName : "",
-          status: workflowStep === "registration_only" ? "Processing" : "Authorized",
+          status: workflowStep === "registration_only" ? reportStatus : "Authorized",
+          tatHours,
+          estimatedCompletionAt: customCompletionDate ? new Date(customCompletionDate).toISOString() : undefined,
           notes: `${notes} [Payment: ${paymentMode} - ${paymentStatus} (${amountPaid} PKR)]`,
-          testResults: parameters.map((p) => ({
+          testResults: (parameters.filter((p) => (p as any).selectedForPublish !== false).length > 0
+            ? parameters.filter((p) => (p as any).selectedForPublish !== false)
+            : parameters
+          ).map((p) => ({
             testId: p.testId,
             testName: p.testName,
             unit: p.unit,
@@ -356,15 +336,28 @@ export function NewReportForm({
         }),
       });
 
-      const data = await res.json();
-      if (data.success && data.report) {
-        // Automatic Server-Side & Client-Side WhatsApp Receipt Dispatch
-        if (selectedPatient?.phone) {
-          fetch("/api/reports/whatsapp-dispatch", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              type: "registration",
+        const data = await res.json();
+        if (data.success && data.report) {
+          setFormError(null);
+          // Automatic Server-Side & Client-Side WhatsApp Receipt Dispatch
+          if (selectedPatient?.phone) {
+            fetch("/api/reports/whatsapp-dispatch", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                type: "registration",
+                patientName: selectedPatient.fullName,
+                patientPhone: selectedPatient.phone,
+                mrn: selectedPatient.mrn,
+                reportNumber: data.report.reportNumber,
+                labName: "Apex Demo Diagnostics",
+                paymentMode,
+                paymentStatus,
+                amountPaid,
+              }),
+            }).catch((err) => console.error("Background WhatsApp dispatch error:", err));
+
+            const { whatsappUrl } = generateRegistrationWhatsAppMessage({
               patientName: selectedPatient.fullName,
               patientPhone: selectedPatient.phone,
               mrn: selectedPatient.mrn,
@@ -373,35 +366,31 @@ export function NewReportForm({
               paymentMode,
               paymentStatus,
               amountPaid,
-            }),
-          }).catch((err) => console.error("Background WhatsApp dispatch error:", err));
+              currency: "PKR",
+            });
+            // Auto Open WhatsApp dispatch tab
+            window.open(whatsappUrl, "_blank");
+          }
 
-          const { whatsappUrl } = generateRegistrationWhatsAppMessage({
-            patientName: selectedPatient.fullName,
-            patientPhone: selectedPatient.phone,
-            mrn: selectedPatient.mrn,
-            reportNumber: data.report.reportNumber,
-            labName: "Apex Demo Diagnostics",
-            paymentMode,
-            paymentStatus,
-            amountPaid,
-            currency: "PKR",
-          });
-          // Auto Open WhatsApp dispatch tab
-          window.open(whatsappUrl, "_blank");
+          router.push(`/app/reports/${data.report.id}`);
+        } else {
+          setFormError(data.error || "Failed to create report.");
         }
-
-        router.push(`/app/reports/${data.report.id}`);
+      } catch (err: any) {
+        console.error("Submit Error:", err);
+        setFormError("Network error while creating report. Please try again.");
+      } finally {
+        setSubmitting(false);
       }
-    } catch (err) {
-      console.error("Submit Error:", err);
-    } finally {
-      setSubmitting(false);
-    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl text-slate-900 dark:text-slate-100">
+      {formError && (
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-400 text-xs font-bold flex items-center gap-2">
+          <span>⚠️ {formError}</span>
+        </div>
+      )}
       {/* 2-STEP WORKFLOW MODE SELECTOR (Patient Registration vs Full Diagnostic Entry) */}
       <div className="p-5 rounded-2xl bg-teal-50/80 dark:bg-slate-950/90 border border-teal-200 dark:border-teal-500/40 space-y-3 shadow-sm">
         <div className="flex items-center justify-between">
@@ -453,34 +442,34 @@ export function NewReportForm({
         </div>
       </div>
 
-      {/* WHO / UROLOGY SAMPLE TEMPLATES 1-CLICK LOADER */}
-      <div className="p-5 rounded-xl bg-sky-50/80 dark:bg-slate-950/90 border border-sky-200 dark:border-sky-500/30 space-y-3 shadow-sm">
-        <div className="flex items-center justify-between">
+      {/* 1-CLICK PRE-LOADED DIAGNOSTIC TEST BATTERIES CARD */}
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl relative overflow-hidden">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
           <div className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("loadWhoBattery")}</h3>
+            <Award className="w-5 h-5 text-sky-600 dark:sky-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Quick 1-Click Master Human Test Batteries</h3>
           </div>
           <span className="text-[10px] font-mono font-bold text-sky-800 dark:text-sky-300 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
-            WHO Technical Reference Ranges
+            WHO & Standard Technical Reference Intervals
           </span>
         </div>
         <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-          {t("loadWhoDesc")}
+          Click any standard battery below to instantly pre-populate all clinical sub-parameters with units and male/female reference ranges.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
-          {WHO_SAMPLE_TEMPLATES.map((tmpl) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+          {allBatteries.map((tmpl: any) => (
             <button
               key={tmpl.code}
               type="button"
-              onClick={() => loadWHOTemplate(tmpl.code)}
+              onClick={() => loadBatteryTemplate(tmpl.code)}
               className="p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 hover:border-teal-500 text-left transition-all space-y-1 group shadow-sm"
             >
-              <div className="text-xs font-bold text-slate-900 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-300 flex items-center justify-between">
-                <span className="truncate max-w-[170px]">{tmpl.name}</span>
+              <div className="text-xs font-bold text-slate-900 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-300 flex items-center justify-between gap-2">
+                <span className="truncate">{tmpl.name}</span>
                 <Sparkles className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
               </div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">{tmpl.source}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">{tmpl.category} • {tmpl.items?.length || 0} Analytes</div>
             </button>
           ))}
         </div>
@@ -653,6 +642,118 @@ export function NewReportForm({
         </div>
       </div>
 
+      {/* REPORTING TIME & EXPECTED DELIVERY SCHEDULE SELECTOR CARD */}
+      <div className="p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <h3 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+              Reporting Time & Turnaround Schedule (TAT)
+            </h3>
+          </div>
+          <span className="text-[10px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/30">
+            PATIENT TRACKER NOTIFICATION ACTIVE
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 text-xs">
+          <button
+            type="button"
+            onClick={() => { setTatHours(4); setCustomCompletionDate(""); }}
+            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+              tatHours === 4 && !customCompletionDate
+                ? "bg-teal-500/15 border-teal-500 text-teal-900 dark:text-teal-200 font-extrabold shadow-md ring-2 ring-teal-500/30"
+                : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+            }`}
+          >
+            <div className="text-xs font-black text-slate-900 dark:text-slate-100">⚡ 4 Hours</div>
+            <div className="text-[10px] text-slate-500 font-medium">STAT Standard</div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setTatHours(24); setCustomCompletionDate(""); }}
+            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+              tatHours === 24 && !customCompletionDate
+                ? "bg-teal-500/15 border-teal-500 text-teal-900 dark:text-teal-200 font-extrabold shadow-md ring-2 ring-teal-500/30"
+                : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+            }`}
+          >
+            <div className="text-xs font-black text-slate-900 dark:text-slate-100">📅 1 Day (24h)</div>
+            <div className="text-[10px] text-slate-500 font-medium">Next-Day Routine</div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setTatHours(72); setCustomCompletionDate(""); }}
+            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+              tatHours === 72 && !customCompletionDate
+                ? "bg-teal-500/15 border-teal-500 text-teal-900 dark:text-teal-200 font-extrabold shadow-md ring-2 ring-teal-500/30"
+                : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+            }`}
+          >
+            <div className="text-xs font-black text-slate-900 dark:text-slate-100">🧪 3 Days</div>
+            <div className="text-[10px] text-slate-500 font-medium">Cultures / Panels</div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setTatHours(168); setCustomCompletionDate(""); }}
+            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+              tatHours === 168 && !customCompletionDate
+                ? "bg-teal-500/15 border-teal-500 text-teal-900 dark:text-teal-200 font-extrabold shadow-md ring-2 ring-teal-500/30"
+                : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+            }`}
+          >
+            <div className="text-xs font-black text-slate-900 dark:text-slate-100">🔬 7 Days</div>
+            <div className="text-[10px] text-slate-500 font-medium">Histopathology</div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setTatHours(360); setCustomCompletionDate(""); }}
+            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+              tatHours === 360 && !customCompletionDate
+                ? "bg-teal-500/15 border-teal-500 text-teal-900 dark:text-teal-200 font-extrabold shadow-md ring-2 ring-teal-500/30"
+                : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+            }`}
+          >
+            <div className="text-xs font-black text-slate-900 dark:text-slate-100">🧬 15 Days</div>
+            <div className="text-[10px] text-slate-500 font-medium">Genetics & DNA</div>
+          </button>
+
+          <div className="col-span-2 space-y-1">
+            <label className="block text-[10px] text-slate-700 dark:text-slate-300 font-bold">
+              📆 Pick Exact Custom Date & Time:
+            </label>
+            <input
+              type="datetime-local"
+              value={customCompletionDate}
+              onChange={(e) => {
+                setCustomCompletionDate(e.target.value);
+                if (e.target.value) {
+                  const diffHours = Math.max(1, Math.round((new Date(e.target.value).getTime() - Date.now()) / (1000 * 60 * 60)));
+                  setTatHours(diffHours);
+                }
+              }}
+              className="w-full p-2 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono text-xs font-bold focus:border-teal-500 outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="p-3 bg-teal-500/10 dark:bg-teal-500/15 rounded-xl border border-teal-500/20 text-xs font-bold text-slate-900 dark:text-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <span className="flex items-center gap-1.5 text-teal-700 dark:text-teal-300">
+            <Clock className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+            Expected Patient Report Release Timestamp:
+          </span>
+          <span className="text-teal-700 dark:text-teal-300 font-mono font-black text-sm">
+            {customCompletionDate
+              ? new Date(customCompletionDate).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })
+              : new Date(Date.now() + tatHours * 60 * 60 * 1000).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+          </span>
+        </div>
+      </div>
+
       {/* WORKFLOW-BASED TEST / PARAMETER BATTERY */}
       {workflowStep === "registration_only" ? (
         /* STEP 1: PATIENT SAMPLE BOOKED TESTS SELECTOR (TEST NAME ONLY) */
@@ -686,6 +787,33 @@ export function NewReportForm({
             </div>
           </div>
 
+          {/* Quick Battery Auto-Loader Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-teal-500/10 dark:bg-teal-500/15 p-3 rounded-xl border border-teal-500/30">
+            <div className="flex items-center gap-2">
+              <Layers className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
+              <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                Auto-Load Human Test Battery:
+              </span>
+            </div>
+
+            <select
+              onChange={(e) => {
+                if (e.target.value) {
+                  loadBatteryTemplate(e.target.value);
+                  e.target.value = "";
+                }
+              }}
+              className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-lg border border-teal-500/40 text-teal-800 dark:text-teal-300 font-bold text-xs shadow-sm focus:border-teal-500 outline-none cursor-pointer w-full sm:w-80"
+            >
+              <option value="">-- Pick Battery (CBC, LFT, KFT, Lipid, Urinalysis...) --</option>
+              {allBatteries.map((b: any) => (
+                <option key={b.code} value={b.code}>
+                  {b.name} ({b.items?.length || 0} Sub-Parameters)
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Booked Test Name Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {parameters.map((param, index) => (
@@ -708,10 +836,11 @@ export function NewReportForm({
                 <div>
                   <label className="block text-[10px] text-slate-700 dark:text-slate-400 font-bold mb-1">Booked Test Name *</label>
                   <select
-                    value={localCatalog.find((t) => t.name === param.testName)?.id || ""}
+                    value={param.testId || localCatalog.find((t) => t.name === param.testName || t.code === param.testName)?.id || ""}
                     onChange={(e) => {
                       const selectedTc = localCatalog.find((tc) => tc.id === e.target.value);
                       if (selectedTc) {
+                        handleUpdateParameter(index, "testId", selectedTc.id);
                         handleUpdateParameter(index, "testName", selectedTc.name);
                         handleUpdateParameter(index, "unit", selectedTc.unit);
                         handleUpdateParameter(index, "refRange", selectedTc.refRangeMale);
@@ -722,7 +851,7 @@ export function NewReportForm({
                     <option value="">-- Select Test from Catalog ({localCatalog.length} Available) --</option>
                     {localCatalog.map((tc) => (
                       <option key={tc.id} value={tc.id}>
-                        {tc.name} ({tc.category})
+                        {tc.name} ({tc.code}) - {tc.category}
                       </option>
                     ))}
                   </select>
@@ -760,6 +889,84 @@ export function NewReportForm({
             >
               <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" /> {t("addCustomParameter")}
             </button>
+          </div>
+
+          {/* Quick Battery Auto-Loader Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-teal-500/10 dark:bg-teal-500/15 p-3 rounded-xl border border-teal-500/30">
+            <div className="flex items-center gap-2">
+              <Layers className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
+              <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                Auto-Load Human Test Battery Parameters:
+              </span>
+            </div>
+
+            <select
+              onChange={(e) => {
+                if (e.target.value) {
+                  loadBatteryTemplate(e.target.value);
+                  e.target.value = "";
+                }
+              }}
+              className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-lg border border-teal-500/40 text-teal-800 dark:text-teal-300 font-bold text-xs shadow-sm focus:border-teal-500 outline-none cursor-pointer w-full sm:w-80"
+            >
+              <option value="">-- Pick Battery (CBC, LFT, KFT, Lipid, Urinalysis...) --</option>
+              {allBatteries.map((b: any) => (
+                <option key={b.code} value={b.code}>
+                  {b.name} ({b.items?.length || 0} Sub-Parameters)
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* SELECT REGISTERED TESTS READY FOR PUBLISHING */}
+          <div className="p-4 rounded-2xl bg-teal-500/10 dark:bg-teal-500/15 border border-teal-500/30 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                <h3 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+                  Select Registered Tests Ready for Final Report Publishing
+                </h3>
+              </div>
+              <span className="text-[10px] font-mono text-teal-800 dark:text-teal-300 font-bold bg-teal-500/20 px-2.5 py-0.5 rounded-full border border-teal-500/30">
+                {parameters.filter(p => (p as any).selectedForPublish !== false).length} of {parameters.length} Registered Tests Selected
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+              Check the registered tests ready to be published specifically for patient <strong className="text-teal-700 dark:text-teal-300 font-bold">{selectedPatient?.fullName} (MRN: {selectedPatient?.mrn})</strong>. Results will be filled below with pre-loaded WHO reference intervals. Unchecked tests remain in progress.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+              {parameters.map((param, index) => {
+                const isSelected = (param as any).selectedForPublish !== false;
+                return (
+                  <label
+                    key={index}
+                    className={`p-3 rounded-xl border flex items-center gap-3 cursor-pointer transition-all ${
+                      isSelected
+                        ? "bg-white dark:bg-slate-900 border-teal-500 text-slate-900 dark:text-slate-100 shadow-md ring-1 ring-teal-500/30"
+                        : "bg-slate-100 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-400 opacity-60"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={(e) => {
+                        const copy = [...parameters];
+                        (copy[index] as any).selectedForPublish = e.target.checked;
+                        setParameters(copy);
+                      }}
+                      className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 cursor-pointer"
+                    />
+                    <div className="truncate text-xs">
+                      <div className="font-extrabold text-slate-900 dark:text-slate-100 truncate">{param.testName}</div>
+                      <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                        {param.unit || "Generic Unit"} • {isSelected ? "Ready to Publish" : "Hold in Conduction"}
+                      </div>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
           </div>
 
           {/* Dynamic Parameter Rows */}

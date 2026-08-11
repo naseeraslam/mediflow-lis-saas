@@ -22,10 +22,10 @@ export const translations = {
     save: "Save",
 
     // Hero Homepage
-    heroBadge: "Next-Gen ISO 15189 Multi-Tenant Medical Laboratory Information System (LIS)",
-    homeTitle1: "Multi-Tenant Clinical Reporting & ",
-    homeTitle2: "Baseline Diagnostic Comparison",
-    homeSubtitle: "Empower diagnostic laboratories, pathology networks, and hospital health systems with isolated white-label reporting, immutable report amendments, WHO & Urology test batteries, and automated analyte trend analysis.",
+    heroBadge: "ISO 15189 Accredited Multi-Tenant Laboratory Information System",
+    homeTitle1: "Modern Diagnostic LIS & ",
+    homeTitle2: "Patient Portal",
+    homeSubtitle: "Automated test batteries, real-time patient status tracking, and baseline comparison.",
     exploreSaaS: "Explore Private SaaS Workspace",
     seeComparison: "See Comparison Engine",
 
@@ -38,6 +38,20 @@ export const translations = {
     immutableDesc: "Full Audit Rationale History",
     qrSigned: "QR Signed Verification",
     qrDesc: "Cryptographic Public Check",
+
+    // Pricing Page
+    pricingTitle: "Plans Built for Scaling Clinical Operations",
+    pricingSubtitle: "Multi-tenant data isolation, baseline comparisons, and country-wise currency conversion configured by Super Admin.",
+    baseCurrencyLabel: "Platform Base Currency (Configured by Super Admin):",
+    mostPopular: "Most Popular",
+    getStarted: "Get Started",
+    perMonth: "per month",
+    starterPlan: "Starter Plan",
+    starterDesc: "Essential LIS reporting for single-doctor diagnostic laboratories & clinics",
+    proPlan: "Professional Plan",
+    proDesc: "Full multi-branch reporting engine for growing pathology centers & hospitals",
+    enterprisePlan: "Enterprise Plan",
+    enterpriseDesc: "Unlimited diagnostic capacity with dedicated HL7/FHIR EHR integrations",
 
     // Patient Search Portal
     searchTitle: "Secure Patient Report Verification Portal",
@@ -121,6 +135,25 @@ export const translations = {
     architectTitle: "Platform Architect & Visionary",
     architectName: "Sher Muhammad",
     operationalStatus: "100% OPERATIONAL: All 48 LIS Endpoints Active & Healthy",
+
+    // Comparison Table
+    coreInnovation: "CORE DIAGNOSTIC INNOVATION",
+    compSectionTitle: "Automated Baseline vs Current Report Comparison",
+    compSectionDesc: "Eliminate manual tracking. MediFlow matches historical patient laboratory results across previous diagnostic visits, calculates absolute and percentage deltas, and validates unit consistency.",
+    patientLabel: "Patient",
+    comparingReports: "Comparing",
+    vsText: "vs",
+    diagnosticTestCol: "Diagnostic Test",
+    janBaselineCol: "Jan 2026 Baseline",
+    augCurrentCol: "Aug 2026 Current",
+    absDeltaCol: "Absolute Delta",
+    pctChangeCol: "% Change",
+    highFlag: "High Flag",
+    improvedFlag: "Improved",
+    stableFlag: "Stable",
+    wbcTestName: "White Blood Cells (WBC)",
+    spermTestName: "Sperm Concentration",
+    hbTestName: "Hemoglobin (Hb)",
   },
   ur: {
     // Navigation & Common
@@ -154,6 +187,20 @@ export const translations = {
     immutableDesc: "مکمل آڈٹ اور وجہ کی ریکارڈنگ",
     qrSigned: "کیو آر (QR) تصدیق شدہ",
     qrDesc: "آن لائن عوامی اور سیکیورٹی چیک",
+
+    // Pricing Page
+    pricingTitle: "طبی لیبارٹری آپریشنز کے لیے لچکدار منصوبے",
+    pricingSubtitle: "ملٹی ٹیننٹ ڈیٹا کا تحفظ، خودکار ٹیسٹ موازنہ، اور ملک وار کرنسی میں ادائیگی کے بہترین منصوبے۔",
+    baseCurrencyLabel: "منصوبے کی اہم کرنسی (Super Admin کے تحت):",
+    mostPopular: "سب سے مقبول",
+    getStarted: "منصوبہ منتخب کریں",
+    perMonth: "فی مہینہ",
+    starterPlan: "اسٹارٹر منصوبہ",
+    starterDesc: "سنگل کلینک اور چھوٹے ڈائیگنوسٹک سنٹر کے لیے بنیادی LIS سسٹم",
+    proPlan: "پروفیشنل منصوبہ",
+    proDesc: "ملٹی برانچ پیتھالوجی ہسپتالوں کے لیے مکمل ڈائیگنوسٹک انجن",
+    enterprisePlan: "انٹرپرائز منصوبہ",
+    enterpriseDesc: "نامحدود ٹیسٹ گنجائش اور ایچ ایل 7 (HL7/FHIR) انٹیگریشن",
 
     // Patient Search Portal
     searchTitle: "محفوظ مریض کی ٹیسٹ رپورٹ تصدیقی پورٹل",
@@ -237,6 +284,25 @@ export const translations = {
     architectTitle: "سسٹم کے سرپرست و آرکیٹیکٹ",
     architectName: "شیر محمد",
     operationalStatus: "100% فعال: تمام 48 سروسز فعال اور بہترین ہیں",
+
+    // Comparison Table
+    coreInnovation: "بنیادی کلینیکل جدت",
+    compSectionTitle: "خودکار پچھلی بمقابلہ موجودہ رپورٹ موازنہ سسٹم",
+    compSectionDesc: "مینوئل ٹریکنگ کا خاتمہ کریں۔ میڈی فلو پچھلی ہسٹری سے خودکار نتائج ملا کر فیصد تبدیلی اور تبدیل شدہ نتائج دکھاتا ہے۔",
+    patientLabel: "مریض",
+    comparingReports: "رپورٹ موازنہ",
+    vsText: "بمقابلہ",
+    diagnosticTestCol: "ڈائیگنوسٹک ٹیسٹ",
+    janBaselineCol: "جنوری 2026 پچھلی رپورٹ",
+    augCurrentCol: "اگست 2026 موجودہ رپورٹ",
+    absDeltaCol: "کل تبدیلی (فرق)",
+    pctChangeCol: "فیصد (%) تبدیلی",
+    highFlag: "زیادہ (ہائی)",
+    improvedFlag: "بہتری (نارمل)",
+    stableFlag: "مستحکم",
+    wbcTestName: "وائٹ بلڈ سیلز (WBC)",
+    spermTestName: "سپرم کاؤنٹ (کثافت)",
+    hbTestName: "ہیموگلوبن (Hb)",
   },
 };
 

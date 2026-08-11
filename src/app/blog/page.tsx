@@ -34,28 +34,28 @@ export default function BlogPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors">
       <PublicNavbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-16">
         <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-semibold">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 text-xs font-semibold">
             <BookOpen className="w-4 h-4" /> Clinical LIS Resources
           </div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-slate-100 tracking-tight">
+          <h1 className="text-4xl sm:text-6xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
             Healthcare SaaS Engineering & Clinical Standards
           </h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6">
           {articles.map((art, idx) => (
-            <div key={idx} className="p-8 rounded-2xl bg-slate-900 border border-slate-800 space-y-4 flex flex-col justify-between">
+            <div key={idx} className="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4 flex flex-col justify-between shadow-xl transition-colors">
               <div className="space-y-3">
-                <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
                   {art.category}
                 </span>
-                <h2 className="text-xl font-bold text-slate-100 leading-snug">{art.title}</h2>
-                <p className="text-xs text-slate-400 leading-relaxed">{art.excerpt}</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-snug">{art.title}</h2>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">{art.excerpt}</p>
               </div>
 
               <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">

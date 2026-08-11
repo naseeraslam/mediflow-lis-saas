@@ -12,11 +12,11 @@ export default function NewTestPage() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-            <FlaskConical className="w-6 h-6 text-teal-400" />
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <FlaskConical className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             <span>Register New Diagnostic Test</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
             Add custom analyte definition, measurement units, reference ranges, and critical limits to your organization catalog
           </p>
         </div>

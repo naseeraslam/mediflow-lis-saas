@@ -16,11 +16,11 @@ export default async function AuditLogPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-            <UserCheck className="w-6 h-6 text-teal-400" />
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <UserCheck className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             <span>Immutable Audit Trail & Compliance Log</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
             HIPAA & GDPR compliant log recording user access, report authorizations, and amendments for your organization
           </p>
         </div>

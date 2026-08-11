@@ -1,12 +1,10 @@
 import { db } from "@/lib/db";
+import { getCurrentOrgId } from "@/lib/auth";
 import { Sliders, Plus, FlaskConical, Layers, ShieldCheck, Tag } from "lucide-react";
 import Link from "next/link";
 
 export default async function TemplatesPage() {
-  const org = await db.organization.findFirst({
-    where: { slug: "demo-diagnostics" },
-  });
-  const orgId = org?.id || "";
+  const orgId = await getCurrentOrgId();
 
   const templates = (db as any).reportTemplate
     ? await (db as any).reportTemplate.findMany({
@@ -23,11 +21,11 @@ export default async function TemplatesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-            <Sliders className="w-6 h-6 text-teal-400" />
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <Sliders className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             <span>Custom Report Templates & Parameter Batteries</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
             Build custom multi-parameter test templates (CBC, Biochemistry, Liver Function, Lipid Panel) with org-scoped parameters
           </p>
         </div>

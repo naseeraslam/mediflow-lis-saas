@@ -30,6 +30,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# database
+*.db
+dev.db
+*.sqlite
+*.sqlite-journal
+
 # env files (can opt-in for committing if needed)
 .env*
 

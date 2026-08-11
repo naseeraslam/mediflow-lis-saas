@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
+import { getCurrentOrgId } from "@/lib/auth";
 import { NewReportForm } from "@/components/report/NewReportForm";
 import { FileText, ArrowLeft } from "lucide-react";
+import { STANDARD_HUMAN_TEST_BATTERIES } from "@/lib/defaultCatalog";
 
 export default async function NewReportPage() {
-  const org = await db.organization.findFirst({
-    where: { slug: "demo-diagnostics" },
-  });
-  const orgId = org?.id || "";
+  const orgId = await getCurrentOrgId();
 
-  const [patients, branches, tests] = await Promise.all([
+  const [patients, branches, tests, dbTemplates] = await Promise.all([
     db.patient.findMany({
       where: { orgId },
       orderBy: { createdAt: "desc" },
@@ -21,6 +20,7 @@ export default async function NewReportPage() {
     }),
     db.testDefinition.findMany({
       where: { orgId },
+      orderBy: { name: "asc" },
       select: {
         id: true,
         code: true,
@@ -33,7 +33,32 @@ export default async function NewReportPage() {
         maxValue: true,
       },
     }),
+    (db as any).reportTemplate
+      ? (db as any).reportTemplate.findMany({
+          where: { orgId },
+          include: { parameters: { orderBy: { displayOrder: "asc" } } },
+        })
+      : Promise.resolve([]),
   ]);
+
+  // Combine database templates with default standard batteries if empty
+  const templates = dbTemplates && dbTemplates.length > 0
+    ? dbTemplates.map((t: any) => ({
+        code: t.code,
+        name: t.name,
+        category: t.category,
+        items: t.parameters.map((p: any) => ({
+          testName: p.parameterName,
+          code: p.code,
+          unit: p.unit,
+          refRangeMale: p.refRangeMale,
+          refRangeFemale: p.refRangeFemale,
+          defaultNumericValue: "",
+          defaultStringValue: "",
+          flag: "Normal",
+        })),
+      }))
+    : STANDARD_HUMAN_TEST_BATTERIES;
 
   let doctors: any[] = [];
   try {
@@ -65,7 +90,7 @@ export default async function NewReportPage() {
         </div>
       </div>
 
-      <NewReportForm patients={patients} branches={branches} testCatalog={tests} doctors={doctors} />
+      <NewReportForm patients={patients} branches={branches} testCatalog={tests} doctors={doctors} templates={templates} />
     </div>
   );
 }
