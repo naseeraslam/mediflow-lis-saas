@@ -244,11 +244,11 @@ model Report {
 }
 
 model TestResult {
-  id               String         @id @default(cuid())
+  id               String          @id @default(cuid())
   reportId         String
-  report           Report         @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  testId           String
-  test             TestDefinition @relation(fields: [testId], references: [id])
+  report           Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  testId           String?
+  test             TestDefinition? @relation(fields: [testId], references: [id])
 
   testNameSnapshot String
   unitSnapshot     String
