@@ -89,37 +89,56 @@ export async function POST(req: Request) {
       : [];
     const validTestIds = new Set(existingTests.map((t: any) => t.id));
 
-    const report = await db.report.create({
-      data: {
-        orgId: session.orgId,
-        branchId,
-        patientId,
-        doctorId: resolvedDoctorId,
-        reportNumber,
-        status: body.status || "Sample Collected",
-        tatHours,
-        sampleCollectedAt: new Date(),
-        estimatedCompletionAt,
-        verificationToken,
-        notes: notes || null,
-        results: {
-          create: testResults.map((tr: any) => ({
-            testId: tr.testId && validTestIds.has(tr.testId) ? tr.testId : null,
-            testNameSnapshot: tr.testName || "Diagnostic Parameter",
-            unitSnapshot: tr.unit || "",
-            refRangeSnapshot: tr.refRange || "",
-            numericValue: tr.numericValue !== undefined && tr.numericValue !== "" && tr.numericValue !== null && !isNaN(Number(tr.numericValue)) ? Number(tr.numericValue) : null,
-            stringValue: tr.stringValue || null,
-            flag: tr.flag || "Normal",
-            notes: tr.notes || null,
-          })),
+    const reportPayload: any = {
+      orgId: session.orgId,
+      branchId,
+      patientId,
+      doctorId: resolvedDoctorId,
+      reportNumber,
+      status: body.status || "Sample Collected",
+      tatHours,
+      sampleCollectedAt: new Date(),
+      estimatedCompletionAt,
+      verificationToken,
+      notes: notes || null,
+      results: {
+        create: testResults.map((tr: any) => ({
+          testId: tr.testId && validTestIds.has(tr.testId) ? tr.testId : null,
+          testNameSnapshot: tr.testName || "Diagnostic Parameter",
+          unitSnapshot: tr.unit || "",
+          refRangeSnapshot: tr.refRange || "",
+          numericValue: tr.numericValue !== undefined && tr.numericValue !== "" && tr.numericValue !== null && !isNaN(Number(tr.numericValue)) ? Number(tr.numericValue) : null,
+          stringValue: tr.stringValue || null,
+          flag: tr.flag || "Normal",
+          notes: tr.notes || null,
+        })),
+      },
+    };
+
+    let report;
+    try {
+      report = await db.report.create({
+        data: reportPayload,
+        include: {
+          patient: true,
+          results: true,
         },
-      },
-      include: {
-        patient: true,
-        results: true,
-      },
-    });
+      });
+    } catch (err: any) {
+      if (err.message && err.message.includes("tatHours")) {
+        console.warn("Retrying report creation without tatHours argument due to cached Prisma Client instance...");
+        delete reportPayload.tatHours;
+        report = await db.report.create({
+          data: reportPayload,
+          include: {
+            patient: true,
+            results: true,
+          },
+        });
+      } else {
+        throw err;
+      }
+    }
 
     // Audit Log
     await db.auditLog.create({
