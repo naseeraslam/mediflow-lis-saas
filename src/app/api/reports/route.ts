@@ -115,30 +115,36 @@ export async function POST(req: Request) {
       },
     };
 
-    let report;
-    try {
-      report = await db.report.create({
-        data: reportPayload,
-        include: {
-          patient: true,
-          results: true,
-        },
-      });
-    } catch (err: any) {
-      if (err.message && err.message.includes("tatHours")) {
-        console.warn("Retrying report creation without tatHours argument due to cached Prisma Client instance...");
-        delete reportPayload.tatHours;
-        report = await db.report.create({
-          data: reportPayload,
+    const fieldsToTry = ["tatHours", "estimatedCompletionAt", "sampleCollectedAt"];
+
+    async function createReportWithFallback(payload: any): Promise<any> {
+      try {
+        return await db.report.create({
+          data: payload,
           include: {
             patient: true,
             results: true,
           },
         });
-      } else {
+      } catch (err: any) {
+        if (err.message && err.message.includes("Unknown argument")) {
+          let fieldRemoved = false;
+          for (const field of fieldsToTry) {
+            if (err.message.includes(field) && payload[field] !== undefined) {
+              console.warn(`Prisma cached client fallback: Removing unknown argument '${field}' and retrying...`);
+              delete payload[field];
+              fieldRemoved = true;
+            }
+          }
+          if (fieldRemoved) {
+            return createReportWithFallback(payload);
+          }
+        }
         throw err;
       }
     }
+
+    const report = await createReportWithFallback(reportPayload);
 
     // Audit Log
     await db.auditLog.create({

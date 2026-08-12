@@ -9,10 +9,12 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Always instantiate a fresh PrismaClient to ensure latest schema models & fields (e.g. PricingPlan.currency) are loaded
+// Force fresh PrismaClient instance in development to immediately pick up schema migrations
 export const db = new PrismaClient({ adapter });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = db;
+}
 
 /**
  * Tenant Scoping Security Helper
